@@ -87,6 +87,12 @@ class Slider extends React.PureComponent {
       })
     }
 
+    if (props.delay !== this.props.delay) {
+      this.setState({
+        transitionDelay: props.delay,
+      })
+    }
+
     // Update value if it's controlled & changed
     if (props.value != null && this.props.value !== props.value) {
       const slide = props.value % props.children.length;
@@ -101,7 +107,7 @@ class Slider extends React.PureComponent {
       } else if (this.props.value === props.value - 1) {
         this.handleForward();
       } else {
-        this.change(props.value);
+        this.change(props.value + props.offset, 'forward');
       }
     }
 
@@ -136,7 +142,7 @@ class Slider extends React.PureComponent {
 
       // FIXME: GET CLONES IN CASE
       this.setState({
-        currentSlide: index + offset,
+        currentSlide: index,
       })
     }
   }
@@ -239,7 +245,7 @@ class Slider extends React.PureComponent {
   }
 
   render() {
-    const { children, onChange, style } = this.props
+    const { children, onChange, width, style } = this.props
     const { currentSlide, transitionDelay, transitionTime } = this.state
 
     const wrapperStyle = {
@@ -249,7 +255,7 @@ class Slider extends React.PureComponent {
     }
 
     return (
-      <Carousel style={style}>
+      <Carousel style={{ ...style, width }}>
         <Content>
           <Wrapper ref={this.setRef} style={wrapperStyle}>
             <Inner>{this.renderSlides()}</Inner>

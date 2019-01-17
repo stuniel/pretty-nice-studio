@@ -1,0 +1,14 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:figma="http://www.figma.com/figma/ns">
+  <g transform="translate(32.4723,21.0937)" 
+id="g306">
+  <path
+    id="path308"
+    d="M 0,0 H -15.484 V 7.146 H 1.191 Z" />
+  </g>
+  <g transform="translate(20.5943,32.9549)"
+  id="g310">
+  <path
+    id="path312"
+    d="m 0,0 v -28.536 h 7.114 v 27.394 c 0,0.782 0.446,1.191 1.191,1.191 h 4.764 V 7.196 H 7.584 C -0.184,7.196 0,0.934 0,0" />
+  </g>
+</svg>

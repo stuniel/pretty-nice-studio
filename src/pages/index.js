@@ -7,12 +7,18 @@ import { chunk, drop, filter, includes, indexOf, isEqual, orderBy, remove, rever
 
 import Slider from '../components/slider/slider'
 
+import Instagram from '../img/svg/instagram.svg';
+import Facebook from '../img/svg/facebook.svg';
+import Behance from '../img/svg/behance.svg';
+
 import p3 from '../img/p3.jpg'
 import p1 from '../img/p1.jpg'
 import p5 from '../img/p5.jpg'
 import p6 from '../img/p6.jpg'
 
 import '../components/all.sass'
+
+const SECONDARY_COLOR = '#bcbcbc';
 
 const images = [p5, p1, p3, p6];
 
@@ -108,20 +114,27 @@ const NumberSecondary = styled.li`
   font-size: 16px;
   line-height: 16px;
   padding: 8px 0;
+  color: #000;
+  transition: all 0.4s;
+  
+  &:hover {
+    color: ${SECONDARY_COLOR};
+  }
 `
+
 const NumberPrimary = styled.p`
   position: relative;
-  cursor: pointer;
   font-size: 32px;
   line-height: 32px;
-  padding: 44px 0; 
+  padding: 44px 0;
 `
 
 const PostNumber = styled.div`
   position: absolute;
   font-size: 180px;
   line-height: 180px;
-  color: #ddd;
+  color: ${SECONDARY_COLOR};
+  opacity: 0.5;
 `
 
 const Line = styled.div`
@@ -137,6 +150,33 @@ const Content = styled.div`
   height: 100%;
   width: 100%;
   overflow: hidden;
+`
+
+const Icons = styled.div`
+  position: absolute;
+  height: 120px;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 10%;
+  
+  & > a {
+    margin-right: 20px;
+    cursor: pointer;
+    height: 24px;
+    
+    & > svg {
+      fill: #000;
+      transition: fill 0.4s;
+    }
+    
+    &:hover {
+      & > svg {
+        fill: ${SECONDARY_COLOR};
+      }
+    }
+  }
 `
 
 const Arrows = styled.div`
@@ -157,9 +197,10 @@ const Arrow = styled.button`
   background-color: none;
   outline: none;
   cursor: pointer;
+  transition: color 0.4s;
 
   &:hover {
-    color: #ddd;
+    color: ${SECONDARY_COLOR};
   }
 `
 
@@ -231,14 +272,12 @@ export default class IndexPage extends React.Component {
 
     const sliderPrimaryStyle = {
       position: 'absolute',
-      width: pageSize * 0.8,
       height: pageSize,
       left: '120px',
     }
 
     const sliderSecondaryStyle = {
       position: 'absolute',
-      width: (pageSize - 120) * 0.8,
       height: pageSize - 120,
       top: '0',
       right: (pageSize - 120) * 0.8 * -1 + 180,
@@ -273,12 +312,20 @@ export default class IndexPage extends React.Component {
       left: '10%',
       top: height / 4 + 180,
     }
+    
+    const icon = {
+      height: '24px',
+      width: '24px',
+      transform: 'scaleY(-1)',
+    }
 
     return (
-      <Container>
+      <Container>        
         <Slider
           style={sliderPrimaryStyle}
+          width={pageSize * 0.8}
           value={slide}
+          delay={direction < 0 ? 0 : 500}
           onChange={this.handleSliderChange}
         >
           {posts.map(({ node: post }, index) => (
@@ -288,16 +335,14 @@ export default class IndexPage extends React.Component {
               onClick={() => navigate(post.fields.slug)}
               role="link"
               style={{ backgroundImage: `url(${images[index]})` }}
-            >
-              <p className="slide-content">{post.frontmatter.title}</p>
-              {index}
-            </SlidePrimary>
+            />
           ))}
         </Slider>
         <Slider
           style={sliderSecondaryStyle}
+          width={(pageSize - 120) * 0.8}
           animationTime={600}
-          delay={500}
+          delay={direction < 0 ? 500 : 0}
           value={slide}
           offset={1}
         >
@@ -390,6 +435,17 @@ export default class IndexPage extends React.Component {
               </CSSTransition>
             </TransitionGroup>
           </Text>
+          <Icons>
+            <a href="http://www.instagram.com/prettynicestudio" target="_blank" rel="noopener noreferrer">
+              <Instagram style={icon} />
+            </a>
+            <a href="http://www.facebook.com/prettynicestudio" target="_blank" rel="noopener noreferrer">
+            <Facebook style={icon} />
+          </a>
+            <a href="http://www.behance.com/prettynicestudio" target="_blank" rel="noopener noreferrer">
+            <Behance style={icon} />
+          </a>
+          </Icons>
         </Content>
         <Arrows style={arrowsStyle}>
           <Arrow onClick={this.next}>&#60;</Arrow>

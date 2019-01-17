@@ -4,7 +4,9 @@ import styled from 'styled-components'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 import github from '../img/github-icon.svg'
-import logo from '../img/logo.svg'
+import Logo from '../img/svg/logo.svg'
+
+const SECONDARY_COLOR = '#bcbcbc';
 
 const Nav = styled.nav`
   position: relative;
@@ -21,7 +23,7 @@ const Burger = styled.div`
   top: 0;
   left: 0;
   padding: 50px;
-  
+
   & > div {
     cursor: pointer;
     height: 100%;
@@ -33,7 +35,7 @@ const Burger = styled.div`
     
     &:hover {
       & > span {
-        background: #ddd;
+        background: ${SECONDARY_COLOR};
       }
     }
     
@@ -41,8 +43,29 @@ const Burger = styled.div`
       height: 2px;
       width: 100%;
       background: #000;
+      transition: all 0.4s;
     }
   }
+  
+  &.open {
+    & > div {
+      & > span {
+        &:nth-child(1) {
+          transform: translateY(7px) rotate(-45deg);
+        }
+        
+        &:nth-child(2) {
+          transform: translateX(50%);
+          opacity: 0;
+        }
+        
+        &:nth-child(3) {
+          transform: translateY(-7px) rotate(45deg);
+        }
+      }
+    }
+  }
+  
 `
 
 const NavMenu = styled.nav`
@@ -55,6 +78,18 @@ const NavMenu = styled.nav`
   overflow: hidden;
 `
 
+const StyledLogo = styled(Logo)`
+  position: absolute;
+  width: 80%;
+  left: 10%;
+  transition: top 0.4s;
+`
+
+const StyledLink = styled(Link)`
+  cursor: ${props => props.disabled ? 'default' : 'pointer'};
+  color: ${props => props.disabled ? SECONDARY_COLOR : '#000'};
+`
+
 const LogoImg = styled.img`
   position: absolute;
   width: 80%;
@@ -63,23 +98,27 @@ const LogoImg = styled.img`
 `
 
 const Links = styled.div`
+  position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   transition: all 0.4s;
-  padding: 50px;
+  padding: 50px 0;
+  left: 10%;
 
   & > a {
+    font-family: Amiko, serif;
+    text-transform: uppercase;
     margin-right: 50px;
-    color: #000;
     text-decoration: none;
+    transition: color 0.4s;
 
     &:last-child {
       margin: 0;
     }
 
     &:hover {
-      text-decoration: underline;
+      color: ${SECONDARY_COLOR};
     }
   }
 `
@@ -117,11 +156,11 @@ const Navbar = class extends React.Component {
 
     const navMenuStyle = {
       left: height * 0.8 + 120,
-      height,
+      height: height / 2,
     };
     
     const logoStyle = {
-      top: open ? (height / 4) : 20,
+      top: open ? (height / 4) : 120 - height / 24,
     }
     
     const linksStyle = {
@@ -135,8 +174,8 @@ const Navbar = class extends React.Component {
         <div className="container">
           <div className="navbar-brand">
             {/* Hamburger menu */}
-            <Burger onClick={this.handleBurgerClick} data-target="navMenu">
-              <div>
+            <Burger className={open && "open"}>
+              <div onClick={this.handleBurgerClick} data-target="navMenu">
                 <span />
                 <span />
                 <span />
@@ -152,28 +191,26 @@ const Navbar = class extends React.Component {
                     key={pathname}
                     timeout={{ enter: 3000, exit: 1000 }}
                     >
-                      <LogoImg src={logo} alt="pretty nice studio" style={logoStyle} />
+                      {/* <LogoImg src={logo} alt="pretty nice studio" style={logoStyle} /> */}
+                      <StyledLogo style={logoStyle} />
                     </CSSTransition>
                   </TransitionGroup>
                 ) : (
                   <Link to="/" className="navbar-item" title="Logo">
-                  <img src={logo} alt="Kaldi" style={{ width: '88px' }} />
+                  {/* <img src={logo} alt="Kaldi" style={{ width: '88px' }} /> */}
                 </Link>
               )
             }
             <Links style={linksStyle}>
-              <Link className="navbar-item" to="/about">
-                About
-              </Link>
-              <Link className="navbar-item" to="/products">
-                Products
-              </Link>
-              <Link className="navbar-item" to="/contact">
+              <StyledLink disabled={pathname === '/'} className="navbar-item" to="/">
+                Home
+              </StyledLink>
+              <StyledLink className="navbar-item" to="/contact">
+                Making of
+              </StyledLink>
+              <StyledLink className="navbar-item" to="/contact">
                 Contact
-              </Link>
-              <Link className="navbar-item" to="/contact/examples">
-                Form Examples
-              </Link>
+              </StyledLink>
             </Links>
             <div className="navbar-end has-text-centered">
               {/* <a
