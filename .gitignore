@@ -7,3 +7,10 @@ public/
 static/admin/*.bundle.*
 .DS_Store
 yarn-error.log
+
+# S3 buckets
+# s3/
+
+# ENV
+.env.development
+.env.production

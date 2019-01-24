@@ -1,5 +1,21 @@
 import React from 'react'
+import styled from 'styled-components'
 import { navigate } from 'gatsby-link'
+
+const Section = styled.section`
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+`
+
+const ContentWrapper = styled.div`
+  position: absolute;
+  margin: 120px;
+  height: 100%;
+  width: 100%;
+  ${'' /* overflow: hidden; */}
+`
 
 function encode(data) {
   return Object.keys(data)
@@ -34,9 +50,9 @@ export default class Index extends React.Component {
 
   render() {
     return (
-      <section className="section">
-        <div className="container">
-          <div className="content">
+      <Section>
+        <ContentWrapper>
+          <div>
             <h1>Contact</h1>
             <form
               name="contact"
@@ -105,8 +121,8 @@ export default class Index extends React.Component {
               </div>
             </form>
           </div>
-        </div>
-      </section>
+        </ContentWrapper>
+      </Section>
     )
   }
 }

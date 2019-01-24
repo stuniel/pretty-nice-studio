@@ -1,12 +1,33 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 module.exports = {
   siteMetadata: {
     title: 'Gatsby + Netlify CMS Starter',
-    description: 'This repo contains an example business website that is built with Gatsby, and Netlify CMS.It follows the JAMstack architecture by using Git as a single source of truth, and Netlify for continuous deployment, and CDN distribution.',
+    description:
+      'This repo contains an example business website that is built with Gatsby, and Netlify CMS.It follows the JAMstack architecture by using Git as a single source of truth, and Netlify for continuous deployment, and CDN distribution.',
   },
   plugins: [
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sass',
     'gatsby-plugin-styled-components',
+    {
+      resolve: `gatsby-plugin-styled-components`,
+      options: {
+        // Add any options here
+      },
+    },
+    {
+      resolve: 'gatsby-source-s3',
+      options: {
+        aws: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        },
+        buckets: ['prettynicestudio-website'],
+      },
+    },
     {
       // keep as first gatsby-source-filesystem plugin for gatsby image support
       resolve: 'gatsby-source-filesystem',
@@ -30,12 +51,19 @@ module.exports = {
       },
     },
     {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        path: `${__dirname}/s3/sessions`,
+        name: 'sessions',
+      },
+    },
+    {
       resolve: 'gatsby-plugin-react-svg',
-        options: {
-            rule: {
-              include: `${__dirname}/src/img/svg`
-            }
-        }
+      options: {
+        rule: {
+          include: `${__dirname}/src/img/svg`,
+        },
+      },
     },
     {
       resolve: `gatsby-plugin-layout`,
@@ -68,8 +96,8 @@ module.exports = {
             resolve: 'gatsby-remark-copy-linked-files',
             options: {
               destinationDir: 'static',
-            }
-          }
+            },
+          },
         ],
       },
     },

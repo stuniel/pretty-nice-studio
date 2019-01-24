@@ -1,14 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import { graphql } from 'gatsby'
 import Content, { HTMLContent } from '../components/Content'
+
+const Section = styled.section`
+  position: relative;
+  padding: 120px;
+  top: 0;
+  height: 100%;
+  width: 100%;
+`
+
+const ContentWrapper = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
+`
 
 export const AboutPageTemplate = ({ title, content, contentComponent }) => {
   const PageContent = contentComponent || Content
 
   return (
-    <section className="section section--gradient">
-      <div className="container">
+    <Section>
+      <ContentWrapper>
         <div className="columns">
           <div className="column is-10 is-offset-1">
             <div className="section">
@@ -19,8 +34,8 @@ export const AboutPageTemplate = ({ title, content, contentComponent }) => {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </ContentWrapper>
+    </Section>
   )
 }
 

@@ -28,8 +28,8 @@ export default class Index extends React.Component {
               <a href="https://github.com/gatsbyjs/gatsby/issues/7997#issuecomment-419749232">
                 Workaround
               </a>{' '}
-              is to use <code>?no-cache=1</code> in the POST url to prevent
-              the service worker from handling form submissions
+              is to use <code>?no-cache=1</code> in the POST url to prevent the
+              service worker from handling form submissions
             </p>
             <h3>Adding reCAPTCHA</h3>
             <p>

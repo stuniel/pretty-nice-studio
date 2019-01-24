@@ -88,45 +88,23 @@ body
     transform: translateX(-100%)
     opacity: 0
     
-.number-primary-forward 
+.number-primary-backward 
   position: relative
   float: left
   
   span
     display: inline-block
 
-.number-primary-backward
+.number-primary-forward
   position: relative
   float: left
   
   span
     display: inline-block  
       
-.number-primary-backward-enter
+.number-primary-forward-enter
   transform: translateY(-100%)
   transition: all 0.4s
-  opacity: 0
-  
-  &.number-primary-backward-enter-active
-    transform: translateY(0)
-    opacity: 1
-  
-.number-primary-backward-exit
-  transition: all 0.4s
-  position: absolute
-  left: 0
-  top: 0
-  transform: translateY(0)
-  opacity: 1
-  
-  &.number-primary-backward-exit-active
-    transform: translateY(100%)
-    opacity: 0
-
-
-.number-primary-forward-enter
-  transition: all 0.4s
-  transform: translateY(100%)
   opacity: 0
   
   &.number-primary-forward-enter-active
@@ -142,34 +120,20 @@ body
   opacity: 1
   
   &.number-primary-forward-exit-active
-    transform: translateY(-100%)
+    transform: translateY(100%)
     opacity: 0
-    
-    
-.number-secondary-forward 
-  position: relative
-  float: left
-  
-  span
-    display: inline-block
 
-.number-secondary-backward
-  position: relative
-  float: left
-  
-  span
-    display: inline-block  
-      
-.number-secondary-backward-enter
-  transform: translateY(-200%)
+
+.number-primary-backward-enter
   transition: all 0.4s
+  transform: translateY(100%)
   opacity: 0
   
-  &.number-secondary-backward-enter-active
+  &.number-primary-backward-enter-active
     transform: translateY(0)
     opacity: 1
   
-.number-secondary-backward-exit
+.number-primary-backward-exit
   transition: all 0.4s
   position: absolute
   left: 0
@@ -177,14 +141,28 @@ body
   transform: translateY(0)
   opacity: 1
   
-  &.number-secondary-backward-exit-active
-    transform: translateY(200%)
+  &.number-primary-backward-exit-active
+    transform: translateY(-100%)
     opacity: 0
+    
+    
+.number-secondary-backward 
+  position: relative
+  float: left
+  
+  span
+    display: inline-block
 
-
+.number-secondary-forward
+  position: relative
+  float: left
+  
+  span
+    display: inline-block  
+      
 .number-secondary-forward-enter
+  transform: translateY(-200%)
   transition: all 0.4s
-  transform: translateY(200%)
   opacity: 0
   
   &.number-secondary-forward-enter-active
@@ -200,5 +178,105 @@ body
   opacity: 1
   
   &.number-secondary-forward-exit-active
+    transform: translateY(200%)
+    opacity: 0
+
+
+.number-secondary-backward-enter
+  transition: all 0.4s
+  transform: translateY(200%)
+  opacity: 0
+  
+  &.number-secondary-backward-enter-active
+    transform: translateY(0)
+    opacity: 1
+  
+.number-secondary-backward-exit
+  transition: all 0.4s
+  position: absolute
+  left: 0
+  top: 0
+  transform: translateY(0)
+  opacity: 1
+  
+  &.number-secondary-backward-exit-active
     transform: translateY(-200%)
+    opacity: 0
+
+
+
+.photo-primary-forward 
+  position: relative
+  float: left
+  
+  span
+    display: inline-block
+    
+.photo-primary-backward
+  position: relative
+  float: left
+  
+  span
+    display: inline-block
+
+.photo-primary-forward-enter
+  
+  &::after
+    content: ''
+    position: absolute
+    top: 0
+    right: 0
+    width: 100%
+    height: 100%
+    background: #fff
+    transition: all 1s
+    transition-delay: 0.3s
+  
+  &.photo-primary-forward-enter-active
+    
+    &::after
+      width: 0%
+  
+.photo-primary-forward-exit
+  transition: all 1s
+  position: absolute
+  left: 0
+  top: 0
+  transform: translateY(0)
+  opacity: 1
+  
+  &.photo-primary-forward-exit-active
+    transform: translateY(-150%)
+    opacity: 0
+
+
+.photo-primary-backward-enter
+  
+  &::after
+    content: ''
+    position: absolute
+    top: 0
+    right: 0
+    width: 100%
+    height: 100%
+    background: #fff
+    transition: all 1s
+    transition-delay: 0.3s
+  
+  &.photo-primary-backward-enter-active
+    
+    &::after
+      width: 0%
+  
+  
+.photo-primary-backward-exit
+  transition: all 1s
+  position: absolute
+  left: 0
+  top: 0
+  transform: translateY(0)
+  opacity: 1
+  
+  &.photo-primary-backward-exit-active
+    transform: translateY(150%)
     opacity: 0

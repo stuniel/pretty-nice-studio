@@ -1,48 +1,159 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { kebabCase } from 'lodash'
+import styled from 'styled-components'
+import { chunk, throttle, kebabCase } from 'lodash'
 import Helmet from 'react-helmet'
 import { graphql, Link } from 'gatsby'
+
 import Content, { HTMLContent } from '../components/Content'
+import Photos from '../components/Photos'
 
-export const BlogPostTemplate = ({
-  content,
-  contentComponent,
-  description,
-  tags,
-  title,
-  helmet,
-}) => {
-  const PostContent = contentComponent || Content
+const windowGlobal = typeof window !== 'undefined' && window
 
-  return (
-    <section className="section">
-      {helmet || ''}
-      <div className="container content">
-        <div className="columns">
-          <div className="column is-10 is-offset-1">
-            <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
-              {title}
-            </h1>
-            <p>{description}</p>
-            <PostContent content={content} />
-            {tags && tags.length ? (
-              <div style={{ marginTop: `4rem` }}>
-                <h4>Tags</h4>
-                <ul className="taglist">
-                  {tags.map(tag => (
-                    <li key={tag + `tag`}>
-                      <Link to={`/tags/${kebabCase(tag)}/`}>{tag}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
+const directions = {
+  forward: 'forward',
+  backward: 'backward',
+}
+
+const Section = styled.section`
+  position: relative;
+  padding: 120px;
+  top: 0;
+  height: 100%;
+  width: 100%;
+`
+
+const ContentWrapper = styled.div`
+  position: relative;
+`
+
+export class BlogPostTemplate extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      part: 0,
+      direction: '',
+    }
+
+    this.tarnsitionActive = false
+  }
+
+  componentDidMount() {
+    window.addEventListener('wheel', this.handleScroll)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('wheel', this.handleScroll)
+  }
+
+  handleScroll = e => {
+    if (this.tarnsitionActive) return
+
+    this.tarnsitionActive = true
+
+    if (e.deltaY > 0) {
+      this.next()
+    } else if (e.deltaY < 0) {
+      this.previous()
+    }
+
+    window.setTimeout(() => {
+      this.tarnsitionActive = false
+    }, 1000)
+  }
+
+  next = () => {
+    const { views } = this.props
+    const { part } = this.state
+
+    if (part > views.length - 2) return
+
+    this.setState(state => ({ direction: directions.forward, part: state.part + 1 }))
+  }
+
+  previous = () => {
+    const { part } = this.state
+
+    if (part === 0) return
+
+    this.setState(state => ({ direction: directions.backward, part: state.part - 1 }))
+  }
+
+  render() {
+    const {
+      content,
+      contentComponent,
+      cover,
+      data,
+      description,
+      helmet,
+      images,
+      session,
+      tags,
+      title,
+      views,
+    } = this.props
+    const { direction, part } = this.state
+    const PostContent = contentComponent || Content
+    
+    const height = windowGlobal.innerHeight
+    const width = windowGlobal.innerWidth
+    
+    const contentWrapperStyle = {
+      width: width - (height * 0.8 + 300),
+      height: height * 0.8,
+      left: height * 0.8,
+    }
+    
+    const textStyle = {
+      position: 'absolute',
+      width: '80%',
+      left: '10%',
+      bottom: 0
+    }
+    
+    return (
+      <Section>
+        {helmet || ''}
+        <div className="container content">
+          <div>
+            {
+              part === 0 && (
+                <ContentWrapper style={contentWrapperStyle}>
+                  <div style={textStyle}>
+                    <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
+                      {title}
+                    </h1>
+                    <p>{description}</p>
+                  </div>
+                </ContentWrapper>
+              )
+            }
+            <Photos
+              direction={direction}
+              part={part}
+              session={session}
+              views={views}
+              images={images}
+            />
+              {/* <PostContent content={content} /> */}
+              {/* {tags && tags.length ? (
+                <div style={{ marginTop: `4rem` }}>
+                  <h4>Tags</h4>
+                  <ul className="taglist">
+                    {tags.map(tag => (
+                      <li key={tag + `tag`}>
+                        <Link to={`/tags/${kebabCase(tag)}/`}>{tag}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null} */}
           </div>
         </div>
-      </div>
-    </section>
-  )
+      </Section>
+    )
+  }
 }
 
 BlogPostTemplate.propTypes = {
@@ -54,12 +165,17 @@ BlogPostTemplate.propTypes = {
 }
 
 const BlogPost = ({ data }) => {
-  const { markdownRemark: post } = data
+  const { markdownRemark: post, images } = data
 
   return (
     <BlogPostTemplate
       content={post.html}
       contentComponent={HTMLContent}
+      cover={post.frontmatter.cover}
+      session={post.frontmatter.session}
+      views={post.frontmatter.views}
+      image={post.frontmatter.image}
+      images={images}
       description={post.frontmatter.description}
       helmet={
         <Helmet titleTemplate="%s | Blog">
@@ -85,15 +201,51 @@ BlogPost.propTypes = {
 export default BlogPost
 
 export const pageQuery = graphql`
-  query BlogPostByID($id: String!) {
+  query BlogPostByID($id: String!, $categoryRegex: String) {
     markdownRemark(id: { eq: $id }) {
       id
       html
       frontmatter {
+        cover
+        session
+        views {
+          type
+          first
+          second
+        }
         date(formatString: "MMMM DD, YYYY")
         title
         description
         tags
+      }
+    }
+  #   images: allS3Image(filter: {
+  #     Key: {
+  #       regex: $categoryRegex
+  #     }
+  #   }
+  # ) {
+  #     photos: edges {
+  #       photo: node {
+  #         Key
+  #         Url
+  #       }
+  #     }
+  #   }
+    images: allFile(filter: {
+      sourceInstanceName: { eq: "sessions" },
+      relativePath: { regex: $categoryRegex }
+    }) {
+      photos: edges {
+        photo: node {
+          childImageSharp {
+            fluid {
+              ...GatsbyImageSharpFluid
+              presentationWidth
+            }
+          }
+          relativePath
+        }
       }
     }
   }

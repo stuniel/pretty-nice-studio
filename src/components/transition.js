@@ -1,7 +1,7 @@
-import React from 'react';
-import posed, { PoseGroup } from 'react-pose';
+import React from 'react'
+import posed, { PoseGroup } from 'react-pose'
 
-const timeout = 500;
+const timeout = 500
 
 class Transition extends React.PureComponent {
   render() {
@@ -16,7 +16,7 @@ class Transition extends React.PureComponent {
     // use the prop `animateOnMount={true}` on `PoseGroup`.
     return (
       <PoseGroup animateOnMount={true}>
-        <RoutesContainer key={location.pathname}>{children}</RoutesContainer>
+        <RoutesContainer key={location.pathname} style={{ top: 0 }}>{children}</RoutesContainer>
       </PoseGroup>
     )
   }

@@ -4,9 +4,15 @@ import styled from 'styled-components'
 import classNames from 'classnames'
 import { chunk } from 'lodash'
 
+const directions = {
+  forward: 'forward',
+  backward: 'backward',
+}
+
 const defaultProps = {
   children: [],
   delay: 0,
+  direction: directions.forward,
   offset: 0,
   animationTime: 1000,
 }
@@ -58,7 +64,7 @@ class Slider extends React.PureComponent {
       slides: chunk(props.children, 1),
       currentSlide:
         props.value != null
-          ? (props.value + props.offset) % props.children.length
+          ? (props.children.length - props.value + props.offset) % props.children.length
           : 0,
       transitionDelay: props.delay,
       transitionTime: props.animationTime,
@@ -74,6 +80,10 @@ class Slider extends React.PureComponent {
 
   componentDidMount() {
     this.mounted = true
+    // console.log('obliczenia: ', (this.props.value + this.props.offset) % this.props.children.length);
+    // const currentSlide = (this.state.currentSlide) % this.props.children.length
+    // // const currentSlide = (this.props.value + this.props.offset) % this.props.children.length
+    // this.setState({ currentSlide })
   }
 
   componentWillUnmount() {
@@ -95,31 +105,31 @@ class Slider extends React.PureComponent {
 
     // Update value if it's controlled & changed
     if (props.value != null && this.props.value !== props.value) {
-      const slide = props.value % props.children.length;
+      const slide = (props.value + props.offset) % props.children.length
 
       const type =
         this.lastMovementIndex === slide
           ? this.lastMovementType
-          : this.props.defaultMovement;
+          : this.props.defaultMovement
 
-      if (this.props.value === props.value + 1) {
-        this.handleBack();
-      } else if (this.props.value === props.value - 1) {
-        this.handleForward();
+      if (props.direction === directions.forward) {
+        this.handleForward()
+      } else if (props.direction === directions.backward) {
+        this.handleBack()
       } else {
-        this.change(props.value + props.offset, 'forward');
+        this.change(props.value + props.offset, 'backward')
       }
     }
 
     // Update current slide, if it's bigger than maximum slide
     // const currentSlide = this.state.currentSlide % this.props.children.length
-    // 
+    //
     // if (currentSlide >= props.children.length) {
     //   this.setState({
     //     currentSlide: props.children.length - 1,
     //   })
     // }
-    // 
+    //
     // if (props.children !== this.props.children) {
     //   this.setState({
     //     slides: chunk(props.children, 1),
@@ -137,7 +147,7 @@ class Slider extends React.PureComponent {
       return this.go(index, type)
     } else {
       if (onChange) {
-        onChange(index);
+        onChange(index)
       }
 
       // FIXME: GET CLONES IN CASE
@@ -175,10 +185,10 @@ class Slider extends React.PureComponent {
       if (!this.mounted) {
         return
       }
-      
+
       this.setState({ currentSlide: next }, () => {
         if (onChange) {
-          onChange(next % length);
+          onChange(next % length)
         }
       })
     })
@@ -217,13 +227,13 @@ class Slider extends React.PureComponent {
   handleForward() {
     const { currentSlide } = this.state
 
-    this.change(currentSlide + 1, 'forward')
+    this.change(currentSlide - 1, 'back')
   }
 
   handleBack() {
     const { currentSlide } = this.state
 
-    this.change(currentSlide - 1, 'back')
+    this.change(currentSlide + 1, 'forward')
   }
 
   setRef = node => {
@@ -240,14 +250,16 @@ class Slider extends React.PureComponent {
         <Slide key={'copy-' + i}>{children[i % children.length]}</Slide>
       )
     }
-
-    return children.map((el, i) => <Slide key={i}>{el}</Slide>).concat(copies)
+    
+    const slides = children.map((el, i) => <Slide key={i}>{el}</Slide>);
+    
+    return slides.concat(copies)
   }
 
   render() {
-    const { children, onChange, width, style } = this.props
+    const { children, offset, onChange, width, style } = this.props
     const { currentSlide, transitionDelay, transitionTime } = this.state
-
+    
     const wrapperStyle = {
       transform: `translateX(-${currentSlide * 100}%)`,
       transitionDuration: `${transitionTime}ms`,

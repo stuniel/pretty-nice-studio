@@ -1,12 +1,20 @@
 import React from 'react'
-import { Link } from 'gatsby'
+import { Link, navigate } from 'gatsby'
 import styled from 'styled-components'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { connect } from "react-redux"
 
 import github from '../img/github-icon.svg'
 import Logo from '../img/svg/logo.svg'
 
 const SECONDARY_COLOR = '#bcbcbc';
+
+const MaybeLink = ({ children, pathname, to, ...passedProps }) =>
+  pathname === to ? (
+    <div {...passedProps}>{children}</div>
+  ) : (
+    <Link to={to} {...passedProps}>{children}</Link>
+  );
 
 const Nav = styled.nav`
   position: relative;
@@ -68,26 +76,32 @@ const Burger = styled.div`
   
 `
 
+const NavWrapper = styled.nav`
+  position: absolute;
+  top: 0;
+  left: 120px;
+`
+
 const NavMenu = styled.nav`
   position: absolute;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   top: 0;
-  left: 120px;
   overflow: hidden;
+  transition: left 0.6s;
 `
 
-const StyledLogo = styled(Logo)`
+const StyledLogo = styled(Link)`
   position: absolute;
   width: 80%;
   left: 10%;
-  transition: top 0.4s;
+  transition: top 0.6s;
 `
 
-const StyledLink = styled(Link)`
-  cursor: ${props => props.disabled ? 'default' : 'pointer'};
-  color: ${props => props.disabled ? SECONDARY_COLOR : '#000'};
+const StyledLink = styled(MaybeLink)`
+  cursor: ${props => props.to === props.pathname ? 'default' : 'pointer'};
+  color: ${props => props.to === props.pathname ? SECONDARY_COLOR : '#000'};
 `
 
 const LogoImg = styled.img`
@@ -104,9 +118,8 @@ const Links = styled.div`
   align-items: center;
   transition: all 0.4s;
   padding: 50px 0;
-  left: 10%;
 
-  & > a {
+  & > * {
     font-family: Amiko, serif;
     text-transform: uppercase;
     margin-right: 50px;
@@ -127,7 +140,7 @@ const Navbar = class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      open: false,
+      open: true,
       height: 0,
       width: 0,
     }
@@ -147,24 +160,29 @@ const Navbar = class extends React.Component {
   }
   
   handleBurgerClick = () => {
-    this.setState(state => ({ open: !state.open }))
+    navigate('/')
   }
 
   render() {
     const { pathname } = this.props
     const { height, open, width } = this.state
-
-    const navMenuStyle = {
-      left: height * 0.8 + 120,
-      height: height / 2,
-    };
+    const isHome = pathname === '/'
     
+    const navMenuStyle = {
+      left: isHome ? height * 0.8 : 0,
+      height: 120,
+    };
+
     const logoStyle = {
-      top: open ? (height / 4) : 120 - height / 24,
+      position: 'absolute',
+      left: height * 0.8 + (width - (height * 0.8 + 300)) / 10,
+      width: (width - (height * 0.8 + 300)) * 0.8,
+      top: isHome ? height * (45 / 100) : 20,
     }
     
     const linksStyle = {
       width: width - (height * 0.8 + 300),
+      left: isHome ? '10%' : 0,
       transform: `translateX(${open ? 0 : -50}%)`,
       opacity: open ? 1 : 0
     }
@@ -174,57 +192,58 @@ const Navbar = class extends React.Component {
         <div className="container">
           <div className="navbar-brand">
             {/* Hamburger menu */}
-            <Burger className={open && "open"}>
-              <div onClick={this.handleBurgerClick} data-target="navMenu">
-                <span />
-                <span />
-                <span />
-              </div>
-            </Burger>
+            {pathname !== '/' && (
+              <Burger className="open">
+                <div onClick={this.handleBurgerClick} data-target="navMenu">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </Burger>
+            )}
           </div>
-          <NavMenu style={navMenuStyle} className="navMenu">
-            {
-              pathname === '/' ? (
-                <TransitionGroup component="div" className="logo">
-                  <CSSTransition
-                    classNames="logo"
-                    key={pathname}
-                    timeout={{ enter: 3000, exit: 1000 }}
-                    >
-                      {/* <LogoImg src={logo} alt="pretty nice studio" style={logoStyle} /> */}
-                      <StyledLogo style={logoStyle} />
-                    </CSSTransition>
-                  </TransitionGroup>
-                ) : (
-                  <Link to="/" className="navbar-item" title="Logo">
-                  {/* <img src={logo} alt="Kaldi" style={{ width: '88px' }} /> */}
-                </Link>
-              )
-            }
-            <Links style={linksStyle}>
-              <StyledLink disabled={pathname === '/'} className="navbar-item" to="/">
-                Home
-              </StyledLink>
-              <StyledLink className="navbar-item" to="/contact">
-                Making of
-              </StyledLink>
-              <StyledLink className="navbar-item" to="/contact">
-                Contact
-              </StyledLink>
-            </Links>
-            <div className="navbar-end has-text-centered">
-              {/* <a
-              className="navbar-item"
-              href="https://github.com/AustinGreen/gatsby-netlify-cms-boilerplate"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="icon">
-                <img src={github} alt="Github" />
-              </span>
-            </a> */}
-            </div>
-          </NavMenu>
+          <NavWrapper>
+            <StyledLogo to="/" className="navbar-item" style={logoStyle} title="Logo">
+              <Logo style={{ position: 'relative', width: '100%' }} />
+            </StyledLogo>
+            <NavMenu style={navMenuStyle} className="navMenu">
+              <Links key={pathname} style={linksStyle}>
+                <StyledLink
+                  className="navbar-item"
+                  pathname={pathname}
+                  to="/"
+                >
+                  Home
+                </StyledLink>
+                <StyledLink
+                  className="navbar-item"
+                  pathname={pathname}
+                  to="/about"
+                >
+                  Making of
+                </StyledLink>
+                <StyledLink
+                  className="navbar-item"
+                  pathname={pathname}
+                  to="/contact"
+                >
+                  Contact
+                </StyledLink>
+              </Links>
+              <div className="navbar-end has-text-centered">
+                {/* <a
+                className="navbar-item"
+                href="https://github.com/AustinGreen/gatsby-netlify-cms-boilerplate"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="icon">
+                  <img src={github} alt="Github" />
+                </span>
+              </a> */}
+              </div>
+            </NavMenu>
+          </NavWrapper>
         </div>
       </Nav>
     )

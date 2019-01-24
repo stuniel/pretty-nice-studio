@@ -18,6 +18,10 @@ exports.createPages = ({ actions, graphql }) => {
             frontmatter {
               tags
               templateKey
+              image {
+                absolutePath
+              }
+              session
             }
           }
         }
@@ -32,7 +36,12 @@ exports.createPages = ({ actions, graphql }) => {
     const posts = result.data.allMarkdownRemark.edges
 
     posts.forEach(edge => {
+      // const session = 'Speicher'
+      console.log(edge.node.frontmatter.session);
+      const session = edge.node.frontmatter.session
+      const categoryRegex = `/${session}/`
       const id = edge.node.id
+      const image = edge.node.frontmatter.image
       createPage({
         path: edge.node.fields.slug,
         tags: edge.node.frontmatter.tags,
@@ -42,6 +51,8 @@ exports.createPages = ({ actions, graphql }) => {
         // additional data can be passed via context
         context: {
           id,
+          image,
+          categoryRegex
         },
       })
     })
