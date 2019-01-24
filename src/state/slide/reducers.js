@@ -1,19 +1,13 @@
 import { DECREMENT, GO, INCREMENT } from './actions'
 
-function slide(state = [], action) {
+function slide(state = 0, action) {
   switch (action.type) {
     case DECREMENT:
-      return Object.assign({}, state, {
-        slide: state.slide - 1,
-      })
+      return state - 1
     case GO:
-      return Object.assign({}, state, {
-        slide: action.index,
-      })
+      return action.index
     case INCREMENT:
-      return Object.assign({}, state, {
-        slide: state.slide + 1,
-      })
+      return state + 1
     default:
       return state
   }

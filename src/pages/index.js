@@ -15,6 +15,7 @@ import {
   includes,
   indexOf,
   isEqual,
+  nth,
   orderBy,
   remove,
   reverse,
@@ -355,7 +356,7 @@ class IndexPage extends React.PureComponent {
 
     const currentPostIndex = getIndexInRange(slide, edges.length)
     const currentPost = edges[currentPostIndex]
-
+    console.log(edges, currentPostIndex, slide)
     const key = formatKey(slide)
 
     const orderedPosts = this.orderPosts(edges, currentPost)
@@ -561,8 +562,8 @@ IndexPage.propTypes = {
   }),
 }
 
-const mapStateToProps = ({ route, slide }) => {
-  return { route, slide }
+const mapStateToProps = ({ slide }) => {
+  return { slide }
 }
 
 const mapDispatchToProps = dispatch => {

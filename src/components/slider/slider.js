@@ -81,10 +81,6 @@ class Slider extends React.PureComponent {
 
   componentDidMount() {
     this.mounted = true
-    // console.log('obliczenia: ', (this.props.value + this.props.offset) % this.props.children.length);
-    // const currentSlide = (this.state.currentSlide) % this.props.children.length
-    // // const currentSlide = (this.props.value + this.props.offset) % this.props.children.length
-    // this.setState({ currentSlide })
   }
 
   componentWillUnmount() {

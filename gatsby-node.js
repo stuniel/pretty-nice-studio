@@ -36,8 +36,6 @@ exports.createPages = ({ actions, graphql }) => {
     const posts = result.data.allMarkdownRemark.edges
 
     posts.forEach(edge => {
-      // const session = 'Speicher'
-      console.log(edge.node.frontmatter.session)
       const session = edge.node.frontmatter.session
       const categoryRegex = `/${session}/`
       const id = edge.node.id
