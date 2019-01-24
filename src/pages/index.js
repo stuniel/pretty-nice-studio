@@ -298,13 +298,13 @@ class IndexPage extends React.PureComponent {
 
   formatSliderPrimaryStyle = state => {
     const { height } = this.state
-    console.log('state: ', state)
+
     const transitionStyles = {
       entering: {
-        top: 120,
+        top: 240,
         left: 120,
-        width: height * 0.64,
-        height: height * 0.8,
+        width: ((height - 360) * 0.8),
+        height: height - 360,
       },
     }
 
@@ -356,7 +356,7 @@ class IndexPage extends React.PureComponent {
 
     const currentPostIndex = getIndexInRange(slide, edges.length)
     const currentPost = edges[currentPostIndex]
-    console.log(edges, currentPostIndex, slide)
+
     const key = formatKey(slide)
 
     const orderedPosts = this.orderPosts(edges, currentPost)
@@ -404,7 +404,7 @@ class IndexPage extends React.PureComponent {
               offset={posts.length - 1}
               width={
                 state === 'entering' || state === 'entered'
-                  ? pageSize * 0.64
+                  ? (pageSize - 360) * 0.8
                   : pageSize * 0.8
               }
               style={this.formatSliderPrimaryStyle(state)}

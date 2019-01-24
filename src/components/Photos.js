@@ -25,7 +25,7 @@ function isEven(value) {
 }
 
 const Wrapper = styled.div`
-  position: absolute;
+  position: relative;
   top: 0px;
   height: 100%;
   width: 100%;
@@ -202,20 +202,36 @@ const getLayout = (height, width) => {
     {
       type: 0,
       first: {
-        top: 120,
-        left: 0,
-        width: height * 0.64,
-        height: height * 0.8,
+        top: 240,
+        left: 120,
+        width: (height - 360) * 0.8,
+        height: height - 360,
       },
       second: {
         top: 120,
-        left: width / 2,
+        right: width - 120,
         width: (height - 360) * 0.8,
         height: height - 360,
       },
     },
+    {
+      type: 1,
+      first: {
+        top: 120,
+        left: 120,
+        width: (height - 360) * 0.8,
+        height: height - 360,
+      },
+      second: {
+        top: 120,
+        right: width - 120,
+        width: height * 0.64,
+        height: height * 0.8,
+      },
+    },
   ]
 }
+
 const Photo = ({ direction, images, part, session, views }) => {
   const height = windowGlobal.innerHeight
   const width = windowGlobal.innerWidth
@@ -227,24 +243,24 @@ const Photo = ({ direction, images, part, session, views }) => {
     .filter(photo => photo.relativePath.includes('big'))
 
   const firstPhotoPosition = {
-    height: isEven(part) ? layout[0].first.height : height - 360,
-    width: isEven(part) ? layout[0].first.width : (height - 360) * 0.8,
+    height: isEven(part) ? layout[0].first.height : layout[1].first.height,
+    width: isEven(part) ? layout[0].first.width : layout[1].first.width,
     left: layout[0].first.left,
-    top: isEven(part) ? layout[0].first.top : height * 0.1,
+    top: isEven(part) ? layout[0].first.top : layout[1].first.top,
   }
 
   firstPhotoPosition.right = firstPhotoPosition.left + firstPhotoPosition.width
   firstPhotoPosition.bottom = firstPhotoPosition.top + firstPhotoPosition.height
 
   const secondPhotoPosition = {
-    top: isEven(part) ? layout[0].second.top : height * 0.1,
-    left: layout[0].second.left,
-    height: isEven(part) ? layout[0].second.height : height * 0.8,
-    width: isEven(part) ? layout[0].second.width : height * 0.8 * 0.8,
+    top: isEven(part) ? layout[0].second.top : layout[1].second.top,
+    right: isEven(part) ? layout[0].second.right : layout[1].second.right,
+    height: isEven(part) ? layout[0].second.height : layout[1].second.height,
+    width: isEven(part) ? layout[0].second.width : layout[1].second.width,
   }
 
-  secondPhotoPosition.right =
-    secondPhotoPosition.left + secondPhotoPosition.width
+  secondPhotoPosition.left =
+    secondPhotoPosition.right - secondPhotoPosition.width
   secondPhotoPosition.bottom =
     secondPhotoPosition.top + secondPhotoPosition.height
 

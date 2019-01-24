@@ -7,6 +7,7 @@ import { graphql, Link } from 'gatsby'
 
 import Content, { HTMLContent } from '../components/Content'
 import Photos from '../components/Photos'
+import Progress from '../components/Progress'
 
 const windowGlobal = typeof window !== 'undefined' && window
 
@@ -21,6 +22,23 @@ const Section = styled.section`
   top: 0;
   height: 100%;
   width: 100%;
+`
+
+const ProgressWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`
+
+const PhotosWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 `
 
 const ContentWrapper = styled.div`
@@ -110,7 +128,15 @@ export class BlogPostTemplate extends React.Component {
       height: height * 0.8,
       left: height * 0.8,
     }
-
+    
+    const progressWrapperStyle = {
+      bottom: 60
+      // top: height * 0.75 - 60,
+      // width: width - (height * 0.8 + 300),
+      // height: height * 0.25,
+      // left: height * 0.8,
+    }
+    
     const textStyle = {
       position: 'absolute',
       width: '80%',
@@ -121,40 +147,41 @@ export class BlogPostTemplate extends React.Component {
     return (
       <Section>
         {helmet || ''}
-        <div className="container content">
-          <div>
-            {part === 0 && (
-              <ContentWrapper style={contentWrapperStyle}>
-                <div style={textStyle}>
-                  <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
-                    {title}
-                  </h1>
-                  <p>{description}</p>
-                </div>
-              </ContentWrapper>
-            )}
-            <Photos
-              direction={direction}
-              part={part}
-              session={session}
-              views={views}
-              images={images}
-            />
-            {/* <PostContent content={content} /> */}
-            {/* {tags && tags.length ? (
-                <div style={{ marginTop: `4rem` }}>
-                  <h4>Tags</h4>
-                  <ul className="taglist">
-                    {tags.map(tag => (
-                      <li key={tag + `tag`}>
-                        <Link to={`/tags/${kebabCase(tag)}/`}>{tag}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null} */}
-          </div>
-        </div>
+        {part === 0 && (
+          <ContentWrapper style={contentWrapperStyle}>
+            <div style={textStyle}>
+              <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
+                {title}
+              </h1>
+              <p>{description}</p>
+            </div>
+          </ContentWrapper>
+        )}
+        <ProgressWrapper style={progressWrapperStyle}>
+          <Progress part={part} length={views.length} />
+        </ProgressWrapper>
+        <PhotosWrapper>
+          <Photos
+            direction={direction}
+            part={part}
+            session={session}
+            views={views}
+            images={images}
+          />
+        </PhotosWrapper>
+        {/* <PostContent content={content} /> */}
+        {/* {tags && tags.length ? (
+            <div style={{ marginTop: `4rem` }}>
+              <h4>Tags</h4>
+              <ul className="taglist">
+                {tags.map(tag => (
+                  <li key={tag + `tag`}>
+                    <Link to={`/tags/${kebabCase(tag)}/`}>{tag}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null} */}
       </Section>
     )
   }

@@ -5,7 +5,8 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
 import github from '../img/github-icon.svg'
-import Logo from '../img/svg/logo.svg'
+import Logo from '../img/svg/fulllogo.svg'
+import LogoTitle from '../img/svg/title.svg'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -93,11 +94,19 @@ const NavMenu = styled.nav`
   transition: left 0.6s;
 `
 
-const StyledLogo = styled(Link)`
+const StyledLogoWrapper = styled(Link)`
   position: absolute;
   width: 80%;
   left: 10%;
-  transition: top 0.6s;
+  transition: left 0.6s;
+  transition-delay: 0.15s;
+`
+
+const StyledLogo = styled(Logo)`
+  & > g#title {
+    opacity: ${props => props.full ? 1 : 0};
+    transition: opacity 0.6s;
+  }
 `
 
 const StyledLink = styled(MaybeLink)`
@@ -176,9 +185,9 @@ const Navbar = class extends React.Component {
 
     const logoStyle = {
       position: 'absolute',
-      left: height * 0.8 + (width - (height * 0.8 + 300)) / 10,
+      left: isHome ? height * 0.8 + (width - (height * 0.8 + 300)) / 10 : 0,
       width: (width - (height * 0.8 + 300)) * 0.8,
-      top: isHome ? height * (45 / 100) : 20,
+      top: 150,
     }
 
     const linksStyle = {
@@ -204,14 +213,17 @@ const Navbar = class extends React.Component {
             )}
           </div>
           <NavWrapper>
-            <StyledLogo
+            <StyledLogoWrapper
               to="/"
               className="navbar-item"
               style={logoStyle}
               title="Logo"
             >
-              <Logo style={{ position: 'relative', width: '100%' }} />
-            </StyledLogo>
+              <div style={{ position: 'relative', width: '100%' }}>
+                <StyledLogo full={isHome} style={{ width: '100%', height: '100%' }}/>
+                {/* <LogoTitle /> */}
+              </div>
+            </StyledLogoWrapper>
             <NavMenu style={navMenuStyle} className="navMenu">
               <Links key={pathname} style={linksStyle}>
                 <StyledLink className="navbar-item" pathname={pathname} to="/">
