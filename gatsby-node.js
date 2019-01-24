@@ -37,7 +37,7 @@ exports.createPages = ({ actions, graphql }) => {
 
     posts.forEach(edge => {
       // const session = 'Speicher'
-      console.log(edge.node.frontmatter.session);
+      console.log(edge.node.frontmatter.session)
       const session = edge.node.frontmatter.session
       const categoryRegex = `/${session}/`
       const id = edge.node.id
@@ -52,7 +52,7 @@ exports.createPages = ({ actions, graphql }) => {
         context: {
           id,
           image,
-          categoryRegex
+          categoryRegex,
         },
       })
     })

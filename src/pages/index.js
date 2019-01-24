@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link, navigate, graphql } from 'gatsby'
 import styled from 'styled-components'
-import { Transition, TransitionGroup, CSSTransition } from 'react-transition-group'
+import {
+  Transition,
+  TransitionGroup,
+  CSSTransition,
+} from 'react-transition-group'
 import {
   chunk,
   drop,
@@ -43,11 +47,11 @@ function formatKey(index) {
   const min = 97
   const max = 122
   const length = max - min
-  
+
   const times = Math.floor(Math.abs(index) / length) + 1
   const position = Math.abs(index) % length
   const prefix = index < 0 ? String.fromCharCode(max) : String.fromCharCode(min)
-  
+
   return prefix.repeat(times) + String.fromCharCode(min + position)
 }
 
@@ -65,7 +69,7 @@ const Container = styled.div`
 const SlideTransitionGroup = styled(TransitionGroup)`
   &.content-wrapper {
     position: relative;
-    
+
     ${'' /* .content-enter {
       opacity: 0;
     }
@@ -75,14 +79,14 @@ const SlideTransitionGroup = styled(TransitionGroup)`
       transition: all ${props => props.exit}ms;
       transition-delay: ${props => props.enter}ms;
     } */}
-    
+
     .content-exit {
       transition: all ${props => props.exit}ms;
       position: absolute;
       top: 0;
       opacity: 1;
     }
-    
+
     .content-exit-active {
       transition-delay: ${props => props.enter}ms;
       opacity: 0;
@@ -290,19 +294,19 @@ class IndexPage extends React.PureComponent {
     decrement()
     this.setState({ direction: directions.backward })
   }
-  
+
   formatSliderPrimaryStyle = state => {
     const { height } = this.state
-    console.log('state: ', state);
+    console.log('state: ', state)
     const transitionStyles = {
       entering: {
         top: 120,
         left: 120,
-        width: height *  0.64,
-        height: height * 0.8    
-      }
+        width: height * 0.64,
+        height: height * 0.8,
+      },
     }
-    
+
     return {
       position: 'absolute',
       top: 0,
@@ -310,19 +314,19 @@ class IndexPage extends React.PureComponent {
       width: height * 0.8,
       height,
       transition: 'all 0.6s',
-      ...state === 'entering' && transitionStyles.entering,
-      ...state === 'entered' && transitionStyles.entering
+      ...(state === 'entering' && transitionStyles.entering),
+      ...(state === 'entered' && transitionStyles.entering),
     }
   }
-  
+
   formatSliderSecondaryStyle = state => {
     const { height } = this.state
     const transitionStyles = {
       entering: {
-        opacity: 0   
-      }
+        opacity: 0,
+      },
     }
-    
+
     return {
       position: 'absolute',
       height: height - 120,
@@ -330,11 +334,11 @@ class IndexPage extends React.PureComponent {
       right: (height - 120) * 0.8 * -1 + 180,
       opacity: 1,
       transition: 'all 0.6s',
-      ...state === 'entering' && transitionStyles.entering,
-      ...state === 'entered' && transitionStyles.entering
+      ...(state === 'entering' && transitionStyles.entering),
+      ...(state === 'entered' && transitionStyles.entering),
     }
   }
-  
+
   handleSlideClick = post => {
     this.setState({ show: true })
     navigate(post.fields.slug)
@@ -345,15 +349,15 @@ class IndexPage extends React.PureComponent {
     const { direction, height, show, width } = this.state
     const { edges } = data.allMarkdownRemark
 
-    const posts = edges.slice().reverse();
-    
+    const posts = edges.slice().reverse()
+
     const currentSlideIndex = getIndexInRange(slide, posts.length)
-    
+
     const currentPostIndex = getIndexInRange(slide, edges.length)
     const currentPost = edges[currentPostIndex]
 
     const key = formatKey(slide)
-    
+
     const orderedPosts = this.orderPosts(edges, currentPost)
 
     const pageSize = height
@@ -387,21 +391,21 @@ class IndexPage extends React.PureComponent {
       left: '10%',
       top: height * (60 / 100),
     }
-        
+
     return (
       <Container>
-        <Transition
-          in={show}
-          key={location.pathname}
-          timeout={600}
-        >
+        <Transition in={show} key={location.pathname} timeout={600}>
           {state => (
             <Slider
               animationTime={600}
               delay={direction === directions.backward ? 300 : 0}
               direction={direction}
               offset={posts.length - 1}
-              width={state === 'entering' || state === 'entered' ?  pageSize * 0.64 : pageSize * 0.8}
+              width={
+                state === 'entering' || state === 'entered'
+                  ? pageSize * 0.64
+                  : pageSize * 0.8
+              }
               style={this.formatSliderPrimaryStyle(state)}
               value={currentSlideIndex}
             >
@@ -411,17 +415,18 @@ class IndexPage extends React.PureComponent {
                   key={post.frontmatter.session}
                   onClick={() => this.handleSlideClick(post)}
                   role="link"
-                  style={{ backgroundImage: `url(${getAssetPath(post.frontmatter.session, post.frontmatter.cover)})` }}
+                  style={{
+                    backgroundImage: `url(${getAssetPath(
+                      post.frontmatter.session,
+                      post.frontmatter.cover
+                    )})`,
+                  }}
                 />
               ))}
             </Slider>
           )}
         </Transition>
-        <Transition
-          in={show}
-          key={location.pathname}
-          timeout={600}
-        >
+        <Transition in={show} key={location.pathname} timeout={600}>
           {state => (
             <Slider
               animationTime={600}
@@ -436,7 +441,12 @@ class IndexPage extends React.PureComponent {
                 <SlideSecondary
                   key={post.frontmatter.session}
                   onClick={this.prev}
-                  style={{ backgroundImage: `url(${getAssetPath(post.frontmatter.session, post.frontmatter.cover)})` }}
+                  style={{
+                    backgroundImage: `url(${getAssetPath(
+                      post.frontmatter.session,
+                      post.frontmatter.cover
+                    )})`,
+                  }}
                 />
               ))}
             </Slider>
@@ -449,7 +459,11 @@ class IndexPage extends React.PureComponent {
                 onClick={() => this.handleNumberClick(indexOf(edges, post))}
               >
                 <TransitionGroup
-                  childFactory={child => createChildFactory(child, { classNames: `number-secondary-${direction}` })}
+                  childFactory={child =>
+                    createChildFactory(child, {
+                      classNames: `number-secondary-${direction}`,
+                    })
+                  }
                   className={`number-secondary-${direction}`}
                   component="span"
                 >
@@ -467,7 +481,11 @@ class IndexPage extends React.PureComponent {
             <Line />
             <NumberPrimary>
               <TransitionGroup
-                childFactory={child => createChildFactory(child, { classNames: `number-primary-${direction}` })}
+                childFactory={child =>
+                  createChildFactory(child, {
+                    classNames: `number-primary-${direction}`,
+                  })
+                }
                 className={`number-primary-${direction}`}
                 component="span"
               >
@@ -486,7 +504,11 @@ class IndexPage extends React.PureComponent {
         <Content style={contentStyle}>
           <PostNumber style={postNumberStyle}>
             <TransitionGroup
-              childFactory={child => createChildFactory(child, { classNames: `number-primary-${direction}` })}
+              childFactory={child =>
+                createChildFactory(child, {
+                  classNames: `number-primary-${direction}`,
+                })
+              }
               className={`number-primary-${direction}`}
               component="span"
             >
@@ -496,15 +518,17 @@ class IndexPage extends React.PureComponent {
                 key={key}
                 timeout={{ enter: 400, exit: 400 }}
               >
-                <span>
-                  {formatNumber(currentPostIndex + 1)}
-                </span>
+                <span>{formatNumber(currentPostIndex + 1)}</span>
               </CSSTransition>
             </TransitionGroup>
           </PostNumber>
           <Text style={textStyle}>
             <TransitionGroup
-              childFactory={child => createChildFactory(child, { classNames: `description-${direction}` })}
+              childFactory={child =>
+                createChildFactory(child, {
+                  classNames: `description-${direction}`,
+                })
+              }
               className={`description-${direction}`}
               component="div"
             >

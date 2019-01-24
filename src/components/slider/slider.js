@@ -64,7 +64,8 @@ class Slider extends React.PureComponent {
       slides: chunk(props.children, 1),
       currentSlide:
         props.value != null
-          ? (props.children.length - props.value + props.offset) % props.children.length
+          ? (props.children.length - props.value + props.offset) %
+            props.children.length
           : 0,
       transitionDelay: props.delay,
       transitionTime: props.animationTime,
@@ -250,16 +251,16 @@ class Slider extends React.PureComponent {
         <Slide key={'copy-' + i}>{children[i % children.length]}</Slide>
       )
     }
-    
-    const slides = children.map((el, i) => <Slide key={i}>{el}</Slide>);
-    
+
+    const slides = children.map((el, i) => <Slide key={i}>{el}</Slide>)
+
     return slides.concat(copies)
   }
 
   render() {
     const { children, offset, onChange, width, style } = this.props
     const { currentSlide, transitionDelay, transitionTime } = this.state
-    
+
     const wrapperStyle = {
       transform: `translateX(-${currentSlide * 100}%)`,
       transitionDuration: `${transitionTime}ms`,

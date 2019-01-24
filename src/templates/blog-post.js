@@ -68,7 +68,10 @@ export class BlogPostTemplate extends React.Component {
 
     if (part > views.length - 2) return
 
-    this.setState(state => ({ direction: directions.forward, part: state.part + 1 }))
+    this.setState(state => ({
+      direction: directions.forward,
+      part: state.part + 1,
+    }))
   }
 
   previous = () => {
@@ -76,7 +79,10 @@ export class BlogPostTemplate extends React.Component {
 
     if (part === 0) return
 
-    this.setState(state => ({ direction: directions.backward, part: state.part - 1 }))
+    this.setState(state => ({
+      direction: directions.backward,
+      part: state.part - 1,
+    }))
   }
 
   render() {
@@ -95,40 +101,38 @@ export class BlogPostTemplate extends React.Component {
     } = this.props
     const { direction, part } = this.state
     const PostContent = contentComponent || Content
-    
+
     const height = windowGlobal.innerHeight
     const width = windowGlobal.innerWidth
-    
+
     const contentWrapperStyle = {
       width: width - (height * 0.8 + 300),
       height: height * 0.8,
       left: height * 0.8,
     }
-    
+
     const textStyle = {
       position: 'absolute',
       width: '80%',
       left: '10%',
-      bottom: 0
+      bottom: 0,
     }
-    
+
     return (
       <Section>
         {helmet || ''}
         <div className="container content">
           <div>
-            {
-              part === 0 && (
-                <ContentWrapper style={contentWrapperStyle}>
-                  <div style={textStyle}>
-                    <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
-                      {title}
-                    </h1>
-                    <p>{description}</p>
-                  </div>
-                </ContentWrapper>
-              )
-            }
+            {part === 0 && (
+              <ContentWrapper style={contentWrapperStyle}>
+                <div style={textStyle}>
+                  <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
+                    {title}
+                  </h1>
+                  <p>{description}</p>
+                </div>
+              </ContentWrapper>
+            )}
             <Photos
               direction={direction}
               part={part}
@@ -136,8 +140,8 @@ export class BlogPostTemplate extends React.Component {
               views={views}
               images={images}
             />
-              {/* <PostContent content={content} /> */}
-              {/* {tags && tags.length ? (
+            {/* <PostContent content={content} /> */}
+            {/* {tags && tags.length ? (
                 <div style={{ marginTop: `4rem` }}>
                   <h4>Tags</h4>
                   <ul className="taglist">
@@ -219,23 +223,25 @@ export const pageQuery = graphql`
         tags
       }
     }
-  #   images: allS3Image(filter: {
-  #     Key: {
-  #       regex: $categoryRegex
-  #     }
-  #   }
-  # ) {
-  #     photos: edges {
-  #       photo: node {
-  #         Key
-  #         Url
-  #       }
-  #     }
-  #   }
-    images: allFile(filter: {
-      sourceInstanceName: { eq: "sessions" },
-      relativePath: { regex: $categoryRegex }
-    }) {
+    #   images: allS3Image(filter: {
+    #     Key: {
+    #       regex: $categoryRegex
+    #     }
+    #   }
+    # ) {
+    #     photos: edges {
+    #       photo: node {
+    #         Key
+    #         Url
+    #       }
+    #     }
+    #   }
+    images: allFile(
+      filter: {
+        sourceInstanceName: { eq: "sessions" }
+        relativePath: { regex: $categoryRegex }
+      }
+    ) {
       photos: edges {
         photo: node {
           childImageSharp {

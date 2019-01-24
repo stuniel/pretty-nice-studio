@@ -2,19 +2,21 @@ import React from 'react'
 import { Link, navigate } from 'gatsby'
 import styled from 'styled-components'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
-import { connect } from "react-redux"
+import { connect } from 'react-redux'
 
 import github from '../img/github-icon.svg'
 import Logo from '../img/svg/logo.svg'
 
-const SECONDARY_COLOR = '#bcbcbc';
+const SECONDARY_COLOR = '#bcbcbc'
 
 const MaybeLink = ({ children, pathname, to, ...passedProps }) =>
   pathname === to ? (
     <div {...passedProps}>{children}</div>
   ) : (
-    <Link to={to} {...passedProps}>{children}</Link>
-  );
+    <Link to={to} {...passedProps}>
+      {children}
+    </Link>
+  )
 
 const Nav = styled.nav`
   position: relative;
@@ -40,13 +42,13 @@ const Burger = styled.div`
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    
+
     &:hover {
       & > span {
         background: ${SECONDARY_COLOR};
       }
     }
-    
+
     & > span {
       height: 2px;
       width: 100%;
@@ -54,26 +56,25 @@ const Burger = styled.div`
       transition: all 0.4s;
     }
   }
-  
+
   &.open {
     & > div {
       & > span {
         &:nth-child(1) {
           transform: translateY(7px) rotate(-45deg);
         }
-        
+
         &:nth-child(2) {
           transform: translateX(50%);
           opacity: 0;
         }
-        
+
         &:nth-child(3) {
           transform: translateY(-7px) rotate(45deg);
         }
       }
     }
   }
-  
 `
 
 const NavWrapper = styled.nav`
@@ -100,8 +101,8 @@ const StyledLogo = styled(Link)`
 `
 
 const StyledLink = styled(MaybeLink)`
-  cursor: ${props => props.to === props.pathname ? 'default' : 'pointer'};
-  color: ${props => props.to === props.pathname ? SECONDARY_COLOR : '#000'};
+  cursor: ${props => (props.to === props.pathname ? 'default' : 'pointer')};
+  color: ${props => (props.to === props.pathname ? SECONDARY_COLOR : '#000')};
 `
 
 const LogoImg = styled.img`
@@ -147,18 +148,18 @@ const Navbar = class extends React.Component {
   }
 
   componentDidMount() {
-    this.handleWindowSizeChange();
-    window.addEventListener('resize', this.handleWindowSizeChange);
+    this.handleWindowSizeChange()
+    window.addEventListener('resize', this.handleWindowSizeChange)
   }
-  
+
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleWindowSizeChange);
+    window.removeEventListener('resize', this.handleWindowSizeChange)
   }
-  
+
   handleWindowSizeChange = () => {
     this.setState({ width: window.innerWidth, height: window.innerHeight })
   }
-  
+
   handleBurgerClick = () => {
     navigate('/')
   }
@@ -167,11 +168,11 @@ const Navbar = class extends React.Component {
     const { pathname } = this.props
     const { height, open, width } = this.state
     const isHome = pathname === '/'
-    
+
     const navMenuStyle = {
       left: isHome ? height * 0.8 : 0,
       height: 120,
-    };
+    }
 
     const logoStyle = {
       position: 'absolute',
@@ -179,14 +180,14 @@ const Navbar = class extends React.Component {
       width: (width - (height * 0.8 + 300)) * 0.8,
       top: isHome ? height * (45 / 100) : 20,
     }
-    
+
     const linksStyle = {
       width: width - (height * 0.8 + 300),
       left: isHome ? '10%' : 0,
       transform: `translateX(${open ? 0 : -50}%)`,
-      opacity: open ? 1 : 0
+      opacity: open ? 1 : 0,
     }
-    
+
     return (
       <Nav role="navigation" aria-label="main-navigation">
         <div className="container">
@@ -203,16 +204,17 @@ const Navbar = class extends React.Component {
             )}
           </div>
           <NavWrapper>
-            <StyledLogo to="/" className="navbar-item" style={logoStyle} title="Logo">
+            <StyledLogo
+              to="/"
+              className="navbar-item"
+              style={logoStyle}
+              title="Logo"
+            >
               <Logo style={{ position: 'relative', width: '100%' }} />
             </StyledLogo>
             <NavMenu style={navMenuStyle} className="navMenu">
               <Links key={pathname} style={linksStyle}>
-                <StyledLink
-                  className="navbar-item"
-                  pathname={pathname}
-                  to="/"
-                >
+                <StyledLink className="navbar-item" pathname={pathname} to="/">
                   Home
                 </StyledLink>
                 <StyledLink

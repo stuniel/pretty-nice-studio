@@ -36,24 +36,24 @@ const ContentTransitionGroup = styled(TransitionGroup)`
     position: relative;
     height: 100%;
     width: 100%;
-    
+
     .content-enter {
       opacity: 0;
     }
-      
+
     .content-enter-active {
       opacity: 1;
       transition: all ${props => props.exit}ms;
       transition-delay: ${props => props.enter}ms;
     }
-    
+
     .content-exit {
       transition: all ${props => props.exit}ms;
       position: absolute;
       top: 0;
       opacity: 1;
     }
-    
+
     .content-exit-active {
       transition-delay: ${props => props.enter}ms;
       opacity: 0;
@@ -61,17 +61,16 @@ const ContentTransitionGroup = styled(TransitionGroup)`
   }
 `
 
-
 function childrenWithPassedProps(children, props) {
-  return React.Children.map(children, (child) => {  
-    return React.cloneElement(child, props)  
+  return React.Children.map(children, child => {
+    return React.cloneElement(child, props)
   })
 }
 
 class TemplateWrapper extends React.Component {
   render() {
     const { children, location, image, navigate } = this.props
-    
+
     return (
       <Provider store={store}>
         <StaticQuery
@@ -140,9 +139,7 @@ class TemplateWrapper extends React.Component {
                     classNames="content"
                     key={location.pathname}
                   >
-                    <ChildWrapper>
-                      {children}
-                    </ChildWrapper>
+                    <ChildWrapper>{children}</ChildWrapper>
                   </CSSTransition>
                 </ContentTransitionGroup>
               </Wrapper>
