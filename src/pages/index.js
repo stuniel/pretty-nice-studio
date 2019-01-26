@@ -1,28 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Link, navigate, graphql } from 'gatsby'
+import { navigate, graphql } from 'gatsby'
 import styled from 'styled-components'
 import {
   Transition,
   TransitionGroup,
-  CSSTransition,
+  CSSTransition
 } from 'react-transition-group'
 import {
-  chunk,
   drop,
-  filter,
-  includes,
-  indexOf,
-  isEqual,
-  nth,
-  orderBy,
-  remove,
-  reverse,
+  indexOf
 } from 'lodash'
 
 import { getAssetPath } from '../utils/paths'
-
+import { config } from '../config.js'
 import Icons from '../components/Icons'
 import Slider from '../components/slider/slider'
 
@@ -35,16 +27,16 @@ const directions = {
   backward: 'backward',
 }
 
-function createChildFactory(child, props) {
+function createChildFactory (child, props) {
   return React.cloneElement(child, props)
 }
 
-function formatNumber(number) {
-  if (number < 10) return `0${number}`
+function formatNumber (number) {
+  if (number < 10) return `0${ number }`
   return number
 }
 
-function formatKey(index) {
+function formatKey (index) {
   const min = 97
   const max = 122
   const length = max - min
@@ -56,7 +48,7 @@ function formatKey(index) {
   return prefix.repeat(times) + String.fromCharCode(min + position)
 }
 
-function getIndexInRange(index, length) {
+function getIndexInRange (index, length) {
   return index >= 0
     ? index % length
     : (length - (Math.abs(index) % length)) % length
@@ -65,34 +57,6 @@ function getIndexInRange(index, length) {
 const Container = styled.div`
   height: 100%;
   width: 100%;
-`
-
-const SlideTransitionGroup = styled(TransitionGroup)`
-  &.content-wrapper {
-    position: relative;
-
-    ${'' /* .content-enter {
-      opacity: 0;
-    }
-      
-    .content-enter-active {
-      opacity: 1;
-      transition: all ${props => props.exit}ms;
-      transition-delay: ${props => props.enter}ms;
-    } */}
-
-    .content-exit {
-      transition: all ${props => props.exit}ms;
-      position: absolute;
-      top: 0;
-      opacity: 1;
-    }
-
-    .content-exit-active {
-      transition-delay: ${props => props.enter}ms;
-      opacity: 0;
-    }
-  }
 `
 
 const SlidePrimary = styled.div`
@@ -104,7 +68,7 @@ const SlidePrimary = styled.div`
   transition: all 0.3s ease-out;
   opacity: 1;
 
-  ${'' /* &::before {
+  ${ '' /* &::before {
     content: '';
     position: absolute;
     width: 100%;
@@ -180,7 +144,7 @@ const NumberSecondary = styled.li`
   transition: all 0.4s;
 
   &:hover {
-    color: ${SECONDARY_COLOR};
+    color: ${ SECONDARY_COLOR };
   }
 `
 
@@ -195,7 +159,7 @@ const PostNumber = styled.div`
   position: absolute;
   font-size: 180px;
   line-height: 180px;
-  color: ${SECONDARY_COLOR};
+  color: ${ SECONDARY_COLOR };
   opacity: 0.5;
 `
 
@@ -232,7 +196,7 @@ const Arrow = styled.span`
   transition: color 0.4s;
 
   &:hover {
-    color: ${SECONDARY_COLOR};
+    color: ${ SECONDARY_COLOR };
   }
 `
 
@@ -240,28 +204,19 @@ const Text = styled.div`
   position: relative;
 `
 
+const Footer = styled.div`
+  position: absolute;
+  display: flex;
+  width: 100%;
+`
+
 class IndexPage extends React.PureComponent {
-  constructor(props) {
+  constructor (props) {
     super()
     this.state = {
       direction: '',
       show: false,
-      width: 0,
-      height: 0,
     }
-  }
-
-  componentDidMount() {
-    this.handleWindowSizeChange()
-    window.addEventListener('resize', this.handleWindowSizeChange)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleWindowSizeChange)
-  }
-
-  handleWindowSizeChange = () => {
-    this.setState({ width: window.innerWidth, height: window.innerHeight })
   }
 
   handleNumberClick = index => {
@@ -297,7 +252,9 @@ class IndexPage extends React.PureComponent {
   }
 
   formatSliderPrimaryStyle = state => {
-    const { height } = this.state
+    const { media } = this.props
+    const { index: { sliders } } = config
+    const { height } = media
 
     const transitionStyles = {
       entering: {
@@ -310,18 +267,17 @@ class IndexPage extends React.PureComponent {
 
     return {
       position: 'absolute',
-      top: 0,
-      left: 120,
-      width: height * 0.8,
-      height,
       transition: 'all 0.6s',
+      ...sliders.primary(media),
       ...(state === 'entering' && transitionStyles.entering),
       ...(state === 'entered' && transitionStyles.entering),
     }
   }
 
   formatSliderSecondaryStyle = state => {
-    const { height } = this.state
+    const { media } = this.props
+    const { index: { sliders } } = config
+
     const transitionStyles = {
       entering: {
         opacity: 0,
@@ -330,14 +286,29 @@ class IndexPage extends React.PureComponent {
 
     return {
       position: 'absolute',
-      height: height - 120,
-      top: '0',
-      right: (height - 120) * 0.8 * -1 + 180,
-      opacity: 1,
       transition: 'all 0.6s',
+      ...sliders.secondary(media),
       ...(state === 'entering' && transitionStyles.entering),
       ...(state === 'entered' && transitionStyles.entering),
     }
+  }
+
+  getSliderPrimaryDelay = () => {
+    const { media: { ratio } } = this.props
+    const { direction } = this.state
+
+    if (ratio < 1) return 0
+
+    return direction === directions.backward ? 300 : 0
+  }
+
+  getSliderSecondaryDelay = () => {
+    const { media: { ratio } } = this.props
+    const { direction } = this.state
+
+    if (ratio < 1) return 0
+
+    return direction === directions.backward ? 0 : 300
   }
 
   handleSlideClick = post => {
@@ -345,10 +316,11 @@ class IndexPage extends React.PureComponent {
     navigate(post.fields.slug)
   }
 
-  render() {
-    const { slide, data, location } = this.props
-    const { direction, height, show, width } = this.state
+  render () {
+    const { slide, data, location, media } = this.props
+    const { direction, show } = this.state
     const { edges } = data.allMarkdownRemark
+    const { height, width, ratio } = media
 
     const posts = edges.slice().reverse()
 
@@ -361,18 +333,15 @@ class IndexPage extends React.PureComponent {
 
     const orderedPosts = this.orderPosts(edges, currentPost)
 
-    const pageSize = height
-
     const numbersStyle = {
       width: 120,
-      height: pageSize,
+      height: height,
       left: 0,
     }
 
     const contentStyle = {
-      width: width - (pageSize * 0.8 + 300),
-      height: pageSize,
-      left: pageSize * 0.8 + 120,
+      // background: 'red',
+      ...config.index.content.getPosition(media)
     }
 
     const arrowsStyle = {
@@ -382,7 +351,7 @@ class IndexPage extends React.PureComponent {
 
     const postNumberStyle = {
       position: 'absolute',
-      width: pageSize * 0.6,
+      width: height * 0.6,
       left: 90,
       top: height * (55 / 100),
     }
@@ -393,162 +362,185 @@ class IndexPage extends React.PureComponent {
       top: height * (60 / 100),
     }
 
+    const footerStyle = {
+      ...config.index.footer.getPosition(media)
+    }
+
     return (
       <Container>
-        <Transition in={show} key={location.pathname} timeout={600}>
-          {state => (
-            <Slider
-              animationTime={600}
-              delay={direction === directions.backward ? 300 : 0}
-              direction={direction}
-              offset={posts.length - 1}
-              width={
-                state === 'entering' || state === 'entered'
-                  ? (pageSize - 360) * 0.8
-                  : pageSize * 0.8
-              }
-              style={this.formatSliderPrimaryStyle(state)}
-              value={currentSlideIndex}
-            >
-              {posts.map(({ node: post }, index) => (
-                <SlidePrimary
-                  className="content"
-                  key={post.frontmatter.session}
-                  onClick={() => this.handleSlideClick(post)}
-                  role="link"
-                  style={{
-                    backgroundImage: `url(${getAssetPath(
-                      post.frontmatter.session,
-                      post.frontmatter.cover
-                    )})`,
-                  }}
-                />
-              ))}
-            </Slider>
-          )}
-        </Transition>
-        <Transition in={show} key={location.pathname} timeout={600}>
-          {state => (
-            <Slider
-              animationTime={600}
-              delay={direction === directions.backward ? 0 : 300}
-              direction={direction}
-              offset={0}
-              style={this.formatSliderSecondaryStyle(state)}
-              value={currentSlideIndex}
-              width={(pageSize - 120) * 0.8}
-            >
-              {posts.map(({ node: post }, index) => (
-                <SlideSecondary
-                  key={post.frontmatter.session}
-                  onClick={this.prev}
-                  style={{
-                    backgroundImage: `url(${getAssetPath(
-                      post.frontmatter.session,
-                      post.frontmatter.cover
-                    )})`,
-                  }}
-                />
-              ))}
-            </Slider>
-          )}
-        </Transition>
-        <Numbers style={numbersStyle}>
-          <Pagination>
-            {orderedPosts.map(post => (
-              <NumberSecondary
-                onClick={() => this.handleNumberClick(indexOf(edges, post))}
+        {/* {ratio} */}
+        <div>
+          <Transition in={show} key={location.pathname} timeout={600}>
+            {state => (
+              <Slider
+                animationTime={600}
+                delay={this.getSliderPrimaryDelay()}
+                direction={direction}
+                offset={posts.length - 1}
+                width={
+                  state === 'entering' || state === 'entered'
+                    ? (height - 360) * 0.8
+                    : config.index.sliders.primary(media).width
+                }
+                style={this.formatSliderPrimaryStyle(state)}
+                value={currentSlideIndex}
               >
+                {posts.map(({ node: post }, index) => (
+                  <SlidePrimary
+                    className="content"
+                    key={post.frontmatter.session}
+                    onClick={() => this.handleSlideClick(post)}
+                    role="link"
+                    style={{
+                      backgroundImage: `url(${ getAssetPath(
+                        post.frontmatter.session,
+                        post.frontmatter.cover
+                      ) })`,
+                    }}
+                  />
+                ))}
+              </Slider>
+            )}
+          </Transition>
+          <Transition in={show} key={location.pathname} timeout={600}>
+            {state => (
+              <Slider
+                animationTime={600}
+                delay={this.getSliderSecondaryDelay()}
+                direction={direction}
+                offset={0}
+                style={this.formatSliderSecondaryStyle(state)}
+                value={currentSlideIndex}
+                width={
+                  ratio > 1.5
+                    ? (height - 120) * 0.8
+                    : ratio < 1
+                      ? width - 60
+                      : height * 0.8
+                }
+              >
+                {posts.map(({ node: post }, index) => (
+                  <SlideSecondary
+                    key={post.frontmatter.session}
+                    onClick={this.prev}
+                    style={{
+                      backgroundImage: `url(${ getAssetPath(
+                        post.frontmatter.session,
+                        post.frontmatter.cover
+                      ) })`,
+                    }}
+                  />
+                ))}
+              </Slider>
+            )}
+          </Transition>
+        </div>
+        {ratio >= 1 && (
+          <Numbers style={numbersStyle}>
+            <Pagination>
+              {orderedPosts.map(post => (
+                <NumberSecondary
+                  onClick={() => this.handleNumberClick(indexOf(edges, post))}
+                >
+                  <TransitionGroup
+                    childFactory={child =>
+                      createChildFactory(child, {
+                        classNames: `number-secondary-${ direction }`,
+                      })
+                    }
+                    className={`number-secondary-${ direction }`}
+                    component="span"
+                  >
+                    <CSSTransition
+                      className={`number-secondary-${ direction }-enter`}
+                      classNames={`number-secondary-${ direction }`}
+                      key={key}
+                      timeout={{ enter: 400, exit: 400 }}
+                    >
+                      <span>{formatNumber(indexOf(edges, post) + 1)}</span>
+                    </CSSTransition>
+                  </TransitionGroup>
+                </NumberSecondary>
+              ))}
+              <Line />
+              <NumberPrimary>
                 <TransitionGroup
                   childFactory={child =>
                     createChildFactory(child, {
-                      classNames: `number-secondary-${direction}`,
+                      classNames: `number-primary-${ direction }`,
                     })
                   }
-                  className={`number-secondary-${direction}`}
+                  className={`number-primary-${ direction }`}
                   component="span"
                 >
                   <CSSTransition
-                    className={`number-secondary-${direction}-enter`}
-                    classNames={`number-secondary-${direction}`}
+                    className={`number-primary-${ direction }-enter`}
+                    classNames={`number-primary-${ direction }`}
                     key={key}
                     timeout={{ enter: 400, exit: 400 }}
                   >
-                    <span>{formatNumber(indexOf(edges, post) + 1)}</span>
+                    <span>{formatNumber(currentPostIndex + 1)}</span>
                   </CSSTransition>
                 </TransitionGroup>
-              </NumberSecondary>
-            ))}
-            <Line />
-            <NumberPrimary>
-              <TransitionGroup
-                childFactory={child =>
-                  createChildFactory(child, {
-                    classNames: `number-primary-${direction}`,
-                  })
-                }
-                className={`number-primary-${direction}`}
-                component="span"
-              >
-                <CSSTransition
-                  className={`number-primary-${direction}-enter`}
-                  classNames={`number-primary-${direction}`}
-                  key={key}
-                  timeout={{ enter: 400, exit: 400 }}
-                >
-                  <span>{formatNumber(currentPostIndex + 1)}</span>
-                </CSSTransition>
-              </TransitionGroup>
-            </NumberPrimary>
-          </Pagination>
-        </Numbers>
+              </NumberPrimary>
+            </Pagination>
+          </Numbers>
+        )}
         <Content style={contentStyle}>
-          <PostNumber style={postNumberStyle}>
-            <TransitionGroup
-              childFactory={child =>
-                createChildFactory(child, {
-                  classNames: `number-primary-${direction}`,
-                })
-              }
-              className={`number-primary-${direction}`}
-              component="span"
-            >
-              <CSSTransition
-                className={`number-primary-${direction}-enter`}
-                classNames={`number-primary-${direction}`}
-                key={key}
-                timeout={{ enter: 400, exit: 400 }}
-              >
-                <span>{formatNumber(currentPostIndex + 1)}</span>
-              </CSSTransition>
-            </TransitionGroup>
-          </PostNumber>
-          <Text style={textStyle}>
-            <TransitionGroup
-              childFactory={child =>
-                createChildFactory(child, {
-                  classNames: `description-${direction}`,
-                })
-              }
-              className={`description-${direction}`}
-              component="div"
-            >
-              <CSSTransition
-                className={`description-${direction}-enter`}
-                classNames={`description-${direction}`}
-                key={key}
-                timeout={{ enter: 1000, exit: 1000 }}
-              >
-                <p>{currentPost.node.frontmatter.description}</p>
-              </CSSTransition>
-            </TransitionGroup>
-          </Text>
-          <Icons />
+          {ratio > 1.5 && (
+            <div>
+              <PostNumber style={postNumberStyle}>
+                <TransitionGroup
+                  childFactory={child =>
+                    createChildFactory(child, {
+                      classNames: `number-primary-${ direction }`,
+                    })
+                  }
+                  className={`number-primary-${ direction }`}
+                  component="span"
+                >
+                  <CSSTransition
+                    className={`number-primary-${ direction }-enter`}
+                    classNames={`number-primary-${ direction }`}
+                    key={key}
+                    timeout={{ enter: 400, exit: 400 }}
+                  >
+                    <span>{formatNumber(currentPostIndex + 1)}</span>
+                  </CSSTransition>
+                </TransitionGroup>
+              </PostNumber>
+              <Text style={textStyle}>
+                <TransitionGroup
+                  childFactory={child =>
+                    createChildFactory(child, {
+                      classNames: `description-${ direction }`,
+                    })
+                  }
+                  className={`description-${ direction }`}
+                  component="div"
+                >
+                  <CSSTransition
+                    className={`description-${ direction }-enter`}
+                    classNames={`description-${ direction }`}
+                    key={key}
+                    timeout={{ enter: 1000, exit: 1000 }}
+                  >
+                    <p>{currentPost.node.frontmatter.description}</p>
+                  </CSSTransition>
+                </TransitionGroup>
+              </Text>
+            </div>
+          )}
+          <Footer style={footerStyle}>
+            <Icons />
+          </Footer>
         </Content>
-        <Arrows style={arrowsStyle}>
-          <Arrow onClick={this.prev}>&#60;</Arrow>
-          <Arrow onClick={this.next}>&#62;</Arrow>
-        </Arrows>
+        {ratio >= 1 && (
+          <Arrows style={arrowsStyle}>
+            <Arrow onClick={this.prev}>&#60;</Arrow>
+            <Arrow onClick={this.next}>&#62;</Arrow>
+          </Arrows>
+        )}
       </Container>
     )
   }
@@ -562,8 +554,8 @@ IndexPage.propTypes = {
   }),
 }
 
-const mapStateToProps = ({ slide }) => {
-  return { slide }
+const mapStateToProps = ({ slide, media }) => {
+  return { slide, media }
 }
 
 const mapDispatchToProps = dispatch => {

@@ -1,7 +1,6 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import styled from 'styled-components'
-import classNames from 'classnames'
 import { chunk } from 'lodash'
 
 const directions = {
@@ -17,7 +16,7 @@ const defaultProps = {
   animationTime: 1000,
 }
 
-function reflow(node) {
+function reflow (node) {
   return node.offsetHeight
 }
 
@@ -58,7 +57,7 @@ const Slide = styled.div`
 `
 
 class Slider extends React.PureComponent {
-  constructor(props) {
+  constructor (props) {
     super()
     this.state = {
       slides: chunk(props.children, 1),
@@ -79,15 +78,15 @@ class Slider extends React.PureComponent {
     this.goImmediately = this.goImmediately.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.mounted = true
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.mounted = false
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps (props) {
     if (props.animationTime !== this.props.animationTime) {
       this.setState({
         transitionTime: props.animationTime,
@@ -102,13 +101,6 @@ class Slider extends React.PureComponent {
 
     // Update value if it's controlled & changed
     if (props.value != null && this.props.value !== props.value) {
-      const slide = (props.value + props.offset) % props.children.length
-
-      const type =
-        this.lastMovementIndex === slide
-          ? this.lastMovementType
-          : this.props.defaultMovement
-
       if (props.direction === directions.forward) {
         this.handleForward()
       } else if (props.direction === directions.backward) {
@@ -117,28 +109,10 @@ class Slider extends React.PureComponent {
         this.change(props.value + props.offset, 'backward')
       }
     }
-
-    // Update current slide, if it's bigger than maximum slide
-    // const currentSlide = this.state.currentSlide % this.props.children.length
-    //
-    // if (currentSlide >= props.children.length) {
-    //   this.setState({
-    //     currentSlide: props.children.length - 1,
-    //   })
-    // }
-    //
-    // if (props.children !== this.props.children) {
-    //   this.setState({
-    //     slides: chunk(props.children, 1),
-    //   })
-    // }
   }
 
-  change(index, type = 'exact') {
-    const { children, onChange, offset, value } = this.props
-
-    this.lastMovementType = null
-    this.lastMovementIndex = null
+  change (index, type = 'exact') {
+    const { onChange } = this.props
 
     if (type === 'forward' || type === 'back') {
       return this.go(index, type)
@@ -154,8 +128,8 @@ class Slider extends React.PureComponent {
     }
   }
 
-  go(index, type = 'forward') {
-    const { children, onChange, perPage } = this.props
+  go (index, type = 'forward') {
+    const { children, onChange } = this.props
     const { currentSlide } = this.state
 
     let length = children.length
@@ -191,7 +165,7 @@ class Slider extends React.PureComponent {
     })
   }
 
-  goImmediately(slide) {
+  goImmediately (slide) {
     const { currentSlide } = this.state
     const { animationTime, delay } = this.props
 
@@ -221,13 +195,13 @@ class Slider extends React.PureComponent {
     })
   }
 
-  handleForward() {
+  handleForward () {
     const { currentSlide } = this.state
 
     this.change(currentSlide - 1, 'back')
   }
 
-  handleBack() {
+  handleBack () {
     const { currentSlide } = this.state
 
     this.change(currentSlide + 1, 'forward')
@@ -237,7 +211,7 @@ class Slider extends React.PureComponent {
     this.wrapper = findDOMNode(node)
   }
 
-  renderSlides() {
+  renderSlides () {
     const { children } = this.props
 
     const copies = []
@@ -253,14 +227,14 @@ class Slider extends React.PureComponent {
     return slides.concat(copies)
   }
 
-  render() {
-    const { children, offset, onChange, width, style } = this.props
+  render () {
+    const { width, style } = this.props
     const { currentSlide, transitionDelay, transitionTime } = this.state
 
     const wrapperStyle = {
-      transform: `translateX(-${currentSlide * 100}%)`,
-      transitionDuration: `${transitionTime}ms`,
-      transitionDelay: `${transitionDelay}ms`,
+      transform: `translateX(-${ currentSlide * 100 }%)`,
+      transitionDuration: `${ transitionTime }ms`,
+      transitionDelay: `${ transitionDelay }ms`,
     }
 
     return (

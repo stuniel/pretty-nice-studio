@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { find } from 'lodash'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
-import Image from 'gatsby-image'
-import { decodePath, getAssetPath } from '../utils/paths'
 
 import BackgroundImage from '../components/BackgroundImage'
 
@@ -16,11 +14,11 @@ const propTypes = {
   views: PropTypes.array,
 }
 
-function createChildFactory(child, props) {
+function createChildFactory (child, props) {
   return React.cloneElement(child, props)
 }
 
-function isEven(value) {
+function isEven (value) {
   return value % 4 === 0
 }
 
@@ -44,18 +42,18 @@ const FirstTransitionGroup = styled(TransitionGroup)`
     position: relative;
 
     .photo-primary-forward-enter {
-      clip: ${props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)'};
-      transition: all ${props => props.exit}ms;
-      transition-delay: ${props => (props.enter - props.exit) / 2}ms;
+      clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
+      transition: all ${ props => props.exit }ms;
+      transition-delay: ${ props => (props.enter - props.exit) / 2 }ms;
     }
 
     .photo-primary-forward-enter-active {
-      clip: ${props =>
-        'rect(0px ' +
+      clip: ${ props =>
+    'rect(0px ' +
         Math.floor(props.width) +
         'px ' +
         Math.floor(props.height) +
-        'px 0px)'};
+        'px 0px)' };
     }
 
     .photo-primary-forward-exit {
@@ -77,18 +75,18 @@ const FirstTransitionGroup = styled(TransitionGroup)`
     position: relative;
 
     .photo-primary-backward-enter {
-      clip: ${props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)'};
-      transition: all ${props => props.exit}ms;
-      transition-delay: ${props => (props.enter - props.exit) / 2}ms;
+      clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
+      transition: all ${ props => props.exit }ms;
+      transition-delay: ${ props => (props.enter - props.exit) / 2 }ms;
     }
 
     .photo-primary-backward-enter-active {
-      clip: ${props =>
-        'rect(0px ' +
+      clip: ${ props =>
+    'rect(0px ' +
         Math.floor(props.width) +
         'px ' +
         Math.floor(props.height) +
-        'px 0px)'};
+        'px 0px)' };
     }
 
     .photo-primary-backward-exit {
@@ -112,18 +110,18 @@ const SecondTransitionGroup = styled(TransitionGroup)`
     position: relative;
 
     .photo-secondary-forward-enter {
-      clip: ${props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)'};
-      transition: all ${props => props.exit}ms;
-      transition-delay: ${props => props.enter - props.exit}ms;
+      clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
+      transition: all ${ props => props.exit }ms;
+      transition-delay: ${ props => props.enter - props.exit }ms;
     }
 
     .photo-secondary-forward-enter-active {
-      clip: ${props =>
-        'rect(0px ' +
+      clip: ${ props =>
+    'rect(0px ' +
         Math.floor(props.width) +
         'px ' +
         Math.floor(props.height) +
-        'px 0px)'};
+        'px 0px)' };
     }
 
     .photo-secondary-forward-exit {
@@ -146,18 +144,18 @@ const SecondTransitionGroup = styled(TransitionGroup)`
     position: relative;
 
     .photo-secondary-backward-enter {
-      clip: ${props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)'};
-      transition: all ${props => props.exit}ms;
-      transition-delay: ${props => props.enter - props.exit}ms;
+      clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
+      transition: all ${ props => props.exit }ms;
+      transition-delay: ${ props => props.enter - props.exit }ms;
     }
 
     .photo-secondary-backward-enter-active {
-      clip: ${props =>
-        'rect(0px ' +
+      clip: ${ props =>
+    'rect(0px ' +
         Math.floor(props.width) +
         'px ' +
         Math.floor(props.height) +
-        'px 0px)'};
+        'px 0px)' };
     }
 
     .photo-secondary-backward-exit {
@@ -285,7 +283,7 @@ const Photo = ({ direction, images, part, session, views }) => {
         <FirstTransitionGroup
           childFactory={child =>
             createChildFactory(child, {
-              classNames: `photo-primary-${direction}`,
+              classNames: `photo-primary-${ direction }`,
             })
           }
           height={firstPhotoPosition.height}
@@ -293,11 +291,11 @@ const Photo = ({ direction, images, part, session, views }) => {
           enter={1500}
           exit={750}
           component="span"
-          className={`photo-primary-${direction}`}
+          className={`photo-primary-${ direction }`}
         >
           <CSSTransition
-            className={`photo-primary-${direction}-enter`}
-            classNames={`photo-primary-${direction}`}
+            className={`photo-primary-${ direction }-enter`}
+            classNames={`photo-primary-${ direction }`}
             key={part}
             timeout={{ enter: 1500, exit: 750 }}
           >
@@ -306,7 +304,6 @@ const Photo = ({ direction, images, part, session, views }) => {
                 <BackgroundImage fluid={firstPhoto.childImageSharp.fluid} />
               )}
             </FirstPhoto>
-            {/* <FirstPhoto style={firstPhotoStyle} fluid={}src={getAssetPath(session, views[part].first)} /> */}
           </CSSTransition>
         </FirstTransitionGroup>
       </FirstPhotoWrapper>
@@ -318,15 +315,15 @@ const Photo = ({ direction, images, part, session, views }) => {
           exit={750}
           childFactory={child =>
             createChildFactory(child, {
-              classNames: `photo-secondary-${direction}`,
+              classNames: `photo-secondary-${ direction }`,
             })
           }
           component="span"
-          className={`photo-secondary-${direction}`}
+          className={`photo-secondary-${ direction }`}
         >
           <CSSTransition
-            className={`photo-secondary-${direction}-enter`}
-            classNames={`photo-secondary-${direction}`}
+            className={`photo-secondary-${ direction }-enter`}
+            classNames={`photo-secondary-${ direction }`}
             key={part}
             timeout={{ enter: 1500, exit: 750 }}
           >
@@ -335,7 +332,6 @@ const Photo = ({ direction, images, part, session, views }) => {
                 <BackgroundImage fluid={secondPhoto.childImageSharp.fluid} />
               )}
             </SecondPhoto>
-            {/* <SecondPhoto style={secondPhotoStyle} /> */}
           </CSSTransition>
         </SecondTransitionGroup>
       </SecondPhotoWrapper>

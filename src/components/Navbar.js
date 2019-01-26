@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link, navigate } from 'gatsby'
 import styled from 'styled-components'
+import csx from 'classnames'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
-import github from '../img/github-icon.svg'
 import Logo from '../img/svg/fulllogo.svg'
-import LogoTitle from '../img/svg/title.svg'
+
+import { config, getPadding } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -21,19 +22,11 @@ const MaybeLink = ({ children, pathname, to, ...passedProps }) =>
 
 const Nav = styled.nav`
   position: relative;
-  max-height: 120px;
-  height: 120px;
   z-index: 10;
 `
 
 const Burger = styled.div`
   position: absolute;
-  max-height: 120px;
-  height: 120px;
-  width: 120px;
-  top: 0;
-  left: 0;
-  padding: 50px;
 
   & > div {
     cursor: pointer;
@@ -46,12 +39,12 @@ const Burger = styled.div`
 
     &:hover {
       & > span {
-        background: ${SECONDARY_COLOR};
+        background: ${ SECONDARY_COLOR };
       }
     }
 
     & > span {
-      height: 2px;
+      height: ${ props => getPadding(props.media) / 15 }px;
       width: 100%;
       background: #000;
       transition: all 0.4s;
@@ -62,7 +55,7 @@ const Burger = styled.div`
     & > div {
       & > span {
         &:nth-child(1) {
-          transform: translateY(7px) rotate(-45deg);
+          transform: ${ props => 'translateY(' + (getPadding(props.media) * 0.17) + 'px) rotate(-45deg)' };
         }
 
         &:nth-child(2) {
@@ -71,7 +64,7 @@ const Burger = styled.div`
         }
 
         &:nth-child(3) {
-          transform: translateY(-7px) rotate(45deg);
+          transform: ${ props => 'translateY(' + (getPadding(props.media) * -0.17) + 'px) rotate(45deg)' };
         }
       }
     }
@@ -79,39 +72,44 @@ const Burger = styled.div`
 `
 
 const NavWrapper = styled.nav`
-  position: absolute;
+  position: relative;
   top: 0;
-  left: 120px;
+  left: 0;
+  height: 120px;
 `
 
 const NavMenu = styled.nav`
   position: absolute;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  top: 0;
+  align-items: center;
   overflow: hidden;
-  transition: left 0.6s;
+  transition: left 0.6s, opacity 0.4s, transform 0.4s;
+  background-color: #fff;
 `
 
-const StyledLogoWrapper = styled(Link)`
+const LogoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const StyledLogoLink = styled(Link)`
   position: absolute;
-  width: 80%;
-  left: 10%;
   transition: left 0.6s;
   transition-delay: 0.15s;
 `
 
 const StyledLogo = styled(Logo)`
   & > g#title {
-    opacity: ${props => props.full ? 1 : 0};
+    opacity: ${ props => props.full ? 1 : 0 };
     transition: opacity 0.6s;
   }
 `
 
 const StyledLink = styled(MaybeLink)`
-  cursor: ${props => (props.to === props.pathname ? 'default' : 'pointer')};
-  color: ${props => (props.to === props.pathname ? SECONDARY_COLOR : '#000')};
+  cursor: ${ props => (props.to === props.pathname ? 'default' : 'pointer') };
+  color: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : '#000') };
 `
 
 const LogoImg = styled.img`
@@ -127,12 +125,15 @@ const Links = styled.div`
   justify-content: flex-start;
   align-items: center;
   transition: all 0.4s;
-  padding: 50px 0;
 
   & > * {
     font-family: Amiko, serif;
     text-transform: uppercase;
-    margin-right: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1em;
+    margin-right: ${ props => getPadding(props.media) / 2 }px;
     text-decoration: none;
     transition: color 0.4s;
 
@@ -141,27 +142,27 @@ const Links = styled.div`
     }
 
     &:hover {
-      color: ${SECONDARY_COLOR};
+      color: ${ SECONDARY_COLOR };
     }
   }
 `
 
 const Navbar = class extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
-      open: true,
+      isMenuOpen: false,
       height: 0,
       width: 0,
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.handleWindowSizeChange()
     window.addEventListener('resize', this.handleWindowSizeChange)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('resize', this.handleWindowSizeChange)
   }
 
@@ -170,50 +171,50 @@ const Navbar = class extends React.Component {
   }
 
   handleBurgerClick = () => {
-    navigate('/')
+    this.setState(state => ({ isMenuOpen: !state.isMenuOpen }))
   }
 
-  render() {
-    const { pathname } = this.props
-    const { height, open, width } = this.state
+  render () {
+    const { media, pathname } = this.props
+    const { height, isMenuOpen, width } = this.state
+    const { ratio } = media
     const isHome = pathname === '/'
 
+    const burgerClassName = csx({ 'open': isMenuOpen })
+
+    const navStyle = {
+      ...config.navbar.getPosition(media)
+    }
+
+    const burgerStyle = {
+      ...config.navbar.burger.getPosition(media)
+    }
+
     const navMenuStyle = {
-      left: isHome ? height * 0.8 : 0,
-      height: 120,
+      opacity: isMenuOpen ? 1 : 0,
+      transform: isMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
+      boxShadow: ratio < 1 && '0px 5px 50px rgba(0, 0, 0, 0.5)',
+      ...config.navbar.navMenu.getPosition(media, isHome)
+    }
+
+    const logoWrapper = {
+      ...config.navbar.logo.wrapper.getPosition(media, isHome)
     }
 
     const logoStyle = {
-      position: 'absolute',
-      left: isHome ? height * 0.8 + (width - (height * 0.8 + 300)) / 10 : 0,
-      width: (width - (height * 0.8 + 300)) * 0.8,
-      top: 150,
+      ...config.navbar.logo.getPosition(media, isHome)
     }
 
     const linksStyle = {
-      width: width - (height * 0.8 + 300),
-      left: isHome ? '10%' : 0,
-      transform: `translateX(${open ? 0 : -50}%)`,
-      opacity: open ? 1 : 0,
+      // transform: `translateX(${ isMenuOpen ? 0 : -50 }%)`,
+      ...config.navbar.links.getPosition(media, isHome)
     }
 
     return (
-      <Nav role="navigation" aria-label="main-navigation">
-        <div className="container">
-          <div className="navbar-brand">
-            {/* Hamburger menu */}
-            {pathname !== '/' && (
-              <Burger className="open">
-                <div onClick={this.handleBurgerClick} data-target="navMenu">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </Burger>
-            )}
-          </div>
-          <NavWrapper>
-            <StyledLogoWrapper
+      <Nav role="navigation" aria-label="main-navigation" style={navStyle}>
+        <NavWrapper>
+          <LogoWrapper style={logoWrapper}>
+            <StyledLogoLink
               to="/"
               className="navbar-item"
               style={logoStyle}
@@ -223,45 +224,68 @@ const Navbar = class extends React.Component {
                 <StyledLogo full={isHome} style={{ width: '100%', height: '100%' }}/>
                 {/* <LogoTitle /> */}
               </div>
-            </StyledLogoWrapper>
-            <NavMenu style={navMenuStyle} className="navMenu">
-              <Links key={pathname} style={linksStyle}>
-                <StyledLink className="navbar-item" pathname={pathname} to="/">
-                  Home
-                </StyledLink>
-                <StyledLink
-                  className="navbar-item"
-                  pathname={pathname}
-                  to="/about"
-                >
-                  Making of
-                </StyledLink>
-                <StyledLink
-                  className="navbar-item"
-                  pathname={pathname}
-                  to="/contact"
-                >
-                  Contact
-                </StyledLink>
-              </Links>
-              <div className="navbar-end has-text-centered">
-                {/* <a
+            </StyledLogoLink>
+          </LogoWrapper>
+          <NavMenu style={navMenuStyle}>
+            <Links media={media} key={pathname} style={linksStyle}>
+              <StyledLink className="navbar-item" pathname={pathname} to="/">
+                Home
+              </StyledLink>
+              <StyledLink
                 className="navbar-item"
-                href="https://github.com/AustinGreen/gatsby-netlify-cms-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
+                pathname={pathname}
+                to="/about"
               >
-                <span className="icon">
-                  <img src={github} alt="Github" />
-                </span>
-              </a> */}
-              </div>
-            </NavMenu>
-          </NavWrapper>
-        </div>
+                Making of
+              </StyledLink>
+              <StyledLink
+                className="navbar-item"
+                pathname={pathname}
+                to="/contact"
+              >
+                Contact
+              </StyledLink>
+            </Links>
+          </NavMenu>
+          <div className="navbar-brand">
+            {/* Hamburger menu */}
+            {/* {pathname !== '/' && (
+              <Burger className="open">
+              <div onClick={this.handleBurgerClick} data-target="navMenu">
+              <span />
+              <span />
+              <span />
+            </div>
+          </Burger>
+        )} */}
+        {ratio < 1 && (
+          <Burger
+            media={media}
+            onClick={this.handleBurgerClick}
+            className={burgerClassName}
+            style={burgerStyle}
+          >
+            <div data-target="navMenu">
+              <span />
+              <span />
+              <span />
+            </div>
+          </Burger>
+        )}
+      </div>
+        </NavWrapper>
       </Nav>
     )
   }
 }
 
-export default Navbar
+const mapStateToProps = ({ media }) => {
+  return { media }
+}
+
+const mapDispatchToProps = () => {}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navbar)

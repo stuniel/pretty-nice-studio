@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { chunk, throttle, kebabCase } from 'lodash'
+import { kebabCase } from 'lodash'
 import Helmet from 'react-helmet'
 import { graphql, Link } from 'gatsby'
 
@@ -107,7 +107,6 @@ export class BlogPostTemplate extends React.Component {
     const {
       content,
       contentComponent,
-      cover,
       data,
       description,
       helmet,

@@ -8,13 +8,10 @@ import Behance from '../img/svg/behance.svg'
 const SECONDARY_COLOR = '#bcbcbc'
 
 const Wrapper = styled.div`
-  position: absolute;
-  height: 120px;
-  bottom: 0;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  left: 10%;
 
   & > a {
     margin-right: 20px;
