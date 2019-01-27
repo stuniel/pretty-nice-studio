@@ -249,19 +249,6 @@ export const pageQuery = graphql`
         tags
       }
     }
-    #   images: allS3Image(filter: {
-    #     Key: {
-    #       regex: $categoryRegex
-    #     }
-    #   }
-    # ) {
-    #     photos: edges {
-    #       photo: node {
-    #         Key
-    #         Url
-    #       }
-    #     }
-    #   }
     images: allFile(
       filter: {
         sourceInstanceName: { eq: "sessions" }
