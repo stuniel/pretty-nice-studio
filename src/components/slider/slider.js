@@ -1,7 +1,7 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import styled from 'styled-components'
-import { chunk } from 'lodash'
+import { chunk, throttle } from 'lodash'
 
 const directions = {
   forward: 'forward',
@@ -23,9 +23,9 @@ function reflow (node) {
 const Carousel = styled.div`
   position: relative;
   display: block;
-  width: 100%;
+  width: ${ props => props.rightInfinite ? '1000%' : '100%' };
   height: 100%;
-  overflow: hidden;
+  overflow: ${ props => props.rightInfinite ? 'visible' : 'hidden' };
 `
 
 const Content = styled.div`
@@ -66,6 +66,7 @@ class Slider extends React.PureComponent {
           ? (props.children.length - props.value + props.offset) %
             props.children.length
           : 0,
+      transitionActive: false,
       transitionDelay: props.delay,
       transitionTime: props.animationTime,
     }
@@ -87,6 +88,10 @@ class Slider extends React.PureComponent {
   }
 
   componentWillReceiveProps (props) {
+    if (props.touchActive !== this.props.touchActive && !props.touchActive) {
+      this.setState({ transitionActive: true })
+    }
+
     if (props.animationTime !== this.props.animationTime) {
       this.setState({
         transitionTime: props.animationTime,
@@ -207,6 +212,10 @@ class Slider extends React.PureComponent {
     this.change(currentSlide + 1, 'forward')
   }
 
+  onTransitionEnd = event => {
+    this.setState({ transitionActive: false })
+  }
+
   setRef = node => {
     this.wrapper = findDOMNode(node)
   }
@@ -228,17 +237,26 @@ class Slider extends React.PureComponent {
   }
 
   render () {
-    const { width, style } = this.props
-    const { currentSlide, transitionDelay, transitionTime } = this.state
+    const { width, rightInfinite, style, swipeX, touchActive } = this.props
+    const { currentSlide, transitionActive, transitionDelay, transitionTime } = this.state
+    const isSwiping = swipeX && swipeX !== 0
 
     const wrapperStyle = {
-      transform: `translateX(-${ currentSlide * 100 }%)`,
-      transitionDuration: `${ transitionTime }ms`,
+      transform: isSwiping && !transitionActive
+        ? `translateX(-${ currentSlide * 100 }%) translateX(${ swipeX }px)`
+        : `translateX(-${ currentSlide * 100 }%)`,
+      transitionDuration: `${ touchActive ? 16 : transitionTime }ms`,
       transitionDelay: `${ transitionDelay }ms`,
     }
 
     return (
-      <Carousel style={{ ...style, width }}>
+      <Carousel
+        style={{ ...style, width }}
+        rightInfinite={rightInfinite}
+        onTransitionStart={this.onTransitionStart}
+        onTransitionEnd={this.onTransitionEnd}
+      >
+        {/* {transitionActive && 'active'} */}
         <Content>
           <Wrapper ref={this.setRef} style={wrapperStyle}>
             <Inner>{this.renderSlides()}</Inner>

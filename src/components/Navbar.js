@@ -89,6 +89,7 @@ const NavMenu = styled.nav`
 `
 
 const LogoWrapper = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;

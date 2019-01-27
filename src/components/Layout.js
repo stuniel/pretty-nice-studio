@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Helmet from 'react-helmet'
+import csx from 'classnames'
 import { StaticQuery, graphql } from 'gatsby'
 import { Provider } from 'react-redux'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
@@ -70,8 +71,28 @@ function childrenWithPassedProps (children, props) {
 }
 
 class TemplateWrapper extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      mounted: false
+    }
+  }
+
+  componentDidMount () {
+    setTimeout(() => {
+      this.setState({ mounted: true })
+    }, 1000)
+  }
+
+  componentWillUnmount () {
+    this.setState({ mounted: false })
+  }
+
   render () {
     const { children, location, image, navigate } = this.props
+    const { mounted } = this.state
+
+    const containerClassName = csx({ 'preload': !mounted })
 
     return (
       <Provider store={store}>
@@ -88,7 +109,7 @@ class TemplateWrapper extends React.Component {
               }
             `}
             render={data => (
-              <Container>
+              <Container className={containerClassName}>
                 <Helmet>
                   <html lang="en" />
                   <title>{data.site.siteMetadata.title}</title>

@@ -10,7 +10,8 @@ import {
 } from 'react-transition-group'
 import {
   drop,
-  indexOf
+  indexOf,
+  throttle
 } from 'lodash'
 
 import { getAssetPath } from '../utils/paths'
@@ -114,6 +115,11 @@ const SlideSecondary = styled.div`
   transition: all 0.3s ease-out;
 `
 
+const SliderMask = styled.div`
+  position: absolute;
+  background: #fff;
+`
+
 const Numbers = styled.div`
   position: absolute;
   font-family: Amiko, serif;
@@ -210,12 +216,26 @@ const Footer = styled.div`
   width: 100%;
 `
 
+function getPosition (event, lastPosition) {
+  if ('touches' in event) {
+    if (!event.touches) return lastPosition
+
+    const { pageX } = event.touches[0]
+    return pageX
+  }
+
+  const { screenX } = event
+  return screenX
+}
+
 class IndexPage extends React.PureComponent {
   constructor (props) {
     super()
     this.state = {
       direction: '',
       show: false,
+      touchActive: false,
+      touchX: 0,
     }
   }
 
@@ -224,6 +244,66 @@ class IndexPage extends React.PureComponent {
 
     go(index)
     this.setState({ direction: directions.forward })
+  }
+
+  handleSwipe = touchX => {
+    this.setState({ touchX })
+  }
+  
+  handleSwipeRight = () => {
+    this.setState({ touchX: 0 })
+    
+    this.next()
+  }
+  
+  handleSwipeLeft = () => {
+    this.setState({ touchX: 0 })
+    
+    this.prev()
+  }
+  
+  handleTouchStart = event => {
+    const pageX = getPosition(event)
+    this.touchStartPosition = pageX
+
+    this.setState({ touchActive: true })
+    console.log(event)
+  }
+
+  handleTouchMove = throttle(event => {
+    if (!this.state.touchActive) return
+    const { touchX: lastTouchX } = this.state
+    
+    
+    const pageX = getPosition(event, lastTouchX)
+    
+    const touchX = pageX - this.touchStartPosition
+    
+    if (Math.abs(lastTouchX - touchX) > 50 ) {
+      this.setState({ touchX }, () => {
+        this.handleTouchEnd()
+      })
+      
+      return
+    }
+    
+    this.setState({ touchX })
+  }, 16)
+
+  handleTouchEnd = () => {
+    const { onSwipeRight, onSwipeLeft } = this.props
+    const { touchX } = this.state
+
+    if (touchX > 0) {
+      this.next()
+    }
+
+    if (touchX < 0) {
+      this.prev()
+    }
+
+    this.touchStartPosition = 0
+    this.setState({ touchActive: false, touchX: 0 })
   }
 
   orderPosts = (posts, currentPost) => {
@@ -318,7 +398,7 @@ class IndexPage extends React.PureComponent {
 
   render () {
     const { slide, data, location, media } = this.props
-    const { direction, show } = this.state
+    const { direction, show, touchActive, touchX } = this.state
     const { edges } = data.allMarkdownRemark
     const { height, width, ratio } = media
 
@@ -362,6 +442,11 @@ class IndexPage extends React.PureComponent {
       top: height * (60 / 100),
     }
 
+    const sliderMaskStyle = {
+      transition: 'all 0.6s',
+      ...config.index.sliders.mask.getPosition(media),
+    }
+
     const footerStyle = {
       ...config.index.footer.getPosition(media)
     }
@@ -369,7 +454,11 @@ class IndexPage extends React.PureComponent {
     return (
       <Container>
         {/* {ratio} */}
-        <div>
+        <div
+          onTouchStart={this.handleTouchStart}
+          onTouchMove={this.handleTouchMove}
+          onTouchEnd={this.handleTouchEnd}
+        >
           <Transition in={show} key={location.pathname} timeout={600}>
             {state => (
               <Slider
@@ -377,6 +466,10 @@ class IndexPage extends React.PureComponent {
                 delay={this.getSliderPrimaryDelay()}
                 direction={direction}
                 offset={posts.length - 1}
+                onSwipe={this.handleSwipe}
+                swipeX={touchX}
+                touchActive={touchActive}
+                rightInfinite={ratio < 1}
                 width={
                   state === 'entering' || state === 'entered'
                     ? (height - 360) * 0.8
@@ -402,38 +495,46 @@ class IndexPage extends React.PureComponent {
               </Slider>
             )}
           </Transition>
-          <Transition in={show} key={location.pathname} timeout={600}>
-            {state => (
-              <Slider
-                animationTime={600}
-                delay={this.getSliderSecondaryDelay()}
-                direction={direction}
-                offset={0}
-                style={this.formatSliderSecondaryStyle(state)}
-                value={currentSlideIndex}
-                width={
-                  ratio > 1.5
-                    ? (height - 120) * 0.8
-                    : ratio < 1
-                      ? width - 60
-                      : height * 0.8
-                }
-              >
-                {posts.map(({ node: post }, index) => (
-                  <SlideSecondary
-                    key={post.frontmatter.session}
-                    onClick={this.prev}
-                    style={{
-                      backgroundImage: `url(${ getAssetPath(
-                        post.frontmatter.session,
-                        post.frontmatter.cover
-                      ) })`,
-                    }}
-                  />
-                ))}
-              </Slider>
-            )}
-          </Transition>
+          {ratio < 1 && (
+            <SliderMask style={{ ...sliderMaskStyle, left: 0 }} />
+          )}
+          {ratio < 1 ? (
+            <SliderMask style={sliderMaskStyle} />
+          ) : (
+            <Transition in={show} key={location.pathname} timeout={600}>
+              {state => (
+                <Slider
+                  animationTime={600}
+                  delay={this.getSliderSecondaryDelay()}
+                  direction={direction}
+                  offset={0}
+                  swipeX={touchX}
+                  style={this.formatSliderSecondaryStyle(state)}
+                  value={currentSlideIndex}
+                  width={
+                    ratio > 1.5
+                      ? (height - 120) * 0.8
+                      : ratio < 1
+                        ? width - 60
+                        : height * 0.8
+                  }
+                >
+                  {posts.map(({ node: post }, index) => (
+                    <SlideSecondary
+                      key={post.frontmatter.session}
+                      onClick={this.prev}
+                      style={{
+                        backgroundImage: `url(${ getAssetPath(
+                          post.frontmatter.session,
+                          post.frontmatter.cover
+                        ) })`,
+                      }}
+                    />
+                  ))}
+                </Slider>
+              )}
+            </Transition>
+          )}
         </div>
         {ratio >= 1 && (
           <Numbers style={numbersStyle}>

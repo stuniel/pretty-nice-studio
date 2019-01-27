@@ -82,7 +82,7 @@ export const config = {
         if (ratio < 1) {
           return {
             top: height - ((width - (padding * 2)) * 1.25) - (padding * 2),
-            left: width - padding,
+            left: width - padding * 1.5,
             width: width - (padding * 2),
             height: (width - (padding * 2)) * 1.25,
           }
@@ -102,6 +102,18 @@ export const config = {
           top: 0,
           left: width - padding,
           width: (height - padding) * 0.8,
+        }
+      },
+      mask: {
+        getPosition ({ height, width, ratio }) {
+          const padding = getPadding({ height, width, ratio })
+
+          return {
+            top: height - ((width - (padding * 2)) * 1.25) - (padding * 2),
+            left: padding / 2 + width - (padding * 2),
+            width: padding / 2,
+            height: (width - (padding * 2)) * 1.25,
+          }
         }
       }
     }
@@ -183,7 +195,11 @@ export const config = {
             }
           }
 
-          return {}
+          return {
+            background: 'pink',
+            height: '100%',
+            width: '100%',
+          }
         }
       }
     },
