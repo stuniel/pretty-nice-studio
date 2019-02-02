@@ -4,12 +4,12 @@ import styled from 'styled-components'
 import { kebabCase } from 'lodash'
 import Helmet from 'react-helmet'
 import { graphql, Link } from 'gatsby'
+import { connect } from 'react-redux'
 
 import Content, { HTMLContent } from '../components/Content'
 import Photos from '../components/Photos'
 import Progress from '../components/Progress'
-
-const windowGlobal = typeof window !== 'undefined' && window
+import ScrollablePosts from '../components/ScrollablePosts'
 
 const directions = {
   forward: 'forward',
@@ -30,7 +30,7 @@ const ProgressWrapper = styled.div`
   width: 120px;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 `
 
 const PhotosWrapper = styled.div`
@@ -46,7 +46,7 @@ const ContentWrapper = styled.div`
 `
 
 export class BlogPostTemplate extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       part: 0,
@@ -56,11 +56,11 @@ export class BlogPostTemplate extends React.Component {
     this.tarnsitionActive = false
   }
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener('wheel', this.handleScroll)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('wheel', this.handleScroll)
   }
 
@@ -103,7 +103,7 @@ export class BlogPostTemplate extends React.Component {
     }))
   }
 
-  render() {
+  render () {
     const {
       content,
       contentComponent,
@@ -111,31 +111,32 @@ export class BlogPostTemplate extends React.Component {
       description,
       helmet,
       images,
+      media,
       session,
       tags,
       title,
       views,
     } = this.props
     const { direction, part } = this.state
-    const PostContent = contentComponent || Content
+    const { height, width, ratio } = media
 
-    const height = windowGlobal.innerHeight
-    const width = windowGlobal.innerWidth
+    const PostContent = contentComponent || Content
 
     const contentWrapperStyle = {
       width: width - (height * 0.8 + 300),
       height: height * 0.8,
       left: height * 0.8,
     }
-    
+
     const progressWrapperStyle = {
-      bottom: 60
+      top: 0,
+      height,
       // top: height * 0.75 - 60,
       // width: width - (height * 0.8 + 300),
       // height: height * 0.25,
       // left: height * 0.8,
     }
-    
+
     const textStyle = {
       position: 'absolute',
       width: '80%',
@@ -143,10 +144,16 @@ export class BlogPostTemplate extends React.Component {
       bottom: 0,
     }
 
-    return (
+    return ratio < 1 ? (
+      <ScrollablePosts
+        media={media}
+        images={images}
+        views={views}
+      />
+    ) : (
       <Section>
         {helmet || ''}
-        {part === 0 && (
+        {part === views.length - 1 && (
           <ContentWrapper style={contentWrapperStyle}>
             <div style={textStyle}>
               <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
@@ -163,6 +170,7 @@ export class BlogPostTemplate extends React.Component {
           <Photos
             direction={direction}
             part={part}
+            media={media}
             session={session}
             views={views}
             images={images}
@@ -194,7 +202,7 @@ BlogPostTemplate.propTypes = {
   helmet: PropTypes.object,
 }
 
-const BlogPost = ({ data }) => {
+const BlogPost = ({ data, media }) => {
   const { markdownRemark: post, images } = data
 
   return (
@@ -206,13 +214,14 @@ const BlogPost = ({ data }) => {
       views={post.frontmatter.views}
       image={post.frontmatter.image}
       images={images}
+      media={media}
       description={post.frontmatter.description}
       helmet={
         <Helmet titleTemplate="%s | Blog">
-          <title>{`${post.frontmatter.title}`}</title>
+          <title>{`${ post.frontmatter.title }`}</title>
           <meta
             name="description"
-            content={`${post.frontmatter.description}`}
+            content={`${ post.frontmatter.description }`}
           />
         </Helmet>
       }
@@ -228,7 +237,16 @@ BlogPost.propTypes = {
   }),
 }
 
-export default BlogPost
+const mapStateToProps = ({ media }) => {
+  return { media }
+}
+
+const mapDispatchToProps = () => {}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BlogPost)
 
 export const pageQuery = graphql`
   query BlogPostByID($id: String!, $categoryRegex: String) {

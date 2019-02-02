@@ -5,7 +5,8 @@ import csx from 'classnames'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
-import Logo from '../img/svg/fulllogo.svg'
+import Logo from '../img/svg/logo.svg'
+import FullLogo from '../img/svg/fulllogo.svg'
 
 import { config, getPadding } from '../config.js'
 
@@ -81,11 +82,11 @@ const NavWrapper = styled.nav`
 const NavMenu = styled.nav`
   position: absolute;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   overflow: hidden;
   transition: left 0.6s, opacity 0.4s, transform 0.4s;
-  background-color: #fff;
+  background-color: ${ props => props.media.ratio < 1 && '#fff' };
 `
 
 const LogoWrapper = styled.div`
@@ -93,24 +94,48 @@ const LogoWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: top 0.6s;
+  transition-delay: 0.15s;
 `
 
 const StyledLogoLink = styled(Link)`
   position: absolute;
-  transition: left 0.6s;
+  transition: top 0.6s, transform 0.6s;
   transition-delay: 0.15s;
 `
 
-const StyledLogo = styled(Logo)`
-  & > g#title {
-    opacity: ${ props => props.full ? 1 : 0 };
-    transition: opacity 0.6s;
+const StyledLogo = styled(FullLogo)`
+  & > g {
+    fill: #000;
   }
+`
+
+const StyledLinksLogo = styled(Logo)`
+  width: 100%;
+  height: 100%;
 `
 
 const StyledLink = styled(MaybeLink)`
   cursor: ${ props => (props.to === props.pathname ? 'default' : 'pointer') };
   color: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : '#000') };
+`
+
+const LogoLink = styled(StyledLink)`
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  g {
+    fill: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : '#000') };
+    transition: all 0.4s;
+  }
+  
+  &:hover {
+    g {
+      fill: ${ SECONDARY_COLOR };
+    }
+  }
 `
 
 const LogoImg = styled.img`
@@ -123,7 +148,7 @@ const LogoImg = styled.img`
 const Links = styled.div`
   position: relative;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   transition: all 0.4s;
 
@@ -134,7 +159,7 @@ const Links = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 1em;
-    margin-right: ${ props => getPadding(props.media) / 2 }px;
+    ${'' /* margin-right: ${ props => getPadding(props.media) / 3 }px; */}
     text-decoration: none;
     transition: color 0.4s;
 
@@ -175,6 +200,10 @@ const Navbar = class extends React.Component {
     this.setState(state => ({ isMenuOpen: !state.isMenuOpen }))
   }
 
+  closeMenu = () => {
+    this.setState({ isMenuOpen: false })
+  }
+
   render () {
     const { media, pathname } = this.props
     const { height, isMenuOpen, width } = this.state
@@ -192,8 +221,8 @@ const Navbar = class extends React.Component {
     }
 
     const navMenuStyle = {
-      opacity: isMenuOpen ? 1 : 0,
-      transform: isMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
+      opacity: ratio > 1 || isMenuOpen ? 1 : 0,
+      transform: ratio > 1 || isMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
       boxShadow: ratio < 1 && '0px 5px 50px rgba(0, 0, 0, 0.5)',
       ...config.navbar.navMenu.getPosition(media, isHome)
     }
@@ -217,32 +246,37 @@ const Navbar = class extends React.Component {
           <LogoWrapper style={logoWrapper}>
             <StyledLogoLink
               to="/"
-              className="navbar-item"
               style={logoStyle}
               title="Logo"
             >
               <div style={{ position: 'relative', width: '100%' }}>
-                <StyledLogo full={isHome} style={{ width: '100%', height: '100%' }}/>
-                {/* <LogoTitle /> */}
+                <StyledLogo
+                  full={isHome}
+                  style={{ width: '100%', height: '100%' }}
+                />
               </div>
             </StyledLogoLink>
           </LogoWrapper>
-          <NavMenu style={navMenuStyle}>
+          <NavMenu media={media} style={navMenuStyle}>
             <Links media={media} key={pathname} style={linksStyle}>
-              <StyledLink className="navbar-item" pathname={pathname} to="/">
+              <StyledLink
+                pathname={pathname}
+                to="/"
+                onClick={this.closeMenu}
+              >
                 Home
               </StyledLink>
               <StyledLink
-                className="navbar-item"
                 pathname={pathname}
                 to="/about"
+                onClick={this.closeMenu}
               >
                 Making of
               </StyledLink>
               <StyledLink
-                className="navbar-item"
                 pathname={pathname}
                 to="/contact"
+                onClick={this.closeMenu}
               >
                 Contact
               </StyledLink>

@@ -163,11 +163,17 @@ const NumberPrimary = styled.p`
   padding: 44px 0;
 `
 
+const SessionInfo = styled.div`
+  position: relative;
+  height: 100%;
+`
+
 const PostNumber = styled.div`
+  font-family: Georgia, sans-serif;
   position: absolute;
-  font-size: 180px;
-  line-height: 180px;
-  color: ${ SECONDARY_COLOR };
+  font-size: 360px;
+  line-height: 270px;
+  color: #dedede;
   opacity: 0.5;
 `
 
@@ -176,6 +182,28 @@ const Line = styled.div`
   width: 1px;
   margin-top: 36px;
   border-left: 1px solid black;
+`
+
+const GoToButton = styled.div`
+  font-family: Amiko, serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  position: absolute;
+  padding: 3px 0 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background: #000;
+  cursor: pointer;
+  margin-top: 30px;
+  height: 30px;
+  width: 165px;
+  transition: background 0.4s;
+  
+  &:hover {
+    background: ${ SECONDARY_COLOR };
+  }
 `
 
 const Content = styled.div`
@@ -191,25 +219,32 @@ const Arrows = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 180px;
-  height: 120px;
-  bottom: 48px;
 `
 
 const Arrow = styled.span`
-  font-family: Amiri, sans-serif;
-  font-size: 32px;
-  margin: 16px;
+  height: 40px;
+  width: 40px;
+  background: #000;
   cursor: pointer;
-  transition: color 0.4s;
+  transition: background 0.4s;
 
   &:hover {
-    color: ${ SECONDARY_COLOR };
+    background: ${ SECONDARY_COLOR };
   }
 `
 
+const ArrowLeft = styled(Arrow)`
+  clip-path: polygon(50% 5%, 0% 50%, 50% 95%, 50% 80%, 17% 50%, 50% 20%);
+`
+const ArrowRight = styled(Arrow)`
+  clip-path: polygon(50% 5%, 100% 50%, 50% 95%, 50% 80%, 83% 50%, 50% 20%);
+`
+
 const Text = styled.div`
-  position: relative;
+  position: absolute;
+  width: 80%;
+  max-width: 600px;
+  height: auto;
 `
 
 const Footer = styled.div`
@@ -272,21 +307,21 @@ class IndexPage extends React.PureComponent {
     const { index: { sliders } } = config
     const { height } = media
 
-    const transitionStyles = {
-      entering: {
-        top: 240,
-        left: 120,
-        width: ((height - 360) * 0.8),
-        height: height - 360,
-      },
-    }
+    // const transitionStyles = {
+    //   entering: {
+    //     top: 180,
+    //     left: 120,
+    //     width: (height - 360) * 0.8,
+    //     height: height - 360,
+    //   },
+    // }
 
     return {
       position: 'absolute',
       transition: 'all 0.6s',
       ...sliders.primary(media),
-      ...(state === 'entering' && transitionStyles.entering),
-      ...(state === 'entered' && transitionStyles.entering),
+      // ...(state === 'entering' && transitionStyles.entering),
+      // ...(state === 'entered' && transitionStyles.entering),
     }
   }
 
@@ -350,32 +385,39 @@ class IndexPage extends React.PureComponent {
     const orderedPosts = this.orderPosts(edges, currentPost)
 
     const numbersStyle = {
-      width: 120,
-      height: height,
-      left: 0,
+      ...config.index.numbers.getPosition(media)
     }
 
     const contentStyle = {
-      // background: 'red',
       ...config.index.content.getPosition(media)
     }
 
     const arrowsStyle = {
-      left: width - 180,
-      top: height - 120,
+      ...config.index.arrows.getPosition(media),
+    }
+
+    const goToButton = {
+      position: 'absolute',
     }
 
     const postNumberStyle = {
       position: 'absolute',
-      width: height * 0.6,
-      left: 90,
-      top: height * (55 / 100),
+      // width: height / 2,
+      left: -90,
+      // top: height * (55 / 100),
+      bottom: 60
     }
 
     const textStyle = {
+      position: 'absolute',
       width: '80%',
-      left: '10%',
-      top: height * (60 / 100),
+      maxWidth: 600,
+      height: 'auto',
+      ...config.index.content.text.getPosition(media),
+    }
+
+    const sessionInfoStyle = {
+      ...config.index.content.sessionInfo.getPosition(media),
     }
 
     const sliderMaskStyle = {
@@ -386,6 +428,12 @@ class IndexPage extends React.PureComponent {
     const footerStyle = {
       ...config.index.footer.getPosition(media)
     }
+    
+    const numberPrimaryStyle = {
+      ...config.index.numbers.primary.getPosition(media)
+    }
+
+    console.log(currentPost.node.frontmatter.description);
 
     return (
       <Container>
@@ -402,11 +450,7 @@ class IndexPage extends React.PureComponent {
                 delay={this.getSliderPrimaryDelay()}
                 direction={direction}
                 offset={posts.length - 1}
-                width={
-                  state === 'entering' || state === 'entered'
-                    ? (height - 360) * 0.8
-                    : config.index.sliders.primary(media).width
-                }
+                width={config.index.sliders.primary(media).width}
                 style={this.formatSliderPrimaryStyle(state)}
                 value={currentSlideIndex}
               >
@@ -487,7 +531,7 @@ class IndexPage extends React.PureComponent {
                 </NumberSecondary>
               ))}
               <Line />
-              <NumberPrimary>
+              <NumberPrimary style={numberPrimaryStyle}>
                 <TransitionGroup
                   childFactory={child =>
                     createChildFactory(child, {
@@ -512,7 +556,7 @@ class IndexPage extends React.PureComponent {
         )}
         <Content style={contentStyle}>
           {ratio > 1.5 && (
-            <div>
+            <SessionInfo style={sessionInfoStyle}>
               <PostNumber style={postNumberStyle}>
                 <TransitionGroup
                   childFactory={child =>
@@ -549,20 +593,30 @@ class IndexPage extends React.PureComponent {
                     key={key}
                     timeout={{ enter: 1000, exit: 1000 }}
                   >
-                    <p>{currentPost.node.frontmatter.description}</p>
+                    <div>
+                      {currentPost.node.frontmatter.info.map(line => (
+                        <p>{line}</p>
+                      ))}
+                      <GoToButton
+                        onClick={() => this.handleSlideClick(currentPost.node)}
+                        role="link"
+                      >
+                        see whole project
+                      </GoToButton>
+                    </div>
                   </CSSTransition>
                 </TransitionGroup>
               </Text>
-            </div>
+            </SessionInfo>
           )}
           <Footer style={footerStyle}>
-            <Icons />
+            <Icons width='165px' />
           </Footer>
         </Content>
         {ratio >= 1 && (
           <Arrows style={arrowsStyle}>
-            <Arrow onClick={this.prev}>&#60;</Arrow>
-            <Arrow onClick={this.next}>&#62;</Arrow>
+            <ArrowLeft onClick={this.prev} />
+            <ArrowRight onClick={this.next} />
           </Arrows>
         )}
       </Container>
@@ -613,6 +667,7 @@ export const pageQuery = graphql`
             session
             title
             description
+            info
             templateKey
             date(formatString: "MMMM DD, YYYY")
           }

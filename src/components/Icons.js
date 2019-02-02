@@ -10,11 +10,11 @@ const SECONDARY_COLOR = '#bcbcbc'
 const Wrapper = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  width: ${ props => props.width || '100%' };
 
   & > a {
-    margin-right: 20px;
     cursor: pointer;
     height: 24px;
 
@@ -37,8 +37,8 @@ const iconStyle = {
   transform: 'scaleY(-1)',
 }
 
-const Icons = () => (
-  <Wrapper>
+const Icons = ({ width }) => (
+  <Wrapper width={width}>
     <a
       href="http://www.instagram.com/prettynicestudio"
       rel="noopener noreferrer"

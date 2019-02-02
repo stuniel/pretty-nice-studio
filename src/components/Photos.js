@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { find } from 'lodash'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { config } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
 
@@ -39,7 +40,7 @@ const SecondPhoto = styled.div`
 
 const FirstTransitionGroup = styled(TransitionGroup)`
   &.photo-primary-forward {
-    position: relative;
+    ${'' /* position: relative; */}
 
     .photo-primary-forward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -72,7 +73,7 @@ const FirstTransitionGroup = styled(TransitionGroup)`
   }
 
   &.photo-primary-backward {
-    position: relative;
+    ${'' /* position: relative; */}
 
     .photo-primary-backward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -107,7 +108,7 @@ const FirstTransitionGroup = styled(TransitionGroup)`
 
 const SecondTransitionGroup = styled(TransitionGroup)`
   &.photo-secondary-forward {
-    position: relative;
+    ${'' /* position: relative; */}
 
     .photo-secondary-forward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -141,7 +142,7 @@ const SecondTransitionGroup = styled(TransitionGroup)`
   }
 
   &.photo-secondary-backward {
-    position: relative;
+    ${'' /* position: relative; */}
 
     .photo-secondary-backward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -180,7 +181,6 @@ const FirstPhotoWrapper = styled.div`
   top: 0;
   height: 100%;
   width: 100%;
-  padding: 8px 0;
   color: #000;
   transition: all 0.4s;
 `
@@ -190,75 +190,39 @@ const SecondPhotoWrapper = styled.div`
   right: 0;
   height: 100%;
   width: 100%;
-  padding: 8px 0;
   color: #000;
   transition: all 0.4s;
 `
 
-const getLayout = (height, width) => {
-  return [
-    {
-      type: 0,
-      first: {
-        top: 240,
-        left: 120,
-        width: (height - 360) * 0.8,
-        height: height - 360,
-      },
-      second: {
-        top: 120,
-        right: width - 120,
-        width: (height - 360) * 0.8,
-        height: height - 360,
-      },
-    },
-    {
-      type: 1,
-      first: {
-        top: 120,
-        left: 120,
-        width: (height - 360) * 0.8,
-        height: height - 360,
-      },
-      second: {
-        top: 120,
-        right: width - 120,
-        width: height * 0.64,
-        height: height * 0.8,
-      },
-    },
-  ]
-}
-
-const Photo = ({ direction, images, part, session, views }) => {
+const Photo = ({ direction, images, media, part, session, views }) => {
   const height = windowGlobal.innerHeight
   const width = windowGlobal.innerWidth
 
-  const layout = getLayout(height, width)
+  const layout = config.layouts.getLayout(media)
 
   const photosLarge = images.photos
     .map(image => image.photo)
     .filter(photo => photo.relativePath.includes('big'))
 
   const firstPhotoPosition = {
-    height: isEven(part) ? layout[0].first.height : layout[1].first.height,
-    width: isEven(part) ? layout[0].first.width : layout[1].first.width,
+    height: layout[0].first.height,
+    width: layout[0].first.width,
     left: layout[0].first.left,
-    top: isEven(part) ? layout[0].first.top : layout[1].first.top,
+    top: layout[0].first.top,
   }
 
   firstPhotoPosition.right = firstPhotoPosition.left + firstPhotoPosition.width
   firstPhotoPosition.bottom = firstPhotoPosition.top + firstPhotoPosition.height
 
   const secondPhotoPosition = {
-    top: isEven(part) ? layout[0].second.top : layout[1].second.top,
-    right: isEven(part) ? layout[0].second.right : layout[1].second.right,
-    height: isEven(part) ? layout[0].second.height : layout[1].second.height,
-    width: isEven(part) ? layout[0].second.width : layout[1].second.width,
+    top: layout[0].second.top,
+    left: layout[0].second.left,
+    height: layout[0].second.height,
+    width: layout[0].second.width,
   }
 
-  secondPhotoPosition.left =
-    secondPhotoPosition.right - secondPhotoPosition.width
+  secondPhotoPosition.right =
+    secondPhotoPosition.width - secondPhotoPosition.left
   secondPhotoPosition.bottom =
     secondPhotoPosition.top + secondPhotoPosition.height
 

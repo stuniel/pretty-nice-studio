@@ -4,7 +4,6 @@ import { fill } from 'lodash'
 
 const Wrapper = styled.div`
   position: relative;
-  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -25,7 +24,7 @@ const Dot = styled.div`
   width: ${ props => props.active ? '8px' : '4px' };
   border: 1px solid #000;
   border-radius: 50%;
-  margin: 20px;
+  margin: 20px 0;
   background: #000;
   transition: all 0.3s;
 `
