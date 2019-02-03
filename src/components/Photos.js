@@ -36,18 +36,22 @@ const FirstTransitionGroup = styled(TransitionGroup)`
   &.photo-primary-forward {
 
     .photo-primary-forward-enter {
-      clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
+      ${'' /* clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' }; */}
       transition: all ${ props => props.exit }ms;
-      transition-delay: ${ props => (props.enter - props.exit) / 2 }ms;
+      transform: translateY(100%);
+      z-index: 1;
+
+      ${'' /* transition-delay: ${ props => (props.enter - props.exit) / 2 }ms; */}
     }
 
     .photo-primary-forward-enter-active {
-      clip: ${ props =>
+      transform: translateY(0);
+      ${'' /* clip: ${ props =>
     'rect(0px ' +
         Math.floor(props.width) +
         'px ' +
         Math.floor(props.height) +
-        'px 0px)' };
+        'px 0px)' }; */}
     }
 
     .photo-primary-forward-exit {
@@ -55,12 +59,13 @@ const FirstTransitionGroup = styled(TransitionGroup)`
       position: absolute;
       right: 120px;
       top: 0;
-      transform: translateY(0);
+      ${'' /* transform: translateY(0); */}
+      transition-delay: 1000ms;
       opacity: 1;
     }
 
     .photo-primary-forward-exit-active {
-      transform: translateY(-150%);
+      ${'' /* transform: translateY(-150%); */}
       opacity: 0;
     }
   }
@@ -68,18 +73,18 @@ const FirstTransitionGroup = styled(TransitionGroup)`
   &.photo-primary-backward {
 
     .photo-primary-backward-enter {
-      clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
+      ${'' /* clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' }; */}
       transition: all ${ props => props.exit }ms;
       transition-delay: ${ props => (props.enter - props.exit) / 2 }ms;
     }
 
     .photo-primary-backward-enter-active {
-      clip: ${ props =>
+      ${'' /* clip: ${ props =>
     'rect(0px ' +
         Math.floor(props.width) +
         'px ' +
         Math.floor(props.height) +
-        'px 0px)' };
+        'px 0px)' }; */}
     }
 
     .photo-primary-backward-exit {

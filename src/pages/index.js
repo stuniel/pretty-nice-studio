@@ -18,7 +18,6 @@ import Swipeable from 'react-swipeable'
 
 import { getAssetPath } from '../utils/paths'
 import { config } from '../config.js'
-import Icons from '../components/Icons'
 import Slider from '../components/slider/slider'
 
 import '../components/all.sass'
@@ -211,12 +210,6 @@ const Text = styled.div`
   height: auto;
 `
 
-const Footer = styled.div`
-  position: absolute;
-  display: flex;
-  width: 100%;
-`
-
 class IndexPage extends React.PureComponent {
   constructor (props) {
     super()
@@ -369,10 +362,6 @@ class IndexPage extends React.PureComponent {
     const sliderMaskStyle = {
       transition: 'all 0.6s',
       ...config.index.sliders.mask.getPosition(media),
-    }
-
-    const footerStyle = {
-      ...config.index.footer.getPosition(media)
     }
 
     const numberPrimaryStyle = {
@@ -552,9 +541,6 @@ class IndexPage extends React.PureComponent {
               </Text>
             </SessionInfo>
           )}
-          <Footer style={footerStyle}>
-            <Icons width='165px' />
-          </Footer>
         </Content>
         {ratio >= 1 && (
           <Arrows style={arrowsStyle}>

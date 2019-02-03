@@ -35,11 +35,35 @@ export const config = {
           return {
             marginTop: padding / 2,
             width: '50%',
-            left: height * 0.8 + padding * 1.5
+            left: height * 0.8 + padding * 1.5,
+            top: 0,
           }
         }
       }
     }
+  },
+  footer: {
+    wrapper: {
+      getPosition ({ height, width, ratio }) {
+        const padding = getPadding({ height, width, ratio })
+
+        if (ratio < 1) {
+          return {
+            top: 0,
+            left: 0,
+            height: (padding * 2),
+            padding: `0 ${ padding / 2 }px`
+          }
+        }
+
+        return {
+          top: height - padding,
+          left: height * 0.8 + padding,
+          height: padding,
+          padding: `0 ${ padding / 2 }px`
+        }
+      }
+    },
   },
   index: {
     arrows: {
@@ -91,27 +115,6 @@ export const config = {
             left: padding / 2,
             bottom: padding / 2
           }
-        }
-      }
-    },
-    footer: {
-      getPosition ({ height, width, ratio }) {
-        const padding = getPadding({ height, width, ratio })
-
-        if (ratio < 1) {
-          return {
-            top: 0,
-            left: 0,
-            height: (padding * 2),
-            padding: `0 ${ padding / 2 }px`
-          }
-        }
-
-        return {
-          top: height - padding,
-          left: 0,
-          height: padding,
-          padding: `0 ${ padding / 2 }px`
         }
       }
     },

@@ -6,8 +6,10 @@ import { StaticQuery, graphql } from 'gatsby'
 import { Provider } from 'react-redux'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
+import Footer from '../components/Footer'
 import Media from '../components/Media'
 import Navbar from '../components/Navbar'
+import UnderConstruction from '../components/UnderConstruction'
 import './all.sass'
 
 import { store } from '../state/index'
@@ -86,6 +88,11 @@ class TemplateWrapper extends React.Component {
 
     const containerClassName = csx({ 'preload': !mounted })
 
+    if (process.env.UNDER_CONSTRUCTION === 'true') {
+      return <UnderConstruction />
+    }
+
+
     return (
       <Provider store={store}>
         <Media>
@@ -159,6 +166,7 @@ class TemplateWrapper extends React.Component {
                     </CSSTransition>
                   </ContentTransitionGroup>
                 </Wrapper>
+                <Footer />
               </Container>
             )}
           />
