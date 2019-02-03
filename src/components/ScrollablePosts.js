@@ -42,7 +42,7 @@ const Footer = styled.div`
   background: pink;
 `
 
-const ScrollablePosts = ({ images, media, views }) => {
+const ScrollablePosts = ({ images, media, session, views }) => {
   const { height } = media
   const photos = flatMap(views, view => [view.first, view.second])
 
@@ -54,10 +54,7 @@ const ScrollablePosts = ({ images, media, views }) => {
   const wrapperStyle = {
     ...config.sessions.small.wrapper.getPosition(media)
   }
-  const photoStyle = {
-    // height: height * 0.8,
-    // width: height * 0.64
-  }
+
   const footerStyle = {
     ...config.sessions.small.footer.getPosition(media)
   }
@@ -67,13 +64,14 @@ const ScrollablePosts = ({ images, media, views }) => {
       {photos.map(photoName => {
         if (!photoName) return
 
+        const alt = `pretty nice studio - ${ session } session photo`
         const fluid = find(filteredPhotos, photo =>
           photo.relativePath.includes(photoName)
         ).childImageSharp.fluid
 
         return (
-          <Photo style={photoStyle}>
-            <BackgroundImage fluid={fluid} />
+          <Photo>
+            <BackgroundImage alt={alt} fluid={fluid} />
           </Photo>
         )
       })}

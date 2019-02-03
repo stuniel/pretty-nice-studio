@@ -1,11 +1,9 @@
 import React from 'react'
-import { Link, navigate } from 'gatsby'
+import { Link } from 'gatsby'
 import styled from 'styled-components'
 import csx from 'classnames'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
-import Logo from '../img/svg/logo.svg'
 import FullLogo from '../img/svg/fulllogo.svg'
 
 import { config, getPadding } from '../config.js'
@@ -110,39 +108,9 @@ const StyledLogo = styled(FullLogo)`
   }
 `
 
-const StyledLinksLogo = styled(Logo)`
-  width: 100%;
-  height: 100%;
-`
-
 const StyledLink = styled(MaybeLink)`
   cursor: ${ props => (props.to === props.pathname ? 'default' : 'pointer') };
   color: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : '#000') };
-`
-
-const LogoLink = styled(StyledLink)`
-  width: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  g {
-    fill: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : '#000') };
-    transition: all 0.4s;
-  }
-  
-  &:hover {
-    g {
-      fill: ${ SECONDARY_COLOR };
-    }
-  }
-`
-
-const LogoImg = styled.img`
-  position: absolute;
-  width: 80%;
-  left: 10%;
-  transition: top 0.4s;
 `
 
 const Links = styled.div`
@@ -159,7 +127,6 @@ const Links = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 1em;
-    ${'' /* margin-right: ${ props => getPadding(props.media) / 3 }px; */}
     text-decoration: none;
     transition: color 0.4s;
 
@@ -178,22 +145,7 @@ const Navbar = class extends React.Component {
     super(props)
     this.state = {
       isMenuOpen: false,
-      height: 0,
-      width: 0,
     }
-  }
-
-  componentDidMount () {
-    this.handleWindowSizeChange()
-    window.addEventListener('resize', this.handleWindowSizeChange)
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('resize', this.handleWindowSizeChange)
-  }
-
-  handleWindowSizeChange = () => {
-    this.setState({ width: window.innerWidth, height: window.innerHeight })
   }
 
   handleBurgerClick = () => {
@@ -206,7 +158,7 @@ const Navbar = class extends React.Component {
 
   render () {
     const { media, pathname } = this.props
-    const { height, isMenuOpen, width } = this.state
+    const { isMenuOpen } = this.state
     const { ratio } = media
     const isHome = pathname === '/'
 
@@ -236,7 +188,6 @@ const Navbar = class extends React.Component {
     }
 
     const linksStyle = {
-      // transform: `translateX(${ isMenuOpen ? 0 : -50 }%)`,
       ...config.navbar.links.getPosition(media, isHome)
     }
 
@@ -283,31 +234,21 @@ const Navbar = class extends React.Component {
             </Links>
           </NavMenu>
           <div className="navbar-brand">
-            {/* Hamburger menu */}
-            {/* {pathname !== '/' && (
-              <Burger className="open">
-              <div onClick={this.handleBurgerClick} data-target="navMenu">
-              <span />
-              <span />
-              <span />
-            </div>
-          </Burger>
-        )} */}
-        {ratio < 1 && (
-          <Burger
-            media={media}
-            onClick={this.handleBurgerClick}
-            className={burgerClassName}
-            style={burgerStyle}
-          >
-            <div data-target="navMenu">
-              <span />
-              <span />
-              <span />
-            </div>
-          </Burger>
-        )}
-      </div>
+            {ratio < 1 && (
+              <Burger
+                media={media}
+                onClick={this.handleBurgerClick}
+                className={burgerClassName}
+                style={burgerStyle}
+              >
+                <div data-target="navMenu">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </Burger>
+            )}
+          </div>
         </NavWrapper>
       </Nav>
     )

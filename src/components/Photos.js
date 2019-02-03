@@ -66,7 +66,6 @@ const FirstTransitionGroup = styled(TransitionGroup)`
   }
 
   &.photo-primary-backward {
-    ${'' /* position: relative; */}
 
     .photo-primary-backward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -134,7 +133,6 @@ const SecondTransitionGroup = styled(TransitionGroup)`
   }
 
   &.photo-secondary-backward {
-    ${'' /* position: relative; */}
 
     .photo-secondary-backward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };

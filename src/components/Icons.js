@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 
     &:hover {
       & > svg {
-        fill: ${SECONDARY_COLOR};
+        fill: ${ SECONDARY_COLOR };
       }
     }
   }

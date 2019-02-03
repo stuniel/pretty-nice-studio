@@ -6,8 +6,6 @@ import { StaticQuery, graphql } from 'gatsby'
 import { Provider } from 'react-redux'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
-import Transition from '../components/transition'
-
 import Media from '../components/Media'
 import Navbar from '../components/Navbar'
 import './all.sass'
@@ -64,12 +62,6 @@ const ContentTransitionGroup = styled(TransitionGroup)`
   }
 `
 
-function childrenWithPassedProps (children, props) {
-  return React.Children.map(children, child => {
-    return React.cloneElement(child, props)
-  })
-}
-
 class TemplateWrapper extends React.Component {
   constructor (props) {
     super(props)
@@ -89,7 +81,7 @@ class TemplateWrapper extends React.Component {
   }
 
   render () {
-    const { children, location, image, navigate } = this.props
+    const { children, location } = this.props
     const { mounted } = this.state
 
     const containerClassName = csx({ 'preload': !mounted })

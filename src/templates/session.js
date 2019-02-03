@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { kebabCase } from 'lodash'
 import Helmet from 'react-helmet'
-import { graphql, Link } from 'gatsby'
+import { graphql } from 'gatsby'
 import { connect } from 'react-redux'
 
-import Content, { HTMLContent } from '../components/Content'
+import { HTMLContent } from '../components/Content'
 import Photos from '../components/Photos'
 import Progress from '../components/Progress'
 import ScrollablePosts from '../components/ScrollablePosts'
@@ -105,22 +104,16 @@ export class SessionTemplate extends React.Component {
 
   render () {
     const {
-      content,
-      contentComponent,
-      data,
       description,
       helmet,
       images,
       media,
       session,
-      tags,
       title,
       views,
     } = this.props
     const { direction, part } = this.state
     const { height, width, ratio } = media
-
-    const PostContent = contentComponent || Content
 
     const contentWrapperStyle = {
       width: width - (height * 0.8 + 300),
@@ -131,10 +124,6 @@ export class SessionTemplate extends React.Component {
     const progressWrapperStyle = {
       top: 0,
       height,
-      // top: height * 0.75 - 60,
-      // width: width - (height * 0.8 + 300),
-      // height: height * 0.25,
-      // left: height * 0.8,
     }
 
     const textStyle = {
@@ -146,8 +135,9 @@ export class SessionTemplate extends React.Component {
 
     return ratio < 1 ? (
       <ScrollablePosts
-        media={media}
         images={images}
+        media={media}
+        session={session}
         views={views}
       />
     ) : (
@@ -156,7 +146,7 @@ export class SessionTemplate extends React.Component {
         {part === views.length - 1 && (
           <ContentWrapper style={contentWrapperStyle}>
             <div style={textStyle}>
-              <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
+              <h1>
                 {title}
               </h1>
               <p>{description}</p>
@@ -176,19 +166,6 @@ export class SessionTemplate extends React.Component {
             images={images}
           />
         </PhotosWrapper>
-        {/* <PostContent content={content} /> */}
-        {/* {tags && tags.length ? (
-            <div style={{ marginTop: `4rem` }}>
-              <h4>Tags</h4>
-              <ul className="taglist">
-                {tags.map(tag => (
-                  <li key={tag + `tag`}>
-                    <Link to={`/tags/${kebabCase(tag)}/`}>{tag}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null} */}
       </Section>
     )
   }

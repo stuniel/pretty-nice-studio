@@ -70,42 +70,6 @@ const SlidePrimary = styled.div`
   cursor: pointer;
   transition: all 0.3s ease-out;
   opacity: 1;
-
-  ${ '' /* &::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0);
-    transition: all 0.3s ease-out;
-  }
-
-  &::after {
-    content: 'see more';
-    color: #fff;
-    position: absolute;
-    padding: 16px 32px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid #fff;
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
-  }
-
-  &:hover {
-    opacity: 0.5;
-
-    &::before {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    &::after {
-      opacity: 1;
-    }
-  } */}
 `
 
 const SlideSecondary = styled.div`
@@ -305,23 +269,11 @@ class IndexPage extends React.PureComponent {
   formatSliderPrimaryStyle = state => {
     const { media } = this.props
     const { index: { sliders } } = config
-    const { height } = media
-
-    // const transitionStyles = {
-    //   entering: {
-    //     top: 180,
-    //     left: 120,
-    //     width: (height - 360) * 0.8,
-    //     height: height - 360,
-    //   },
-    // }
 
     return {
       position: 'absolute',
       transition: 'all 0.6s',
       ...sliders.primary(media),
-      // ...(state === 'entering' && transitionStyles.entering),
-      // ...(state === 'entered' && transitionStyles.entering),
     }
   }
 
@@ -371,7 +323,7 @@ class IndexPage extends React.PureComponent {
     const { slide, data, location, media } = this.props
     const { direction, show } = this.state
     const { edges } = data.allMarkdownRemark
-    const { height, width, ratio } = media
+    const { ratio } = media
 
     const posts = edges.slice().reverse()
 
@@ -396,15 +348,9 @@ class IndexPage extends React.PureComponent {
       ...config.index.arrows.getPosition(media),
     }
 
-    const goToButton = {
-      position: 'absolute',
-    }
-
     const postNumberStyle = {
       position: 'absolute',
-      // width: height / 2,
       left: -90,
-      // top: height * (55 / 100),
       bottom: 60
     }
 
@@ -428,16 +374,13 @@ class IndexPage extends React.PureComponent {
     const footerStyle = {
       ...config.index.footer.getPosition(media)
     }
-    
+
     const numberPrimaryStyle = {
       ...config.index.numbers.primary.getPosition(media)
     }
 
-    console.log(currentPost.node.frontmatter.description);
-
     return (
       <Container>
-        {/* {ratio} */}
         <Swipeable
           onSwipingLeft={() => this.handleSwipe()}
           onSwipingRight={() => this.handleSwipe(true)}
