@@ -45,7 +45,7 @@ const ContentWrapper = styled.div`
   position: relative;
 `
 
-export class BlogPostTemplate extends React.Component {
+export class SessionTemplate extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -194,7 +194,7 @@ export class BlogPostTemplate extends React.Component {
   }
 }
 
-BlogPostTemplate.propTypes = {
+SessionTemplate.propTypes = {
   content: PropTypes.node.isRequired,
   contentComponent: PropTypes.func,
   description: PropTypes.string,
@@ -202,11 +202,11 @@ BlogPostTemplate.propTypes = {
   helmet: PropTypes.object,
 }
 
-const BlogPost = ({ data, media }) => {
+const Session = ({ data, media }) => {
   const { markdownRemark: post, images } = data
 
   return (
-    <BlogPostTemplate
+    <SessionTemplate
       content={post.html}
       contentComponent={HTMLContent}
       cover={post.frontmatter.cover}
@@ -217,7 +217,7 @@ const BlogPost = ({ data, media }) => {
       media={media}
       description={post.frontmatter.description}
       helmet={
-        <Helmet titleTemplate="%s | Blog">
+        <Helmet titleTemplate="%s | Session">
           <title>{`${ post.frontmatter.title }`}</title>
           <meta
             name="description"
@@ -231,7 +231,7 @@ const BlogPost = ({ data, media }) => {
   )
 }
 
-BlogPost.propTypes = {
+Session.propTypes = {
   data: PropTypes.shape({
     markdownRemark: PropTypes.object,
   }),
@@ -246,10 +246,10 @@ const mapDispatchToProps = () => {}
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(BlogPost)
+)(Session)
 
 export const pageQuery = graphql`
-  query BlogPostByID($id: String!, $categoryRegex: String) {
+  query SessionByID($id: String!, $categoryRegex: String) {
     markdownRemark(id: { eq: $id }) {
       id
       html

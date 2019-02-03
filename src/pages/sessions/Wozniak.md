@@ -1,15 +1,14 @@
 ---
-templateKey: blog-post
-title: Kaela Speicher
-session: Speicher
-date: 2019-01-16T15:04:10.000Z
-description: kldfglkdfsnglskdfgn
+templateKey: session
+title: Meaghan Wozniak
+session: Wozniak
+date: 2019-01-15T15:04:10.000Z
+description: sfdgdfsgsdfgdsf
 info:
-  - 'Photographer: Kaela Speicher'
-  - 'Model: Ovo Drenth'
-  - 'Agency: MAJOR Models NYC'
-  - 'Makeup: Brazil Raine'
-  - 'Hair: Danielle Mock'
+  - 'Photographer: Meaghan Wozniak'
+  - 'Model: Cathrina Torres'
+  - 'Agency: Divide Management'
+  - 'Hair: Silver Orchid Salon'
 cover: 1
 views:
   - type: 0
@@ -19,8 +18,8 @@ views:
     first: 3
     second: 4 
   - type: 0
-    first: null
-    second: null 
+    first: 5
+    second: null
 tags:
   - beauty
   - retouch

@@ -221,7 +221,7 @@ export const config = {
           },
           second: {
             top: padding * 2,
-            left: width - height * 0.8 + padding / 2,
+            left: width - height * 0.8 + padding,
             width: (height - padding * 2.5) * 0.8,
             height: height - padding * 2.5,
           },

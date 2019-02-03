@@ -1,14 +1,15 @@
 ---
-templateKey: blog-post
-title: Sumanta Muth
-session: Muth
-date: 2019-01-17T15:04:10.000Z
-description: Sumanta is a female fashion photographer and retoucher based in Los Angeles. With many years of experience, Sumanta enjoys using vivid and contrasting images to create a story with her various subjects.
+templateKey: session
+title: Kaela Speicher
+session: Speicher
+date: 2019-01-16T15:04:10.000Z
+description: kldfglkdfsnglskdfgn
 info:
-  - 'Photographer: Sumanta Muth'
-  - 'Model: Puma Rose Buck'
-  - 'Agency: Next Models LA'
-  - 'Makeup: Jacqueline Holden'
+  - 'Photographer: Kaela Speicher'
+  - 'Model: Ovo Drenth'
+  - 'Agency: MAJOR Models NYC'
+  - 'Makeup: Brazil Raine'
+  - 'Hair: Danielle Mock'
 cover: 1
 views:
   - type: 0
@@ -16,7 +17,7 @@ views:
     second: 2 
   - type: 1
     first: 3
-    second: 4
+    second: 4 
   - type: 0
     first: null
     second: null 

@@ -7,8 +7,6 @@ import { config } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
 
-const windowGlobal = typeof window !== 'undefined' && window
-
 const propTypes = {
   direction: PropTypes.string,
   session: PropTypes.string,
@@ -17,10 +15,6 @@ const propTypes = {
 
 function createChildFactory (child, props) {
   return React.cloneElement(child, props)
-}
-
-function isEven (value) {
-  return value % 4 === 0
 }
 
 const Wrapper = styled.div`
@@ -40,7 +34,6 @@ const SecondPhoto = styled.div`
 
 const FirstTransitionGroup = styled(TransitionGroup)`
   &.photo-primary-forward {
-    ${'' /* position: relative; */}
 
     .photo-primary-forward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -108,7 +101,6 @@ const FirstTransitionGroup = styled(TransitionGroup)`
 
 const SecondTransitionGroup = styled(TransitionGroup)`
   &.photo-secondary-forward {
-    ${'' /* position: relative; */}
 
     .photo-secondary-forward-enter {
       clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' };
@@ -195,9 +187,6 @@ const SecondPhotoWrapper = styled.div`
 `
 
 const Photo = ({ direction, images, media, part, session, views }) => {
-  const height = windowGlobal.innerHeight
-  const width = windowGlobal.innerWidth
-
   const layout = config.layouts.getLayout(media)
 
   const photosLarge = images.photos
