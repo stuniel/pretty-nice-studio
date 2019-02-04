@@ -33,7 +33,7 @@ const Photo = styled.div`
 `
 
 const ScrollablePosts = ({ images, media, session, views }) => {
-  const config = getConfig(media)
+  const config = getConfig(media, '/sessions')
 
   const { height } = media
   const photos = flatMap(views, view => [view.first, view.second])

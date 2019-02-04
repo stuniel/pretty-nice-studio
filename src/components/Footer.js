@@ -14,8 +14,8 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-const Footer = ({ media }) => {
-  const config = getConfig(media)
+const Footer = ({ media, pathname }) => {
+  const config = getConfig(media, pathname)
 
   const wrapperStyle = {
     ...config.footer.wrapper.getPosition()

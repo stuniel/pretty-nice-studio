@@ -317,7 +317,7 @@ class IndexPage extends React.PureComponent {
     const { direction, show } = this.state
     const { edges } = data.allMarkdownRemark
     const { ratio } = media
-    const config = getConfig(media)
+    const config = getConfig(media, location.pathname)
 
     const posts = edges.slice().reverse()
 

@@ -61,7 +61,7 @@ const Content = styled.div`
 
 const Index = ({ data, media }) => {
   const { height, ratio } = media
-  const config = getConfig(media)
+  const config = getConfig(media, '/contact')
 
   const imageWrapperStyle = {
     height,

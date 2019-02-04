@@ -161,7 +161,7 @@ const Navbar = class extends React.Component {
     const { isMenuOpen } = this.state
     const { ratio } = media
     const isHome = pathname === '/'
-    const config = getConfig(media)
+    const config = getConfig(media, pathname)
 
     const burgerClassName = csx({ 'open': isMenuOpen })
 

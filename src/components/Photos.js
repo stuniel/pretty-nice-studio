@@ -187,7 +187,7 @@ const SecondPhotoWrapper = styled.div`
 `
 
 const Photo = ({ direction, images, media, part, session, views }) => {
-  const config = getConfig(media)
+  const config = getConfig(media, '/sessions')
 
   const layout = config.layouts.getLayout()
 

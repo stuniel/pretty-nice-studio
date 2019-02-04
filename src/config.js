@@ -13,11 +13,14 @@ const getFooter = ({ height, width, ratio }) => {
   }
 }
 
-export const getConfig = media => {
+export const getConfig = (media, pathname) => {
   const { height, width, ratio } = media
 
   const padding = getPadding(media)
   const footer = getFooter(media)
+
+  // TODO: Check if isHome: isHome ? height * 0.8 : 0
+  const contentMarginLeft = (pathname === '/' || pathname === '/contact' || pathname.includes('/sessions')) ? height * 0.8 : 0
 
   let sliderWidth
   let sliderHeight
@@ -57,7 +60,7 @@ export const getConfig = media => {
             return {
               marginTop: padding / 2,
               width: '50%',
-              left: height * 0.8 + padding * 1.5,
+              left: contentMarginLeft + padding * 1.5,
               top: 0,
             }
           }
@@ -79,7 +82,7 @@ export const getConfig = media => {
 
           return {
             top: height - padding,
-            left: height * 0.8 + padding,
+            left: contentMarginLeft + padding,
             height: padding,
             padding: `0 ${ padding / 2 }px`,
             width: width - (height * 0.8 + padding * 2.5)
@@ -113,7 +116,7 @@ export const getConfig = media => {
           return {
             width: width - (height * 0.8 + padding * 2.5),
             height: height,
-            left: height * 0.8 + padding,
+            left: contentMarginLeft + padding,
           }
         },
         sessionInfo: {
@@ -327,7 +330,7 @@ export const getConfig = media => {
             }
 
             return {
-              left: height * 0.8 + padding,
+              left: contentMarginLeft + padding,
               width: width - (height * 0.8 + padding * 2.5),
             }
           }
@@ -346,7 +349,7 @@ export const getConfig = media => {
 
           return {
             top: 0,
-            left: height * 0.8 + padding,
+            left: contentMarginLeft + padding,
             height: padding,
             width: width - (height * 0.8 + padding * 2.5),
           }

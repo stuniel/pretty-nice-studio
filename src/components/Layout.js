@@ -172,7 +172,7 @@ class TemplateWrapper extends React.Component {
                         </CSSTransition>
                       </ContentTransitionGroup>
                     </Wrapper>
-                    <Footer />
+                    <Footer pathname={location && location.pathname} />
                   </React.Fragment>
                 ) : (
                   <Loader />
