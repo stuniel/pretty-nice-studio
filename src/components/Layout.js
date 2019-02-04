@@ -15,8 +15,6 @@ import './all.sass'
 
 import { store } from '../state/index'
 
-const UNDER_CONSTRUCTION = false
-
 const Container = styled.div`
   position: relative;
   width: 100%;
@@ -91,11 +89,9 @@ class TemplateWrapper extends React.Component {
 
     const containerClassName = csx({ 'preload': !mounted })
 
-    // Fix this to check env variable process.env.UNDER_CONSTRUCTION === 'true' instead
-    if (UNDER_CONSTRUCTION) {
+    if (process.env.UNDER_CONSTRUCTION === 'true') {
       return <UnderConstruction />
     }
-
 
     return (
       <Provider store={store}>

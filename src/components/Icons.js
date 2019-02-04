@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { OutboundLink } from 'gatsby-plugin-google-analytics'
 
 import Instagram from '../img/svg/instagram.svg'
 import Facebook from '../img/svg/facebook.svg'
@@ -39,27 +40,27 @@ const iconStyle = {
 
 const Icons = ({ width }) => (
   <Wrapper width={width}>
-    <a
+    <OutboundLink
       href="http://www.instagram.com/prettynicestudio"
-      rel="noopener noreferrer"
+      rel="noopener"
       target="_blank"
     >
       <Instagram style={iconStyle} />
-    </a>
-    <a
+    </OutboundLink>
+    <OutboundLink
       href="http://www.facebook.com/prettynicestudio"
-      rel="noopener noreferrer"
+      rel="noopener"
       target="_blank"
     >
       <Facebook style={iconStyle} />
-    </a>
-    <a
+    </OutboundLink>
+    <OutboundLink
       href="http://www.behance.com/prettynicestudio"
-      rel="noopener noreferrer"
+      rel="noopener"
       target="_blank"
     >
       <Behance style={iconStyle} />
-    </a>
+    </OutboundLink>
   </Wrapper>
 )
 
