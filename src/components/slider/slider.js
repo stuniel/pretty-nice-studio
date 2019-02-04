@@ -27,6 +27,9 @@ const Carousel = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
+  ${ '' /* Force subpixel rendering by applying a small transformation */}
+  transform: rotate(-0.0000000001deg);
+  -webkit-transform: rotate(-0.0000000001deg);
   
   & > * {
     -webkit-backface-visibility: hidden;

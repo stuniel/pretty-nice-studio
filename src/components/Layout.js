@@ -15,7 +15,7 @@ import './all.sass'
 
 import { store } from '../state/index'
 
-const UNDER_CONSTRUCTION = true
+const UNDER_CONSTRUCTION = false
 
 const Container = styled.div`
   position: relative;

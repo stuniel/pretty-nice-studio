@@ -201,7 +201,7 @@ export const getConfig = (media, pathname) => {
             height: height - padding,
             top: 0,
             left: width - padding,
-            width: (height - padding) * 0.8,
+            width: Math.floor((height - padding) * 0.8),
           }
         },
         mask: {
