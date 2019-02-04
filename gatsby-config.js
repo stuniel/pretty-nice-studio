@@ -4,7 +4,7 @@ require('dotenv').config({
 
 module.exports = {
   siteMetadata: {
-    title: 'pretty nice studio - beauty & fashion retouch',
+    title: 'pretty nice studio - fashion & beauty retouch',
     description:
       'We are retouching studio based in Poland, working worldwide. Specializing in high-end beauty and fashion retouch for photographers, creatives and fashion brands from all over the world.',
   },
@@ -14,6 +14,14 @@ module.exports = {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         trackingId: process.env.GOOGLE_ANALYTICS_TRACKING_ID,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-cookiehub`,
+      options: {
+        cookihubId: process.env.COOKIEHUB_WIDGET_ID,
+        trackingId: process.env.GOOGLE_ANALYTICS_TRACKING_ID,
+        head: false,
       },
     },
     'gatsby-plugin-sass',
