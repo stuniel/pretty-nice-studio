@@ -89,7 +89,7 @@ class TemplateWrapper extends React.Component {
 
     const containerClassName = csx({ 'preload': !mounted })
 
-    if (process.env.UNDER_CONSTRUCTION === 'true') {
+    if (process.env.SITE_STATUS !== 'ready') {
       return <UnderConstruction />
     }
 
