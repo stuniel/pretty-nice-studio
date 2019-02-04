@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
 
-import { config } from '../../config.js'
+import { getConfig } from '../../config.js'
 
 import BackgroundImage from '../../components/BackgroundImage'
 
@@ -61,17 +61,18 @@ const Content = styled.div`
 
 const Index = ({ data, media }) => {
   const { height, ratio } = media
+  const config = getConfig(media)
 
   const imageWrapperStyle = {
     height,
   }
 
   const contentWrapperStyle = {
-    ...config.contact.content.wrapper.getPosition(media),
+    ...config.contact.content.wrapper.getPosition(),
   }
 
   const contentStyle = {
-    ...config.contact.content.getPosition(media)
+    ...config.contact.content.getPosition()
   }
 
   return (

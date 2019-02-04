@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { find, flatMap } from 'lodash'
 
-import { config } from '../config.js'
+import { getConfig } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
-import Icons from '../components/Icons'
 
 const propTypes = {
   images: PropTypes.array,
@@ -33,16 +32,9 @@ const Photo = styled.div`
   margin-bottom: 30px;
 `
 
-const Footer = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  background: pink;
-`
-
 const ScrollablePosts = ({ images, media, session, views }) => {
+  const config = getConfig(media)
+
   const { height } = media
   const photos = flatMap(views, view => [view.first, view.second])
 
@@ -52,11 +44,7 @@ const ScrollablePosts = ({ images, media, session, views }) => {
       photo.relativePath.includes(height < 768 ? 'small' : 'big'))
 
   const wrapperStyle = {
-    ...config.sessions.small.wrapper.getPosition(media)
-  }
-
-  const footerStyle = {
-    ...config.sessions.small.footer.getPosition(media)
+    ...config.sessions.small.wrapper.getPosition()
   }
 
   return (
@@ -75,9 +63,6 @@ const ScrollablePosts = ({ images, media, session, views }) => {
           </Photo>
         )
       })}
-      <Footer style={footerStyle}>
-        <Icons width='165px' />
-      </Footer>
     </Wrapper>
   )
 }

@@ -17,7 +17,7 @@ import {
 import Swipeable from 'react-swipeable'
 
 import { getAssetPath } from '../utils/paths'
-import { config } from '../config.js'
+import { getConfig } from '../config.js'
 import Slider from '../components/slider/slider'
 
 import '../components/all.sass'
@@ -259,7 +259,7 @@ class IndexPage extends React.PureComponent {
     this.setState({ direction: directions.backward })
   }
 
-  formatSliderPrimaryStyle = state => {
+  formatSliderPrimaryStyle = (state, config) => {
     const { media } = this.props
     const { index: { sliders } } = config
 
@@ -270,7 +270,7 @@ class IndexPage extends React.PureComponent {
     }
   }
 
-  formatSliderSecondaryStyle = state => {
+  formatSliderSecondaryStyle = (state, config) => {
     const { media } = this.props
     const { index: { sliders } } = config
 
@@ -317,6 +317,7 @@ class IndexPage extends React.PureComponent {
     const { direction, show } = this.state
     const { edges } = data.allMarkdownRemark
     const { ratio } = media
+    const config = getConfig(media)
 
     const posts = edges.slice().reverse()
 
@@ -330,15 +331,15 @@ class IndexPage extends React.PureComponent {
     const orderedPosts = this.orderPosts(edges, currentPost)
 
     const numbersStyle = {
-      ...config.index.numbers.getPosition(media)
+      ...config.index.numbers.getPosition()
     }
 
     const contentStyle = {
-      ...config.index.content.getPosition(media)
+      ...config.index.content.getPosition()
     }
 
     const arrowsStyle = {
-      ...config.index.arrows.getPosition(media),
+      ...config.index.arrows.getPosition(),
     }
 
     const postNumberStyle = {
@@ -352,20 +353,20 @@ class IndexPage extends React.PureComponent {
       width: '80%',
       maxWidth: 600,
       height: 'auto',
-      ...config.index.content.text.getPosition(media),
+      ...config.index.content.text.getPosition(),
     }
 
     const sessionInfoStyle = {
-      ...config.index.content.sessionInfo.getPosition(media),
+      ...config.index.content.sessionInfo.getPosition(),
     }
 
     const sliderMaskStyle = {
       transition: 'all 0.6s',
-      ...config.index.sliders.mask.getPosition(media),
+      ...config.index.sliders.mask.getPosition(),
     }
 
     const numberPrimaryStyle = {
-      ...config.index.numbers.primary.getPosition(media)
+      ...config.index.numbers.primary.getPosition()
     }
 
     return (
@@ -382,8 +383,8 @@ class IndexPage extends React.PureComponent {
                 delay={this.getSliderPrimaryDelay()}
                 direction={direction}
                 offset={posts.length - 1}
-                width={config.index.sliders.primary(media).width}
-                style={this.formatSliderPrimaryStyle(state)}
+                width={config.index.sliders.primary().width}
+                style={this.formatSliderPrimaryStyle(state, config)}
                 value={currentSlideIndex}
               >
                 {posts.map(({ node: post }, index) => (
@@ -410,10 +411,10 @@ class IndexPage extends React.PureComponent {
                 delay={this.getSliderSecondaryDelay()}
                 direction={direction}
                 offset={0}
-                style={this.formatSliderSecondaryStyle(state)}
+                style={this.formatSliderSecondaryStyle(state, config)}
                 value={currentSlideIndex}
                 width={
-                  config.index.sliders.secondary(media).width
+                  config.index.sliders.secondary().width
                 }
               >
                 {posts.map(({ node: post }, index) => (

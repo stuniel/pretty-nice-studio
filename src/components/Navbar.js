@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 import FullLogo from '../img/svg/fulllogo.svg'
 
-import { config, getPadding } from '../config.js'
+import { getConfig, getPadding } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -92,7 +92,7 @@ const LogoWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: top 0.6s;
+  transition: top 0.6s, height 0.6s;
   transition-delay: 0.15s;
 `
 
@@ -161,34 +161,35 @@ const Navbar = class extends React.Component {
     const { isMenuOpen } = this.state
     const { ratio } = media
     const isHome = pathname === '/'
+    const config = getConfig(media)
 
     const burgerClassName = csx({ 'open': isMenuOpen })
 
     const navStyle = {
-      ...config.navbar.getPosition(media)
+      ...config.navbar.getPosition()
     }
 
     const burgerStyle = {
-      ...config.navbar.burger.getPosition(media)
+      ...config.navbar.burger.getPosition()
     }
 
     const navMenuStyle = {
       opacity: ratio > 1 || isMenuOpen ? 1 : 0,
       transform: ratio > 1 || isMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
       boxShadow: ratio < 1 && '0px 5px 50px rgba(0, 0, 0, 0.5)',
-      ...config.navbar.navMenu.getPosition(media, isHome)
+      ...config.navbar.navMenu.getPosition(isHome)
     }
 
     const logoWrapper = {
-      ...config.navbar.logo.wrapper.getPosition(media, isHome)
+      ...config.navbar.logo.wrapper.getPosition(isHome)
     }
 
     const logoStyle = {
-      ...config.navbar.logo.getPosition(media, isHome)
+      ...config.navbar.logo.getPosition(isHome)
     }
 
     const linksStyle = {
-      ...config.navbar.links.getPosition(media, isHome)
+      ...config.navbar.links.getPosition(isHome)
     }
 
     return (

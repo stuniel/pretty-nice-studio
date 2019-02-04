@@ -9,12 +9,13 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Footer from '../components/Footer'
 import Media from '../components/Media'
 import Navbar from '../components/Navbar'
+import Loader from '../components/Loader'
 import UnderConstruction from '../components/UnderConstruction'
 import './all.sass'
 
 import { store } from '../state/index'
 
-const UNDER_CONSTRUCTION = true
+const UNDER_CONSTRUCTION = false
 
 const Container = styled.div`
   position: relative;
@@ -77,7 +78,7 @@ class TemplateWrapper extends React.Component {
   componentDidMount () {
     setTimeout(() => {
       this.setState({ mounted: true })
-    }, 1000)
+    }, 2000)
   }
 
   componentWillUnmount () {
@@ -153,23 +154,29 @@ class TemplateWrapper extends React.Component {
                   <meta property="og:url" content="/" />
                   <meta property="og:image" content="/img/og-image.jpg" />
                 </Helmet>
-                <Navbar pathname={location && location.pathname} />
-                <Wrapper>
-                  <ContentTransitionGroup
-                    className="content-wrapper"
-                    exit={600}
-                    enter={600}
-                  >
-                    <CSSTransition
-                      timeout={{ enter: 600, exit: 600 }}
-                      classNames="content"
-                      key={location.pathname}
-                    >
-                      <ChildWrapper>{children}</ChildWrapper>
-                    </CSSTransition>
-                  </ContentTransitionGroup>
-                </Wrapper>
-                <Footer />
+                {mounted ? (
+                  <React.Fragment>
+                    <Navbar pathname={location && location.pathname} />
+                    <Wrapper>
+                      <ContentTransitionGroup
+                        className="content-wrapper"
+                        exit={600}
+                        enter={600}
+                      >
+                        <CSSTransition
+                          timeout={{ enter: 600, exit: 600 }}
+                          classNames="content"
+                          key={location.pathname}
+                        >
+                          <ChildWrapper>{children}</ChildWrapper>
+                        </CSSTransition>
+                      </ContentTransitionGroup>
+                    </Wrapper>
+                    <Footer />
+                  </React.Fragment>
+                ) : (
+                  <Loader />
+                )}
               </Container>
             )}
           />

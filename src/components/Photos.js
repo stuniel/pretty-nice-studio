@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { find } from 'lodash'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
-import { config } from '../config.js'
+import { getConfig } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
 
@@ -38,13 +38,14 @@ const FirstTransitionGroup = styled(TransitionGroup)`
     .photo-primary-forward-enter {
       ${'' /* clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' }; */}
       transition: all ${ props => props.exit }ms;
+      ${'' /* transition-delay: ${ props => props.enter - props.exit }ms; */}
       transform: translateY(100%);
-      z-index: 1;
 
       ${'' /* transition-delay: ${ props => (props.enter - props.exit) / 2 }ms; */}
     }
 
     .photo-primary-forward-enter-active {
+      z-index: 1;
       transform: translateY(0);
       ${'' /* clip: ${ props =>
     'rect(0px ' +
@@ -55,18 +56,15 @@ const FirstTransitionGroup = styled(TransitionGroup)`
     }
 
     .photo-primary-forward-exit {
-      transition: all 0.9s;
+      transition: all ${ props => props.exit }ms;
       position: absolute;
       right: 120px;
       top: 0;
-      ${'' /* transform: translateY(0); */}
-      transition-delay: 1000ms;
       opacity: 1;
+      ${'' /* transition-delay: ${ props => props.enter * 2 }ms; */}
     }
 
     .photo-primary-forward-exit-active {
-      ${'' /* transform: translateY(-150%); */}
-      opacity: 0;
     }
   }
 
@@ -75,7 +73,7 @@ const FirstTransitionGroup = styled(TransitionGroup)`
     .photo-primary-backward-enter {
       ${'' /* clip: ${ props => 'rect(0px 0px ' + Math.floor(props.height) + 'px 0px)' }; */}
       transition: all ${ props => props.exit }ms;
-      transition-delay: ${ props => (props.enter - props.exit) / 2 }ms;
+      transition-delay: ${ props => props.enter - props.exit }ms;
     }
 
     .photo-primary-backward-enter-active {
@@ -98,7 +96,6 @@ const FirstTransitionGroup = styled(TransitionGroup)`
 
     .photo-primary-backward-exit-active {
       transform: translateY(150%);
-      opacity: 0;
     }
   }
 `
@@ -123,12 +120,12 @@ const SecondTransitionGroup = styled(TransitionGroup)`
 
     .photo-secondary-forward-exit {
       transition: all 0.9s;
+      transition-delay: 0.3s;
       position: absolute;
       right: 120px;
       top: 0;
       transform: translateY(0);
       opacity: 1;
-      transition-delay: 0.3s;
     }
 
     .photo-secondary-forward-exit-active {
@@ -156,12 +153,12 @@ const SecondTransitionGroup = styled(TransitionGroup)`
 
     .photo-secondary-backward-exit {
       transition: all 0.9s;
+      transition-delay: 0.3s;
       position: absolute;
       left: 0;
       top: 0;
       transform: translateY(0);
       opacity: 1;
-      transition-delay: 0.3s;
     }
 
     .photo-secondary-backward-exit-active {
@@ -190,7 +187,9 @@ const SecondPhotoWrapper = styled.div`
 `
 
 const Photo = ({ direction, images, media, part, session, views }) => {
-  const layout = config.layouts.getLayout(media)
+  const config = getConfig(media)
+
+  const layout = config.layouts.getLayout()
 
   const photosLarge = images.photos
     .map(image => image.photo)

@@ -104,33 +104,18 @@ export class SessionTemplate extends React.Component {
 
   render () {
     const {
-      description,
       helmet,
       images,
       media,
       session,
-      title,
       views,
     } = this.props
     const { direction, part } = this.state
-    const { height, width, ratio } = media
-
-    const contentWrapperStyle = {
-      width: width - (height * 0.8 + 300),
-      height: height * 0.8,
-      left: height * 0.8,
-    }
+    const { height, ratio } = media
 
     const progressWrapperStyle = {
       top: 0,
       height,
-    }
-
-    const textStyle = {
-      position: 'absolute',
-      width: '80%',
-      left: '10%',
-      bottom: 0,
     }
 
     return ratio < 1 ? (
@@ -143,16 +128,6 @@ export class SessionTemplate extends React.Component {
     ) : (
       <Section>
         {helmet || ''}
-        {part === views.length - 1 && (
-          <ContentWrapper style={contentWrapperStyle}>
-            <div style={textStyle}>
-              <h1>
-                {title}
-              </h1>
-              <p>{description}</p>
-            </div>
-          </ContentWrapper>
-        )}
         <ProgressWrapper style={progressWrapperStyle}>
           <Progress part={part} length={views.length} />
         </ProgressWrapper>

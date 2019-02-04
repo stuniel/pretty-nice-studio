@@ -2,19 +2,23 @@ import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
-import { config } from '../config.js'
+import { getConfig } from '../config.js'
 
 import Icons from '../components/Icons'
 
 const Wrapper = styled.div`
   position: absolute;
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
 `
 
 const Footer = ({ media }) => {
+  const config = getConfig(media)
+
   const wrapperStyle = {
-    ...config.footer.wrapper.getPosition(media)
+    ...config.footer.wrapper.getPosition()
   }
 
   return (
