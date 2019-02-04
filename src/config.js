@@ -47,11 +47,10 @@ export const getConfig = media => {
           getPosition () {
             if (ratio < 1) {
               return {
-                marginTop: height - ((width - padding * 2) * 1.25) - footer.height - padding,
-                height: ((width - padding * 2) * 1.25) + footer.height - padding * 2,
+                marginTop: height - sliderHeight - footer.height - padding,
+                height: sliderHeight + footer.height - padding * 2,
                 width: '100%',
                 left: 0,
-                // padding: padding * 1.5,
               }
             }
 
@@ -267,9 +266,9 @@ export const getConfig = media => {
         if (ratio < 1) {
           return {
             top: 0,
-            height: height - ((width - padding * 2) * 1.25) - footer.height,
+            height: height - sliderHeight - footer.height,
             left: 0,
-            maxHeight: height - ((width - padding * 2) * 1.25) - footer.height,
+            maxHeight: height - sliderHeight - footer.height,
           }
         }
 
@@ -285,12 +284,10 @@ export const getConfig = media => {
             return {
               width: width - padding * 3,
               left: padding * 1.5,
-              // padding: '50px 0',
             }
           }
 
           return {
-            // width: width - (height * 0.8 + 300),
             width: '50%',
             maxWidth: 375,
             minWidth: 300,
@@ -318,9 +315,9 @@ export const getConfig = media => {
         wrapper: {
           getPosition (isHome) {
             const wrapperHeight = isHome
-              ? height - ((width - padding * 2) * 1.25) - footer.height
-              : height - ((width - padding * 2) * 1.25) - footer.height - padding
-              
+              ? height - sliderHeight - footer.height
+              : height - sliderHeight - footer.height - padding
+
             if (ratio < 1) {
               return {
                 top: 0,
@@ -342,7 +339,7 @@ export const getConfig = media => {
             return {
               top: 0,
               left: 0,
-              height: height - ((width - padding * 2) * 1.25) - footer.height,
+              height: height - sliderHeight - footer.height,
               width: width,
             }
           }
@@ -361,8 +358,8 @@ export const getConfig = media => {
         wrapper: {
           getPosition (isHome) {
             return {
-              marginTop: Math.max((height - ((width - padding * 2) * 1.25) - footer.height - padding), padding * 3),
-              height: ((width - padding * 2) * 1.25) + footer.height - padding * 2,
+              marginTop: Math.max((height - sliderHeight - footer.height - padding), padding * 3),
+              height: sliderHeight + footer.height - padding * 2,
               padding: `0 ${ padding / 2 }px`,
             }
           }
@@ -375,7 +372,6 @@ export const getConfig = media => {
               top: 0,
               left: 0,
               height: (padding * 4),
-              // padding: `0 ${ padding / 2 }px`
             }
           }
         },
