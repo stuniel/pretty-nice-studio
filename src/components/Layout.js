@@ -76,7 +76,7 @@ class TemplateWrapper extends React.Component {
   componentDidMount () {
     setTimeout(() => {
       this.setState({ mounted: true })
-    }, 2000)
+    }, 700)
   }
 
   componentWillUnmount () {

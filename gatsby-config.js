@@ -14,14 +14,7 @@ module.exports = {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         trackingId: process.env.GOOGLE_ANALYTICS_TRACKING_ID,
-      },
-    },
-    {
-      resolve: `gatsby-plugin-cookiehub`,
-      options: {
-        cookihubId: process.env.COOKIEHUB_WIDGET_ID,
-        trackingId: process.env.GOOGLE_ANALYTICS_TRACKING_ID,
-        head: false,
+        head: true,
       },
     },
     'gatsby-plugin-sass',

@@ -166,7 +166,7 @@ export const getConfig = (media, pathname) => {
             return {
               top: 0,
               left: padding,
-              width: height * 0.8,
+              width: Math.floor(height * 0.8),
               height,
             }
           }
@@ -174,7 +174,7 @@ export const getConfig = (media, pathname) => {
           return {
             top: padding,
             left: padding,
-            width: (height - padding) * 0.8,
+            width: Math.floor((height - padding) * 0.8),
             height: height - padding,
           }
         },
@@ -192,7 +192,7 @@ export const getConfig = (media, pathname) => {
             return {
               top: 0,
               left: width - padding * 1.5,
-              width: (height - padding) * 0.8,
+              width: Math.floor((height - padding) * 0.8),
               height: height - padding,
             }
           }

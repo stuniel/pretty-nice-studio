@@ -243,7 +243,7 @@ class Slider extends React.PureComponent {
     const { currentSlide, transitionDelay, transitionTime } = this.state
 
     const wrapperStyle = {
-      transform: `translateX(-${ currentSlide * 100 }%)`,
+      transform: `translateX(-${ currentSlide * 100 }%) translateZ(0)`,
       transitionDuration: `${ transitionTime }ms`,
       transitionDelay: `${ transitionDelay }ms`,
     }
