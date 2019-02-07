@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import styled from 'styled-components'
 import csx from 'classnames'
+import { Transition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
 import FullLogo from '../img/svg/fulllogo.svg'
@@ -54,7 +55,9 @@ const Burger = styled.div`
     & > div {
       & > span {
         &:nth-child(1) {
-          transform: ${ props => 'translateY(' + (getPadding(props.media) * 0.17) + 'px) rotate(-45deg)' };
+          transform: ${ props =>
+    'translateY(' + (getPadding(props.media) * 0.17) +
+    'px) rotate(-45deg)' };
         }
 
         &:nth-child(2) {
@@ -63,7 +66,9 @@ const Burger = styled.div`
         }
 
         &:nth-child(3) {
-          transform: ${ props => 'translateY(' + (getPadding(props.media) * -0.17) + 'px) rotate(45deg)' };
+          transform: ${ props =>
+    'translateY(' + (getPadding(props.media) * -0.17) +
+    'px) rotate(45deg)' };
         }
       }
     }
@@ -148,6 +153,31 @@ const Navbar = class extends React.Component {
     }
   }
 
+  formatLogoStyle = (state, config) => {
+    const transitionStyles = {
+      entered: {
+        transform: 'translateX(0)',
+        opacity: 1,
+      },
+      exited: {
+        transform: 'translateX(-100%)',
+        opacity: 0,
+      },
+    }
+
+    return {
+      position: 'absolute',
+      width: '100%',
+      transform: 'transitionX(0)',
+      opacity: 1,
+      transition: 'all 0.6s ease',
+      ...(state === 'entering' && transitionStyles.entered),
+      ...(state === 'entered' && transitionStyles.entered),
+      ...(state === 'exited' && transitionStyles.exited),
+      ...(state === 'exiting' && transitionStyles.exited),
+    }
+  }
+
   handleBurgerClick = () => {
     this.setState(state => ({ isMenuOpen: !state.isMenuOpen }))
   }
@@ -157,7 +187,7 @@ const Navbar = class extends React.Component {
   }
 
   render () {
-    const { media, pathname } = this.props
+    const { transitions: { logoVisible }, media, pathname } = this.props
     const { isMenuOpen } = this.state
     const { ratio } = media
     const isHome = pathname === '/'
@@ -175,7 +205,9 @@ const Navbar = class extends React.Component {
 
     const navMenuStyle = {
       opacity: ratio > 1 || isMenuOpen ? 1 : 0,
-      transform: ratio > 1 || isMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
+      transform: ratio > 1 || isMenuOpen
+        ? 'translateY(0)'
+        : 'translateY(-100%)',
       boxShadow: ratio < 1 && '0px 5px 50px rgba(0, 0, 0, 0.5)',
       ...config.navbar.navMenu.getPosition(isHome)
     }
@@ -201,12 +233,22 @@ const Navbar = class extends React.Component {
               style={logoStyle}
               title="Logo"
             >
-              <div style={{ position: 'relative', width: '100%' }}>
-                <StyledLogo
-                  full={isHome}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
+              <Transition
+                in={logoVisible}
+                timeout={0}
+              >
+                {state => {
+                  const style = this.formatLogoStyle(state, config)
+
+                  return (
+                    <div style={style}>
+                      <StyledLogo
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                  )
+                }}
+              </Transition>
             </StyledLogoLink>
           </LogoWrapper>
           <NavMenu media={media} style={navMenuStyle}>
@@ -256,11 +298,11 @@ const Navbar = class extends React.Component {
   }
 }
 
-const mapStateToProps = ({ media }) => {
-  return { media }
+const mapStateToProps = ({ transitions, media }) => {
+  return { transitions, media }
 }
 
-const mapDispatchToProps = () => {}
+const mapDispatchToProps = () => ({})
 
 export default connect(
   mapStateToProps,

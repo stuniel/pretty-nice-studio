@@ -32,7 +32,7 @@ const mapStateToProps = ({ media }) => {
   return { media }
 }
 
-const mapDispatchToProps = () => {}
+const mapDispatchToProps = () => ({})
 
 export default connect(
   mapStateToProps,

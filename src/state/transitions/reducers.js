@@ -1,18 +1,18 @@
-import { SET_MEDIA } from './actions'
+import { HIDE_LOGO, SHOW_LOGO } from './actions'
 
 const initialState = {
-  height: null,
-  width: null,
-  ratio: null
+  logoVisible: true
 }
 
 function media (state = initialState, action) {
   switch (action.type) {
-  case SET_MEDIA:
+  case HIDE_LOGO:
     return Object.assign({}, state, {
-      width: action.width,
-      height: action.height,
-      ratio: action.ratio
+      logoVisible: false
+    })
+  case SHOW_LOGO:
+    return Object.assign({}, state, {
+      logoVisible: true
     })
   default:
     return state

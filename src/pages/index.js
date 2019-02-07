@@ -115,11 +115,12 @@ class IndexPage extends React.PureComponent {
 
     return (
       <Container>
+        {media.width} - {media.height} - {media.ratio}
         <Sliders
           direction={direction}
           edges={edges}
           media={media}
-          onPrimarySliderClick={this.handleSlideClick}
+          onPrimarySliderClick={this.next}
           onSecondarySliderClick={this.prev}
           pathname={pathname}
           show={show}

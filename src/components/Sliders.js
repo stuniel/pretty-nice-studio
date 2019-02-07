@@ -138,7 +138,7 @@ class Sliders extends React.Component {
                   <SlidePrimary
                     className="content"
                     key={post.frontmatter.session}
-                    onClick={() => onPrimarySliderClick(post)}
+                    onClick={onPrimarySliderClick}
                     role="link"
                     style={{
                       backgroundImage: `url(${ getAssetPath(

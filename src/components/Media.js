@@ -4,7 +4,7 @@ import { debounce } from 'lodash'
 import { connect } from 'react-redux'
 
 const propTypes = {
-  render: PropTypes.func.isRequired
+  children: PropTypes.node.isRequired
 }
 
 class Media extends React.Component {
@@ -13,7 +13,7 @@ class Media extends React.Component {
 
     this.handleResize = debounce(this.handleResize, 100)
   }
-  componentWillMount () {
+  componentDidMount () {
     if (typeof window !== 'object') return
 
     this.targetWindow = window
@@ -48,7 +48,7 @@ class Media extends React.Component {
 
 Media.propTypes = propTypes
 
-const mapStateToProps = () => {}
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = dispatch => {
   return {

@@ -1,21 +1,10 @@
-import { combineReducers, createStore } from 'redux'
+import { combineReducers } from 'redux'
 
 import slide from './slide/reducers'
 import path from './path/reducers'
 import media from './media/reducers'
+import transitions from './transitions/reducers'
 
-const initialState = { slide: 0, path: '/' }
+// const initialState = { slide: 0, path: '/' }
 
-export const store = createStore(
-  combineReducers(
-    {
-      slide,
-      path,
-      media,
-    },
-    initialState,
-    typeof window !== 'undefined' &&
-      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
-)
+export default combineReducers({ slide, path, media, transitions })

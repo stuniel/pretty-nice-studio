@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { HTMLContent } from '../components/Content'
 import Photos from '../components/Photos'
 import Progress from '../components/Progress'
+import ProgressNumbers from '../components/ProgressNumbers'
+import ScrollIcon from '../components/ScrollIcon'
 import ScrollablePosts from '../components/ScrollablePosts'
 
 const directions = {
@@ -44,6 +46,22 @@ const ContentWrapper = styled.div`
   position: relative;
 `
 
+const ScrollWrapper = styled.div`
+  position: absolute;
+  width: 120px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const StyledScrollIcon = styled(ScrollIcon)`
+  ${'' /* position: absolute;
+  margin: 0 auto; */}
+`
+
 export class SessionTemplate extends React.Component {
   constructor (props) {
     super(props)
@@ -56,10 +74,12 @@ export class SessionTemplate extends React.Component {
   }
 
   componentDidMount () {
+    this.props.showLogo()
     window.addEventListener('wheel', this.handleScroll)
   }
 
   componentWillUnmount () {
+    this.props.showLogo()
     window.removeEventListener('wheel', this.handleScroll)
   }
 
@@ -76,14 +96,16 @@ export class SessionTemplate extends React.Component {
 
     window.setTimeout(() => {
       this.tarnsitionActive = false
-    }, 1000)
+    }, 2000)
   }
 
   next = () => {
-    const { views } = this.props
+    const { hideLogo, views } = this.props
     const { part } = this.state
 
     if (part > views.length - 2) return
+
+    if (part === 0) hideLogo()
 
     this.setState(state => ({
       direction: directions.forward,
@@ -92,9 +114,12 @@ export class SessionTemplate extends React.Component {
   }
 
   previous = () => {
+    const { showLogo } = this.props
     const { part } = this.state
 
     if (part === 0) return
+
+    if (part === 1) showLogo()
 
     this.setState(state => ({
       direction: directions.backward,
@@ -106,6 +131,7 @@ export class SessionTemplate extends React.Component {
     const {
       helmet,
       images,
+      location,
       media,
       session,
       views,
@@ -128,8 +154,18 @@ export class SessionTemplate extends React.Component {
     ) : (
       <Section>
         {helmet || ''}
+        <ScrollWrapper>
+          <StyledScrollIcon size={30} color="#000" />
+        </ScrollWrapper>
         <ProgressWrapper style={progressWrapperStyle}>
-          <Progress part={part} length={views.length} />
+          <ProgressNumbers
+            part={part}
+            length={views.length}
+            direction={direction}
+            media={media}
+            onNumberClick={() => { console.log(part) }}
+            pathname={location.pathname}
+          />
         </ProgressWrapper>
         <PhotosWrapper>
           <Photos
@@ -154,7 +190,7 @@ SessionTemplate.propTypes = {
   helmet: PropTypes.object,
 }
 
-const Session = ({ data, media }) => {
+const Session = ({ data, hideLogo, location, media, showLogo }) => {
   const { markdownRemark: post, images } = data
 
   return (
@@ -162,10 +198,13 @@ const Session = ({ data, media }) => {
       content={post.html}
       contentComponent={HTMLContent}
       cover={post.frontmatter.cover}
+      hideLogo={hideLogo}
+      showLogo={showLogo}
       session={post.frontmatter.session}
       views={post.frontmatter.views}
       image={post.frontmatter.image}
       images={images}
+      location={location}
       media={media}
       description={post.frontmatter.description}
       helmet={
@@ -193,7 +232,12 @@ const mapStateToProps = ({ media }) => {
   return { media }
 }
 
-const mapDispatchToProps = () => {}
+const mapDispatchToProps = dispatch => {
+  return {
+    hideLogo: () => dispatch({ type: 'HIDE_LOGO' }),
+    showLogo: () => dispatch({ type: 'SHOW_LOGO' })
+  }
+}
 
 export default connect(
   mapStateToProps,

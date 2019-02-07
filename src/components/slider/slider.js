@@ -27,13 +27,6 @@ const Carousel = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  ${ '' /* Force subpixel rendering by applying a small transformation */}
-  transform: rotate(-0.0000000001deg);
-  -webkit-transform: rotate(-0.0000000001deg);
-  
-  & > * {
-    -webkit-backface-visibility: hidden;
-  }
 `
 
 const Content = styled.div`
@@ -47,7 +40,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   transform: translateX(0);
-  transition-timing-function: linear;
+  transition-timing-function: ease-out;
   -webkit-transform: translateZ(0);
 `
 
@@ -243,7 +236,7 @@ class Slider extends React.PureComponent {
     const { currentSlide, transitionDelay, transitionTime } = this.state
 
     const wrapperStyle = {
-      transform: `translateX(-${ currentSlide * 100 }%) translateZ(0)`,
+      transform: `translateX(-${ currentSlide * 100 }%)`,
       transitionDuration: `${ transitionTime }ms`,
       transitionDelay: `${ transitionDelay }ms`,
     }

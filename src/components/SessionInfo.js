@@ -14,7 +14,6 @@ const GoToButton = styled.div`
   font-family: Amiko, serif;
   text-transform: uppercase;
   font-size: 12px;
-  position: absolute;
   padding: 3px 0 0 0;
   display: flex;
   justify-content: center;
@@ -74,8 +73,7 @@ const SessionInfo = ({
 
   const postNumberStyle = {
     position: 'absolute',
-    left: -90,
-    bottom: 60
+    ...config.index.content.number.getPosition(),
   }
 
   const textStyle = {
