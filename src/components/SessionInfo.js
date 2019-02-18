@@ -4,40 +4,24 @@ import {
   TransitionGroup,
   CSSTransition
 } from 'react-transition-group'
-import { indexOf } from 'lodash'
 
 import { getConfig } from '../config.js'
 
-const SECONDARY_COLOR = '#bcbcbc'
-
-const GoToButton = styled.div`
-  font-family: Amiko, serif;
-  text-transform: uppercase;
-  font-size: 12px;
-  padding: 3px 0 0 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  background: #000;
-  cursor: pointer;
-  margin-top: 30px;
-  height: 30px;
-  width: 165px;
-  transition: background 0.4s;
-  
-  &:hover {
-    background: ${ SECONDARY_COLOR };
-  }
-`
+import Button from '../components/Button'
 
 const PostNumber = styled.div`
-  font-family: Georgia, sans-serif;
+  font-family: 'Cardo', serif;
+  font-family: 'Scheherazada', serif;
+  font-weight: 500;
+  transform: scale(1, 0.8);
+  -webkit-transform: scale(1, 0.8); /* Safari and Chrome */
+  -moz-transform: scale(1, 0.8); /* Firefox */
+  -ms-transform: scale(1, 0.8); /* IE 9+ */
+  -o-transform: scale(1, 0.8); /* Opera */
   position: absolute;
-  font-size: 360px;
   line-height: 270px;
   color: #dedede;
-  opacity: 0.5;
+  opacity: 0.3;
 `
 
 const Text = styled.div`
@@ -130,12 +114,12 @@ const SessionInfo = ({
               {currentPost.node.frontmatter.info.map(line => (
                 <p>{line}</p>
               ))}
-              <GoToButton
+              <Button
                 onClick={() => onButtonClick(currentPost.node)}
                 role="link"
               >
                 see whole project
-              </GoToButton>
+              </Button>
             </div>
           </CSSTransition>
         </TransitionGroup>

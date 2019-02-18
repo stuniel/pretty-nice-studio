@@ -9,9 +9,10 @@ import {
   throttle
 } from 'lodash'
 
-import { getConfig } from '../config.js'
+import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
 
 import Arrows from '../components/Arrows'
+import Button from '../components/Button'
 import Numbers from '../components/Numbers'
 import SessionInfo from '../components/SessionInfo'
 import Sliders from '../components/Sliders'
@@ -51,11 +52,11 @@ class IndexPage extends React.PureComponent {
     }
   }
 
-  handleNumberClick = index => {
+  handleNumberClick = (index, direction = DIRECTIONS.forward) => {
     const { go } = this.props
 
     go(index)
-    this.setState({ direction: DIRECTIONS.forward })
+    this.setState({ direction })
   }
 
   handleSwipe = throttle(isNext => {
@@ -91,10 +92,21 @@ class IndexPage extends React.PureComponent {
     this.setState({ direction: DIRECTIONS.backward })
   }
 
-  handleSlideClick = post => {
+  handleSlideClick = (post, event) => {
+    event && event.stopPropagation()
+
     this.setState({ show: true })
     navigate(post.fields.slug)
   }
+
+  renderContent = currentPost => (
+    <Button
+      onClick={event => this.handleSlideClick(currentPost.node, event)}
+      role="link"
+    >
+      see whole project
+    </Button>
+  )
 
   render () {
     const { slide, data, location, media } = this.props
@@ -120,13 +132,28 @@ class IndexPage extends React.PureComponent {
           direction={direction}
           edges={edges}
           media={media}
-          onPrimarySliderClick={this.next}
+          onPrimarySliderClick={() => ratio < RATIO_MEDIUM
+            ? this.handleSlideClick(currentPost.node)
+            : this.next()
+          }
           onSecondarySliderClick={this.prev}
+          onTercerySliderClick={() => this.handleNumberClick(getIndexInRange(slide + 1, edges.length), DIRECTIONS.backward)}
+          onSwipe={this.handleSwipe}
           pathname={pathname}
+          renderContent={() => (
+            <SessionInfo
+              currentPost={currentPost}
+              currentPostIndex={currentPostIndex}
+              direction={direction}
+              media={media}
+              onButtonClick={this.handleSlideClick}
+              pathname={pathname}
+            />
+          )}
           show={show}
           slide={slide}
         />
-        {ratio >= 1 && (
+        {ratio >= RATIO_MEDIUM && (
           <Numbers
             currentPostIndex={currentPostIndex}
             direction={direction}
@@ -137,8 +164,8 @@ class IndexPage extends React.PureComponent {
             pathname={pathname}
           />
         )}
-        <Content style={contentStyle}>
-          {ratio > 1.5 && (
+        {ratio >= RATIO_MEDIUM && (
+          <Content style={contentStyle}>
             <SessionInfo
               currentPost={currentPost}
               currentPostIndex={currentPostIndex}
@@ -147,9 +174,9 @@ class IndexPage extends React.PureComponent {
               onButtonClick={this.handleSlideClick}
               pathname={pathname}
             />
-          )}
-        </Content>
-        {ratio >= 1 && (
+          </Content>
+        )}
+        {ratio >= RATIO_MEDIUM && (
           <Arrows
             onLeftClick={this.prev}
             onRightClick={this.next}

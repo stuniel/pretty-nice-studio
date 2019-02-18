@@ -4,7 +4,7 @@ import { Transition } from 'react-transition-group'
 import Swipeable from 'react-swipeable'
 
 import { getAssetPath } from '../utils/paths'
-import { getConfig } from '../config.js'
+import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
 
 import Slider from '../components/slider/slider'
 
@@ -16,11 +16,31 @@ const DIRECTIONS = {
 const SlidePrimary = styled.div`
   height: 100%;
   width: 100%;
+  position: relative;
   background-position: center;
   background-size: cover;
   cursor: pointer;
   transition: all 0.3s ease-out;
   opacity: 1;
+  
+  > * {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  :hover {
+    & > * {
+      opacity: 1;
+    }
+  }
+`
+
+const HoverInfo = styled.div`
+  ${'' /* display: flex;
+  justify-content: center;
+  align-items: center; */}
+  height: 100%;
+  background-color: rgba(255,255,255,0.3);
 `
 
 const SlideSecondary = styled.div`
@@ -74,10 +94,31 @@ class Sliders extends React.Component {
     }
   }
 
+  formatSliderTercaryStyle = (state, config) => {
+    const { media } = this.props
+    const { index: { sliders } } = config
+
+    const transitionStyles = {
+      entering: {
+        opacity: 0,
+      },
+    }
+
+    return {
+      position: 'absolute',
+      transition: 'all 0.6s',
+      ...sliders.tercery(media),
+      ...(state === 'entering' && transitionStyles.entering),
+      ...(state === 'entered' && transitionStyles.entering),
+    }
+  }
+
   getSliderPrimaryDelay = () => {
     const { direction, media: { ratio } } = this.props
 
-    if (ratio < 1) return 0
+    if (ratio < RATIO_SMALL) return 0
+
+    if (ratio < RATIO_MEDIUM) return 150
 
     return direction === DIRECTIONS.backward ? 300 : 0
   }
@@ -85,7 +126,19 @@ class Sliders extends React.Component {
   getSliderSecondaryDelay = () => {
     const { direction, media: { ratio } } = this.props
 
-    if (ratio < 1) return 0
+    if (ratio < RATIO_SMALL) return 0
+
+    if (ratio < RATIO_MEDIUM) return 150
+
+    return direction === DIRECTIONS.backward ? 0 : 300
+  }
+
+  getSliderTerceryDelay = () => {
+    const { direction, media: { ratio } } = this.props
+
+    if (ratio < RATIO_SMALL) return 0
+
+    if (ratio < RATIO_MEDIUM) return 0
 
     return direction === DIRECTIONS.backward ? 0 : 300
   }
@@ -97,7 +150,10 @@ class Sliders extends React.Component {
       media,
       onPrimarySliderClick,
       onSecondarySliderClick,
+      onTercerySliderClick,
+      onSwipe,
       pathname,
+      renderContent,
       show,
       slide,
     } = this.props
@@ -115,9 +171,9 @@ class Sliders extends React.Component {
 
     return (
       <Swipeable
-        onSwipingLeft={() => this.handleSwipe()}
-        onSwipingRight={() => this.handleSwipe(true)}
-        trackMouse={ratio < 1}
+        onSwipingLeft={() => onSwipe()}
+        onSwipingRight={() => onSwipe(true)}
+        trackMouse={ratio < RATIO_SMALL}
       >
         <Transition in={show} key={pathname} timeout={600}>
           {state => {
@@ -146,7 +202,13 @@ class Sliders extends React.Component {
                         post.frontmatter.cover
                       ) })`,
                     }}
-                  />
+                  >
+                    {ratio < RATIO_MEDIUM && (
+                      <HoverInfo>
+                        {renderContent()}
+                      </HoverInfo>
+                    )}
+                  </SlidePrimary>
                 ))}
               </Slider>
             )
@@ -180,7 +242,37 @@ class Sliders extends React.Component {
             </Slider>
           )}
         </Transition>
-        {ratio < 1 && (
+        {ratio < RATIO_MEDIUM && ratio > RATIO_SMALL && (
+          <Transition in={show} key={pathname} timeout={600}>
+            {state => (
+              <Slider
+                animationTime={600}
+                delay={this.getSliderTerceryDelay()}
+                direction={direction}
+                offset={1}
+                style={this.formatSliderTercaryStyle(state, config)}
+                value={currentSlideIndex}
+                width={
+                  config.index.sliders.secondary().width
+                }
+              >
+                {posts.map(({ node: post }, index) => (
+                  <SlideSecondary
+                    key={post.frontmatter.session}
+                    onClick={onTercerySliderClick}
+                    style={{
+                      backgroundImage: `url(${ getAssetPath(
+                        post.frontmatter.session,
+                        post.frontmatter.cover
+                      ) })`,
+                    }}
+                  />
+                ))}
+              </Slider>
+            )}
+          </Transition>
+        )}
+        {ratio < RATIO_SMALL && (
           <SliderMask style={sliderMaskStyle} />
         )}
       </Swipeable>

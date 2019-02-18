@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { fill } from 'lodash'
 
+const SECONDARY_COLOR = '#bcbcbc'
+
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -20,13 +22,12 @@ const Wrapper = styled.div`
 `
 
 const Dot = styled.div`
-  height: ${ props => props.active ? '8px' : '4px' };
-  width: ${ props => props.active ? '8px' : '4px' };
-  border: 1px solid #000;
+  height: 8px;
+  width: 8px;
   border-radius: 50%;
   margin: 20px 0;
-  background: #000;
-  transition: all 0.3s;
+  background: ${ props => props.active ? '#000' : SECONDARY_COLOR };
+  transition: background 0.6s;
 `
 
 function createDots (length, part) {

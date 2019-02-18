@@ -1,16 +1,32 @@
+export const RATIO_SMALL = 0.7
+export const RATIO_MEDIUM = 1
+
 export const getPadding = ({ width, height, ratio }, pathname) => {
-  let paddingVertical = 120
-  let paddingHorizontal = 120
+  let paddingVertical = height / 10
+  let paddingHorizontal = width / 15
 
-  if (width < 600) paddingVertical = paddingHorizontal = 30
-  if (width < 900) paddingVertical = paddingHorizontal = 60
-
-  if (ratio >= 2 || width > 1280) {
-    if (!pathname.includes('sessions')) {
-      paddingVertical = Math.min(120 * (ratio / 2) * 0.66 * ((width - 1280) / 1280 + 1), 240)
-    }
-    paddingHorizontal = Math.min(120 * (ratio / 2) * ((width - 1280) / 1280 + 1), 240)
+  if (width < 900) {
+    paddingVertical = 60
+    paddingHorizontal = 60
   }
+
+  if (width < 600) {
+    paddingVertical = 30
+    paddingHorizontal = 30
+  }
+
+  // if (ratio >= 2) {
+  //   if (!pathname.includes('sessions')) {
+  //     paddingVertical = Math.min(120 * (ratio / 2) * 0.66 * ((width - 1280) / 1280 + 1), 240)
+  //   }
+  //   paddingHorizontal = Math.min(120 * (ratio / 2) * ((width - 1280) / 1280 + 1), 240)
+  // }
+  // if (ratio >= 2 || width > 1280) {
+  //   if (!pathname.includes('sessions')) {
+  //     paddingVertical = Math.min(120 * (ratio / 2) * 0.66 * ((width - 1280) / 1280 + 1), 240)
+  //   }
+  //   paddingHorizontal = Math.min(120 * (ratio / 2) * ((width - 1280) / 1280 + 1), 240)
+  // }
 
   return {
     paddingVertical,
@@ -30,13 +46,22 @@ export const getConfig = (media, pathname) => {
   const { paddingVertical, paddingHorizontal } = getPadding(media, pathname)
   const footer = getFooter(media)
 
+  const sliderPrimaryWidth = Math.floor(width / 2 - paddingHorizontal * 2)
+  const sliderSecondaryWidth = Math.floor(width / 2 - paddingHorizontal * 3.33)
+
+  // const fits = (height * 0.8 + paddingHorizontal) <= (width / 2)
+
   // TODO: Check if isHome: isHome ? height * 0.8 : 0
-  const contentMarginLeft = (pathname === '/' || pathname === '/contact' || pathname.includes('/sessions')) ? height * 0.8 : 0
+  const contentMarginLeft = (pathname === '/' || pathname === '/contact' || pathname.includes('/sessions'))
+    ? ratio < RATIO_MEDIUM
+      ? sliderPrimaryWidth + paddingHorizontal * 2.25
+      : width / 2
+    : 0
 
   let sliderWidth
   let sliderHeight
 
-  if (ratio < 1) {
+  if (ratio < RATIO_SMALL) {
     sliderWidth = Math.floor(width - (paddingHorizontal * 2))
     sliderHeight = Math.floor(sliderWidth * 1.25)
   }
@@ -50,7 +75,7 @@ export const getConfig = (media, pathname) => {
     contact: {
       content: {
         getPosition () {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               top: 0,
               padding: `0 ${ paddingHorizontal * 1.5 }px`,
@@ -59,7 +84,7 @@ export const getConfig = (media, pathname) => {
         },
         wrapper: {
           getPosition () {
-            if (ratio < 1) {
+            if (ratio < RATIO_SMALL) {
               return {
                 marginTop: height - sliderHeight - footer.height - paddingVertical,
                 height: sliderHeight + footer.height - paddingVertical * 2,
@@ -71,7 +96,7 @@ export const getConfig = (media, pathname) => {
             return {
               marginTop: paddingVertical / 2,
               width: '50%',
-              left: contentMarginLeft + paddingHorizontal * 1.5,
+              left: contentMarginLeft + paddingHorizontal * 0.5,
               top: 0,
             }
           }
@@ -81,7 +106,7 @@ export const getConfig = (media, pathname) => {
     footer: {
       wrapper: {
         getPosition () {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               top: height - footer.height,
               left: 0,
@@ -93,7 +118,7 @@ export const getConfig = (media, pathname) => {
 
           return {
             top: height - paddingVertical,
-            left: contentMarginLeft + paddingHorizontal,
+            left: contentMarginLeft,
             height: paddingVertical,
             padding: `0 ${ paddingHorizontal / 2 }px`,
             width: width - (height * 0.8 + paddingHorizontal * 2.5)
@@ -115,7 +140,7 @@ export const getConfig = (media, pathname) => {
       },
       content: {
         getPosition () {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               top: height - (paddingVertical * 2),
               width: width,
@@ -125,9 +150,9 @@ export const getConfig = (media, pathname) => {
           }
 
           return {
-            width: width - (height * 0.8 + paddingHorizontal * 2.5),
+            width: (width / 2) - paddingHorizontal * 1.5, // TODO
             height: height,
-            left: contentMarginLeft + paddingHorizontal,
+            left: contentMarginLeft,
           }
         },
         sessionInfo: {
@@ -148,8 +173,11 @@ export const getConfig = (media, pathname) => {
         number: {
           getPosition () {
             return {
-              left: paddingHorizontal * -0.75,
-              bottom: '55px',
+              fontSize: `${ paddingVertical * 6 }px`,
+              // lineHeight: `${ paddingVertical * 6 }px`,
+              // letterSpacing: `${ -paddingVertical / 2 }px`,
+              left: -paddingVertical * 0.5 - paddingHorizontal / 2,
+              bottom: 0,
             }
           }
         }
@@ -157,7 +185,7 @@ export const getConfig = (media, pathname) => {
       numbers: {
         getPosition () {
           return {
-            width: paddingHorizontal,
+            width: contentMarginLeft - Math.floor(height * 0.8),
             height,
             left: 0,
           }
@@ -172,7 +200,7 @@ export const getConfig = (media, pathname) => {
       },
       sliders: {
         primary () {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               top: height - sliderHeight - footer.height,
               left: (paddingHorizontal / 2),
@@ -181,24 +209,33 @@ export const getConfig = (media, pathname) => {
             }
           }
 
-          if (ratio > 1.5) {
+          if (ratio < RATIO_MEDIUM) {
             return {
-              top: 0,
-              left: paddingHorizontal,
-              width: Math.floor(height * 0.8),
-              height,
+              top: (height - (sliderPrimaryWidth * 1.25)) / 2,
+              left: ((width / 2) - sliderPrimaryWidth),
+              width: sliderPrimaryWidth,
+              height: sliderPrimaryWidth * 1.25,
             }
+            // 
+            // const sliderPrimaryHeight = Math.floor(height - paddingVertical * 3)
+            // 
+            // return {
+            //   top: (height - sliderPrimaryHeight) / 2,
+            //   left: ((width / 2) - (sliderPrimaryHeight * 0.8)) / 2,
+            //   width: sliderPrimaryHeight * 0.8,
+            //   height: sliderPrimaryHeight,
+            // }
           }
 
           return {
-            top: paddingVertical,
-            left: paddingHorizontal,
-            width: Math.floor((height - paddingVertical) * 0.8),
-            height: height - paddingVertical,
+            top: 0,
+            right: contentMarginLeft,
+            width: Math.floor(height * 0.8),
+            height,
           }
         },
         secondary () {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               top: height - sliderHeight - footer.height,
               left: sliderWidth + paddingHorizontal / 2,
@@ -207,20 +244,28 @@ export const getConfig = (media, pathname) => {
             }
           }
 
-          if (ratio > 1.5) {
+          if (ratio < RATIO_MEDIUM) {
             return {
-              top: 0,
-              left: width - paddingHorizontal * 1.5,
-              width: Math.floor((height - paddingVertical) * 0.8),
-              height: height - paddingVertical,
+              bottom: (height - (sliderPrimaryWidth * 1.25)) / 2,
+              left: contentMarginLeft,
+              width: sliderSecondaryWidth,
+              height: sliderSecondaryWidth * 1.25,
             }
           }
 
           return {
-            height: height - paddingVertical,
             top: 0,
-            left: width - paddingHorizontal,
+            left: width - paddingHorizontal * 1.5,
             width: Math.floor((height - paddingVertical) * 0.8),
+            height: height - paddingVertical,
+          }
+        },
+        tercery () {
+          return {
+            bottom: (height - (sliderPrimaryWidth * 1.25)) / 2,
+            left: contentMarginLeft + sliderSecondaryWidth + paddingHorizontal * 0.25,
+            width: sliderSecondaryWidth,
+            height: sliderSecondaryWidth * 1.25,
           }
         },
         mask: {
@@ -242,7 +287,8 @@ export const getConfig = (media, pathname) => {
             type: 0,
             first: {
               top: 0,
-              left: paddingHorizontal,
+              left: (width / 2) - (height * 0.8),
+              // left: paddingHorizontal,
               width: height * 0.8,
               height: height,
             },
@@ -257,7 +303,7 @@ export const getConfig = (media, pathname) => {
             type: 0,
             first: {
               top: 0,
-              left: paddingHorizontal,
+              left: (width / 2) - (height * 0.8),
               width: height * 0.8,
               height: height,
             },
@@ -271,16 +317,31 @@ export const getConfig = (media, pathname) => {
           {
             type: 1,
             first: {
-              top: paddingVertical,
-              left: paddingHorizontal,
-              width: (height - paddingVertical * 2) * 0.8,
-              height: height - paddingVertical * 2,
+              top: (height - (sliderPrimaryWidth * 1.25)) / 2,
+              left: ((width / 2) - sliderPrimaryWidth),
+              width: sliderPrimaryWidth,
+              height: sliderPrimaryWidth * 1.25,
             },
             second: {
-              top: paddingVertical * 1.5,
-              left: width - ((height - paddingVertical * 3) * 0.8) - paddingHorizontal,
-              width: (height - paddingVertical * 3) * 0.8,
-              height: height - paddingVertical * 3,
+              top: height - sliderSecondaryWidth * 1.25 - ((height - (sliderPrimaryWidth * 1.25)) / 2),
+              left: contentMarginLeft,
+              width: sliderSecondaryWidth,
+              height: sliderSecondaryWidth * 1.25,
+            },
+          },
+          {
+            type: 1,
+            first: {
+              top: (height - (sliderPrimaryWidth * 1.25)) / 2,
+              left: ((width / 2) - sliderPrimaryWidth),
+              width: sliderPrimaryWidth,
+              height: sliderPrimaryWidth * 1.25,
+            },
+            second: {
+              top: height - (sliderSecondaryWidth + paddingVertical / 2) * 1.25 - ((height - (sliderPrimaryWidth * 1.25)) / 2),
+              left: contentMarginLeft,
+              width: sliderSecondaryWidth + paddingVertical / 2,
+              height: (sliderSecondaryWidth + paddingVertical / 2) * 1.25,
             },
           },
         ]
@@ -300,12 +361,21 @@ export const getConfig = (media, pathname) => {
         }
       },
       getPosition () {
-        if (ratio < 1) {
+        if (ratio < RATIO_SMALL) {
           return {
             top: 0,
             height: height - sliderHeight - footer.height,
             left: 0,
             maxHeight: height - sliderHeight - footer.height,
+          }
+        }
+
+        if (ratio < RATIO_MEDIUM) {
+          return {
+            left: contentMarginLeft,
+            top: (height - (sliderPrimaryWidth * 1.25)) / 2,
+            height: paddingVertical,
+            maxHeight: paddingVertical,
           }
         }
 
@@ -317,10 +387,20 @@ export const getConfig = (media, pathname) => {
       },
       links: {
         getPosition (isHome) {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               width: width - paddingHorizontal * 3,
               left: paddingHorizontal * 1.5,
+            }
+          }
+
+          if (ratio < RATIO_MEDIUM) {
+            return {
+              width: '50%',
+              maxWidth: 375,
+              minWidth: 300,
+              // marginLeft: paddingHorizontal / 2,
+              alignItems: 'flex-start',
             }
           }
 
@@ -335,10 +415,19 @@ export const getConfig = (media, pathname) => {
       },
       logo: {
         getPosition (isHome) {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               width: width - paddingHorizontal * 3,
               maxWidth: 440,
+            }
+          }
+
+          if (ratio < RATIO_MEDIUM) {
+            return {
+              left: 0,
+              width: sliderSecondaryWidth,
+              maxWidth: 400,
+              top: paddingVertical - 50,
             }
           }
 
@@ -355,7 +444,7 @@ export const getConfig = (media, pathname) => {
               ? height - sliderHeight - footer.height
               : height - sliderHeight - footer.height - paddingVertical
 
-            if (ratio < 1) {
+            if (ratio < RATIO_SMALL) {
               return {
                 top: 0,
                 height: wrapperHeight,
@@ -363,8 +452,15 @@ export const getConfig = (media, pathname) => {
               }
             }
 
+            if (ratio < RATIO_MEDIUM) {
+              return {
+                left: 0,
+                width: width / 2,
+              }
+            }
+
             return {
-              left: contentMarginLeft + paddingHorizontal,
+              left: contentMarginLeft,
               width: width - (height * 0.8 + paddingHorizontal * 2.5),
             }
           }
@@ -372,7 +468,7 @@ export const getConfig = (media, pathname) => {
       },
       navMenu: {
         getPosition (isSession) {
-          if (ratio < 1) {
+          if (ratio < RATIO_SMALL) {
             return {
               top: 0,
               left: 0,
@@ -381,9 +477,20 @@ export const getConfig = (media, pathname) => {
             }
           }
 
+          if (ratio < RATIO_MEDIUM) {
+            return {
+              top: 0,
+              left: 0,
+              height: paddingVertical,
+              width: width / 2,
+              // paddingTop: paddingVertical / 3,
+              alignItems: 'flex-start',
+            }
+          }
+
           return {
             top: 0,
-            left: contentMarginLeft + paddingHorizontal,
+            left: contentMarginLeft,
             height: paddingVertical,
             width: width - (height * 0.8 + paddingHorizontal * 2.5),
             // paddingTop: paddingVertical / 3,
@@ -399,6 +506,34 @@ export const getConfig = (media, pathname) => {
               marginTop: Math.max((height - sliderHeight - footer.height - paddingVertical), paddingVertical * 3),
               height: sliderHeight + footer.height - paddingVertical * 2,
               padding: `0 ${ paddingHorizontal / 2 }px`,
+            }
+          }
+        },
+        footer: {
+          getPosition () {
+            return {
+              top: 0,
+              left: 0,
+              height: (paddingVertical * 4),
+            }
+          }
+        },
+      },
+      medium: {
+        wrapper: {
+          getPosition (isHome) {
+            return {
+              marginTop: paddingVertical * 2,
+              height: sliderHeight + footer.height - paddingVertical * 2,
+              padding: `0 ${ paddingHorizontal * 2 }px`,
+            }
+          }
+        },
+        photo: {
+          getPosition () {
+            return {
+              width: sliderPrimaryWidth,
+              height: sliderPrimaryWidth * 1.25,
             }
           }
         },

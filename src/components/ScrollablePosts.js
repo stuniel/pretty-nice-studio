@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { find, flatMap } from 'lodash'
 
-import { getConfig } from '../config.js'
+import { RATIO_SMALL, getConfig } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
 
@@ -35,7 +35,7 @@ const Photo = styled.div`
 const ScrollablePosts = ({ images, media, session, views }) => {
   const config = getConfig(media, '/sessions')
 
-  const { height } = media
+  const { height, ratio } = media
   const photos = flatMap(views, view => [view.first, view.second])
 
   const filteredPhotos = images.photos
@@ -44,7 +44,13 @@ const ScrollablePosts = ({ images, media, session, views }) => {
       photo.relativePath.includes(height < 768 ? 'small' : 'big'))
 
   const wrapperStyle = {
-    ...config.sessions.small.wrapper.getPosition()
+    ...ratio < RATIO_SMALL
+      ? config.sessions.small.wrapper.getPosition()
+      : config.sessions.medium.wrapper.getPosition()
+  }
+
+  const photoStyle = {
+    ...config.sessions.medium.photo.getPosition()
   }
 
   return (
@@ -58,7 +64,7 @@ const ScrollablePosts = ({ images, media, session, views }) => {
         ).childImageSharp.fluid
 
         return (
-          <Photo>
+          <Photo style={photoStyle}>
             <BackgroundImage alt={alt} fluid={fluid} />
           </Photo>
         )

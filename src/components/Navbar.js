@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 import FullLogo from '../img/svg/fulllogo.svg'
 
-import { getConfig, getPadding } from '../config.js'
+import { RATIO_SMALL, getConfig, getPadding } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -44,7 +44,7 @@ const Burger = styled.div`
     }
 
     & > span {
-      height: ${ props => getPadding(props.media) / 15 }px;
+      height: ${ props => getPadding(props.media).paddingVertical / 15 }px;
       width: 100%;
       background: #000;
       transition: all 0.4s;
@@ -56,7 +56,7 @@ const Burger = styled.div`
       & > span {
         &:nth-child(1) {
           transform: ${ props =>
-    'translateY(' + (getPadding(props.media) * 0.17) +
+    'translateY(' + (getPadding(props.media).paddingVertical * 0.17) +
     'px) rotate(-45deg)' };
         }
 
@@ -67,7 +67,7 @@ const Burger = styled.div`
 
         &:nth-child(3) {
           transform: ${ props =>
-    'translateY(' + (getPadding(props.media) * -0.17) +
+    'translateY(' + (getPadding(props.media).paddingVertical * -0.17) +
     'px) rotate(45deg)' };
         }
       }
@@ -89,7 +89,7 @@ const NavMenu = styled.nav`
   align-items: center;
   overflow: hidden;
   transition: left 0.6s, opacity 0.4s, transform 0.4s;
-  background-color: ${ props => props.media.ratio < 1 && '#fff' };
+  background-color: ${ props => props.media.ratio < RATIO_SMALL && '#fff' };
 `
 
 const LogoWrapper = styled.div`
@@ -208,7 +208,7 @@ const Navbar = class extends React.Component {
       transform: ratio > 1 || isMenuOpen
         ? 'translateY(0)'
         : 'translateY(-100%)',
-      boxShadow: ratio < 1 && '0px 5px 50px rgba(0, 0, 0, 0.5)',
+      boxShadow: ratio < RATIO_SMALL && '0px 5px 50px rgba(0, 0, 0, 0.5)',
       ...config.navbar.navMenu.getPosition(isHome)
     }
 
@@ -238,7 +238,9 @@ const Navbar = class extends React.Component {
                 timeout={0}
               >
                 {state => {
-                  const style = this.formatLogoStyle(state, config)
+                  const style = ratio > RATIO_SMALL
+                    ? this.formatLogoStyle(state, config)
+                    : {}
 
                   return (
                     <div style={style}>
@@ -277,7 +279,7 @@ const Navbar = class extends React.Component {
             </Links>
           </NavMenu>
           <div className="navbar-brand">
-            {ratio < 1 && (
+            {ratio < RATIO_SMALL && (
               <Burger
                 media={media}
                 onClick={this.handleBurgerClick}

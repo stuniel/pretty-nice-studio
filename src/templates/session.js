@@ -5,8 +5,11 @@ import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import { connect } from 'react-redux'
 
+import { RATIO_MEDIUM, RATIO_SMALL } from '../config'
+
 import { HTMLContent } from '../components/Content'
 import Photos from '../components/Photos'
+import PhotosMedium from '../components/PhotosMedium'
 import Progress from '../components/Progress'
 import ProgressNumbers from '../components/ProgressNumbers'
 import ScrollIcon from '../components/ScrollIcon'
@@ -53,8 +56,10 @@ const ScrollWrapper = styled.div`
   top: 0;
   left: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
+  padding-bottom: 60px;
 `
 
 const StyledScrollIcon = styled(ScrollIcon)`
@@ -88,7 +93,7 @@ export class SessionTemplate extends React.Component {
 
     this.tarnsitionActive = true
 
-    if (e.deltaY > 0) {
+    if (e.deltaY >= 0) {
       this.next()
     } else if (e.deltaY < 0) {
       this.previous()
@@ -100,12 +105,13 @@ export class SessionTemplate extends React.Component {
   }
 
   next = () => {
-    const { hideLogo, views } = this.props
+    const { hideLogo, media, views } = this.props
     const { part } = this.state
+    const { ratio } = media
 
     if (part > views.length - 2) return
 
-    if (part === 0) hideLogo()
+    if (ratio >= RATIO_MEDIUM && part === 0) hideLogo()
 
     this.setState(state => ({
       direction: directions.forward,
@@ -144,7 +150,7 @@ export class SessionTemplate extends React.Component {
       height,
     }
 
-    return ratio < 1 ? (
+    return ratio < RATIO_SMALL ? (
       <ScrollablePosts
         images={images}
         media={media}
@@ -156,26 +162,45 @@ export class SessionTemplate extends React.Component {
         {helmet || ''}
         <ScrollWrapper>
           <StyledScrollIcon size={30} color="#000" />
+          <p>
+            scroll down
+          </p>
         </ScrollWrapper>
         <ProgressWrapper style={progressWrapperStyle}>
-          <ProgressNumbers
+          {/* <ProgressNumbers
             part={part}
             length={views.length}
             direction={direction}
             media={media}
             onNumberClick={() => { console.log(part) }}
             pathname={location.pathname}
+          /> */}
+          <Progress
+            part={part}
+            length={views.length}
+            direction={direction}
           />
         </ProgressWrapper>
         <PhotosWrapper>
-          <Photos
-            direction={direction}
-            part={part}
-            media={media}
-            session={session}
-            views={views}
-            images={images}
-          />
+          {ratio < RATIO_MEDIUM ? (
+            <PhotosMedium
+              direction={direction}
+              part={part}
+              media={media}
+              session={session}
+              views={views}
+              images={images}
+            />
+          ) : (
+            <Photos
+              direction={direction}
+              part={part}
+              media={media}
+              session={session}
+              views={views}
+              images={images}
+            />
+          )}
         </PhotosWrapper>
       </Section>
     )
