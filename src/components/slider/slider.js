@@ -40,7 +40,8 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   transform: translateX(0);
-  transition-timing-function: ease-out;
+  ${'' /* transition-timing-function: ease-out; */}
+  transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
   -webkit-transform: translateZ(0);
 `
 
@@ -232,7 +233,7 @@ class Slider extends React.PureComponent {
   }
 
   render () {
-    const { width, style } = this.props
+    const { className, width, style } = this.props
     const { currentSlide, transitionDelay, transitionTime } = this.state
 
     const wrapperStyle = {
@@ -243,6 +244,7 @@ class Slider extends React.PureComponent {
 
     return (
       <Carousel
+        className={className}
         style={{ ...style, width }}
       >
         <Content>

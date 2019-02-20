@@ -4,7 +4,7 @@ import { Transition } from 'react-transition-group'
 import Swipeable from 'react-swipeable'
 
 import { getAssetPath } from '../utils/paths'
-import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
+import { RATIO_LARGE, RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
 
 import Slider from '../components/slider/slider'
 
@@ -50,6 +50,26 @@ const SlideSecondary = styled.div`
   background-position: center;
   background-size: cover;
   transition: all 0.3s ease-out;
+`
+
+const FirstSlider = styled(Slider)`
+  > div {
+    transform: scale(1);
+    transition: all 0.8s ease;
+  }
+
+  &:hover {
+    > div {
+      transform: scale(1.05);
+    }
+  }
+`
+
+const SecondSlider = styled(Slider)`
+  &:hover {
+    ${'' /* opacity: 0.5; */}
+    transform: translateX(-50px);
+  }
 `
 
 const SliderMask = styled.div`
@@ -116,21 +136,25 @@ class Sliders extends React.Component {
   getSliderPrimaryDelay = () => {
     const { direction, media: { ratio } } = this.props
 
-    if (ratio < RATIO_SMALL) return 0
-
-    if (ratio < RATIO_MEDIUM) return 150
-
-    return direction === DIRECTIONS.backward ? 300 : 0
+    // if (ratio < RATIO_SMALL) return 0
+    // 
+    // if (ratio < RATIO_MEDIUM) return 150
+    // 
+    // return direction === DIRECTIONS.backward ? 300 : 0
+    
+    return 0
   }
 
   getSliderSecondaryDelay = () => {
     const { direction, media: { ratio } } = this.props
 
-    if (ratio < RATIO_SMALL) return 0
-
-    if (ratio < RATIO_MEDIUM) return 150
-
-    return direction === DIRECTIONS.backward ? 0 : 300
+    // if (ratio < RATIO_SMALL) return 0
+    // 
+    // if (ratio < RATIO_MEDIUM) return 150
+    // 
+    // return direction === DIRECTIONS.backward ? 0 : 300
+    
+    return 0
   }
 
   getSliderTerceryDelay = () => {
@@ -175,14 +199,14 @@ class Sliders extends React.Component {
         onSwipingRight={() => onSwipe(true)}
         trackMouse={ratio < RATIO_SMALL}
       >
-        <Transition in={show} key={pathname} timeout={600}>
+        <Transition in={show} key={pathname} timeout={800}>
           {state => {
             const delay = this.getSliderPrimaryDelay()
             const sliderStyle = this.formatSliderPrimaryStyle(state, config)
 
             return (
-              <Slider
-                animationTime={600}
+              <FirstSlider
+                animationTime={800}
                 delay={delay}
                 direction={direction}
                 offset={posts.length - 1}
@@ -203,21 +227,21 @@ class Sliders extends React.Component {
                       ) })`,
                     }}
                   >
-                    {ratio < RATIO_MEDIUM && (
+                    {ratio < RATIO_LARGE && (
                       <HoverInfo>
                         {renderContent()}
                       </HoverInfo>
                     )}
                   </SlidePrimary>
                 ))}
-              </Slider>
+              </FirstSlider>
             )
           }}
         </Transition>
-        <Transition in={show} key={pathname} timeout={600}>
+        <Transition in={show} key={pathname} timeout={800}>
           {state => (
-            <Slider
-              animationTime={600}
+            <SecondSlider
+              animationTime={800}
               delay={this.getSliderSecondaryDelay()}
               direction={direction}
               offset={0}
@@ -239,14 +263,14 @@ class Sliders extends React.Component {
                   }}
                 />
               ))}
-            </Slider>
+            </SecondSlider>
           )}
         </Transition>
-        {ratio < RATIO_MEDIUM && ratio > RATIO_SMALL && (
-          <Transition in={show} key={pathname} timeout={600}>
+        {/* {ratio < RATIO_MEDIUM && ratio > RATIO_SMALL && (
+          <Transition in={show} key={pathname} timeout={800}>
             {state => (
               <Slider
-                animationTime={600}
+                animationTime={800}
                 delay={this.getSliderTerceryDelay()}
                 direction={direction}
                 offset={1}
@@ -271,7 +295,7 @@ class Sliders extends React.Component {
               </Slider>
             )}
           </Transition>
-        )}
+        )} */}
         {ratio < RATIO_SMALL && (
           <SliderMask style={sliderMaskStyle} />
         )}

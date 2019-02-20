@@ -9,7 +9,7 @@ import {
   throttle
 } from 'lodash'
 
-import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
+import { RATIO_LARGE, RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
 
 import Arrows from '../components/Arrows'
 import Button from '../components/Button'
@@ -132,10 +132,7 @@ class IndexPage extends React.PureComponent {
           direction={direction}
           edges={edges}
           media={media}
-          onPrimarySliderClick={() => ratio < RATIO_MEDIUM
-            ? this.handleSlideClick(currentPost.node)
-            : this.next()
-          }
+          onPrimarySliderClick={() => this.handleSlideClick(currentPost.node)}
           onSecondarySliderClick={this.prev}
           onTercerySliderClick={() => this.handleNumberClick(getIndexInRange(slide + 1, edges.length), DIRECTIONS.backward)}
           onSwipe={this.handleSwipe}
@@ -153,7 +150,7 @@ class IndexPage extends React.PureComponent {
           show={show}
           slide={slide}
         />
-        {ratio >= RATIO_MEDIUM && (
+        {ratio >= RATIO_LARGE && (
           <Numbers
             currentPostIndex={currentPostIndex}
             direction={direction}
@@ -164,7 +161,7 @@ class IndexPage extends React.PureComponent {
             pathname={pathname}
           />
         )}
-        {ratio >= RATIO_MEDIUM && (
+        {ratio >= RATIO_LARGE && (
           <Content style={contentStyle}>
             <SessionInfo
               currentPost={currentPost}

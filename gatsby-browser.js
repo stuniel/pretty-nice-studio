@@ -1,9 +1,4 @@
 /* globals window */
-import React from 'react'
-import { Provider } from 'react-redux'
-import Media from './src/components/Media'
-
-import createStore from './src/state/createStore'
 
 import objectFitImages from 'object-fit-images'
 
@@ -80,16 +75,4 @@ export const onClientEntry = () => {
 
 export const onInitialClientRender = () => {
   objectFitImages()
-}
-
-export const wrapRootElement = ({ element }) => {
-  const store = createStore()
-
-  return (
-    <Provider store={store}>
-      <Media>
-        {element}
-      </Media>
-    </Provider>
-  )
 }

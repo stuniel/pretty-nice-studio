@@ -1,10 +1,10 @@
 /* global window:true */
 /* eslint no-underscore-dangle: 0 */
 
-import { createStore } from 'redux'
+import { createStore as createReduxStore } from 'redux'
 import rootReducer from './index'
 
-export default () => {
+export default function createStore () {
   const initialState = {
     media: {
       height: typeof window === 'object' ? window.innerHeight : null,
@@ -21,5 +21,7 @@ export default () => {
         window.__REDUX_DEVTOOLS_EXTENSION__()
       : f => f
 
-  return createStore(rootReducer, initialState, devtools)
+  return createReduxStore(rootReducer, initialState, devtools)
 }
+
+export const store = createStore()

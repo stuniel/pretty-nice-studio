@@ -13,7 +13,7 @@ class Media extends React.Component {
 
     this.handleResize = debounce(this.handleResize, 100)
   }
-  componentDidMount () {
+  componentWillMount () {
     if (typeof window !== 'object') return
 
     this.targetWindow = window

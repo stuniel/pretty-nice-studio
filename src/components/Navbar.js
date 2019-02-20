@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 import FullLogo from '../img/svg/fulllogo.svg'
 
-import { RATIO_SMALL, getConfig, getPadding } from '../config.js'
+import { RATIO_MEDIUM, RATIO_SMALL, getConfig, getPadding } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -30,12 +30,12 @@ const Burger = styled.div`
 
   & > div {
     cursor: pointer;
-    height: 100%;
-    width: 100%;
+    height: ${ props => `${ props.size }px` };
+    width: ${ props => `${ props.size }px` };
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start;
 
     &:hover {
       & > span {
@@ -44,10 +44,14 @@ const Burger = styled.div`
     }
 
     & > span {
-      height: ${ props => getPadding(props.media).paddingVertical / 15 }px;
+      height: 2px;
       width: 100%;
       background: #000;
       transition: all 0.4s;
+      
+      &:nth-child(3) {
+        width: 66%;
+      }
     }
   }
 
@@ -55,9 +59,8 @@ const Burger = styled.div`
     & > div {
       & > span {
         &:nth-child(1) {
-          transform: ${ props =>
-    'translateY(' + (getPadding(props.media).paddingVertical * 0.17) +
-    'px) rotate(-45deg)' };
+          transform-origin: left top;
+          transform: rotate(45deg);
         }
 
         &:nth-child(2) {
@@ -66,9 +69,9 @@ const Burger = styled.div`
         }
 
         &:nth-child(3) {
-          transform: ${ props =>
-    'translateY(' + (getPadding(props.media).paddingVertical * -0.17) +
-    'px) rotate(45deg)' };
+          width: 100%;
+          transform-origin: left bottom;
+          transform: rotate(-45deg);
         }
       }
     }
@@ -89,7 +92,7 @@ const NavMenu = styled.nav`
   align-items: center;
   overflow: hidden;
   transition: left 0.6s, opacity 0.4s, transform 0.4s;
-  background-color: ${ props => props.media.ratio < RATIO_SMALL && '#fff' };
+  background-color: ${ props => props.media.ratio < RATIO_MEDIUM && '#fff' };
 `
 
 const LogoWrapper = styled.div`
@@ -131,7 +134,7 @@ const Links = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 1em;
+    font-size: 0.8em;
     text-decoration: none;
     transition: color 0.4s;
 
@@ -204,11 +207,11 @@ const Navbar = class extends React.Component {
     }
 
     const navMenuStyle = {
-      opacity: ratio > 1 || isMenuOpen ? 1 : 0,
-      transform: ratio > 1 || isMenuOpen
+      opacity: ratio > RATIO_MEDIUM || isMenuOpen ? 1 : 0,
+      transform: ratio > RATIO_MEDIUM || isMenuOpen
         ? 'translateY(0)'
         : 'translateY(-100%)',
-      boxShadow: ratio < RATIO_SMALL && '0px 5px 50px rgba(0, 0, 0, 0.5)',
+      boxShadow: ratio < RATIO_MEDIUM && '0px 5px 50px rgba(0, 0, 0, 0.5)',
       ...config.navbar.navMenu.getPosition(isHome)
     }
 
@@ -279,12 +282,13 @@ const Navbar = class extends React.Component {
             </Links>
           </NavMenu>
           <div className="navbar-brand">
-            {ratio < RATIO_SMALL && (
+            {ratio < RATIO_MEDIUM && (
               <Burger
                 media={media}
                 onClick={this.handleBurgerClick}
                 className={burgerClassName}
                 style={burgerStyle}
+                size={20}
               >
                 <div data-target="navMenu">
                   <span />

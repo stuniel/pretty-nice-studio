@@ -6,8 +6,8 @@ import { getConfig } from '../config.js'
 const SECONDARY_COLOR = '#bcbcbc'
 
 const Arrow = styled.span`
-height: 40px;
-width: 20px;
+height: 30px;
+width: 15px;
 display:block;
 padding: 5px;
 margin: 1em auto;

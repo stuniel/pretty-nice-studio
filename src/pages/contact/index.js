@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
 
-import { RATIO_SMALL, getConfig } from '../../config.js'
+import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../../config.js'
 
 import BackgroundImage from '../../components/BackgroundImage'
 
@@ -77,7 +77,7 @@ const Index = ({ data, media }) => {
 
   return (
     <Section>
-      {ratio >= RATIO_SMALL && (
+      {ratio >= RATIO_MEDIUM && (
         <ImageWrapper
           fadeIn
           fluid={data.images.photos[0].photo.childImageSharp.fluid}
