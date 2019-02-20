@@ -1,6 +1,7 @@
 /* globals window */
-
 import objectFitImages from 'object-fit-images'
+
+import wrapWithProvider from './wrap-with-provider'
 
 const injectCookieHubScript = () => {
   function addSrc (src, async) {
@@ -76,3 +77,5 @@ export const onClientEntry = () => {
 export const onInitialClientRender = () => {
   objectFitImages()
 }
+
+export const wrapRootElement = wrapWithProvider
