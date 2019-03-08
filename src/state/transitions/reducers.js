@@ -1,7 +1,8 @@
-import { HIDE_LOGO, SHOW_LOGO } from './actions'
+import { HIDE_LOGO, SHOW_LOGO, TOGGLE_MENU, CLOSE_MENU } from './actions'
 
 const initialState = {
-  logoVisible: true
+  logoVisible: true,
+  menuOpen: false,
 }
 
 function media (state = initialState, action) {
@@ -13,6 +14,14 @@ function media (state = initialState, action) {
   case SHOW_LOGO:
     return Object.assign({}, state, {
       logoVisible: true
+    })
+  case TOGGLE_MENU:
+    return Object.assign({}, state, {
+      menuOpen: !state.menuOpen
+    })
+  case CLOSE_MENU:
+    return Object.assign({}, state, {
+      menuOpen: false
     })
   default:
     return state

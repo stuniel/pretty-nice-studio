@@ -12,10 +12,10 @@ info:
   - 'Hair: Danielle Mock'
 cover: 1
 views:
-  - type: 0
+  - type: 4
     first: 1
     second: 2 
-  - type: 1
+  - type: 0
     first: 3
     second: 4 
 tags:

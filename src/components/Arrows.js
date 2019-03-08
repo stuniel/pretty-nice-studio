@@ -17,7 +17,7 @@ border-radius: 4px;
 
 .left-bar {
   position: absolute;
-  background-color: #000;
+  background-color: #464646;
   top: 25%;
   left:-8%;
   width: 120%;
@@ -28,7 +28,7 @@ border-radius: 4px;
   transition: all 0.3s ease;
   &:after {
     content:"";
-    background-color: #000;
+    background-color: #464646;
     width: 120%;
     height: 8%;
     display: block;
@@ -40,7 +40,7 @@ border-radius: 4px;
 
 .right-bar {
   position: absolute;
-  background-color: #000;
+  background-color: #464646;
   top: 65%;
   left:-8%;
   width: 120%;
@@ -51,7 +51,7 @@ border-radius: 4px;
   transition: all 0.3s ease;
   &:after {
     content:"";
-    background-color: #000;
+    background-color: #464646;
     width: 120%;
     height: 8%;
     display: block;
@@ -86,9 +86,6 @@ const ArrowRight = styled(Arrow)`
     transform: rotate(-45deg);
   }
 `
-// const ArrowRight = styled(Arrow)`
-//   clip-path: polygon(50% 5%, 100% 50%, 50% 95%, 50% 80%, 83% 50%, 50% 20%);
-// `
 
 const Wrapper = styled.div`
   position: absolute;

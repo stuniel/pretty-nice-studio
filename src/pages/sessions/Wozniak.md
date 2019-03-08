@@ -14,12 +14,12 @@ views:
   - type: 0
     first: 1
     second: 2 
+  - type: 2
+    first: 5
+    second: null
   - type: 1
     first: 3
     second: 4 
-  - type: 0
-    first: 5
-    second: null
 tags:
   - beauty
   - retouch

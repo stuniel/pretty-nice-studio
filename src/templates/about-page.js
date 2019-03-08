@@ -1,67 +1,180 @@
-import React from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
-import Content, { HTMLContent } from '../components/Content'
+import { Transition } from 'react-transition-group'
+
+import { HTMLContent } from '../components/Content'
+
+import { RATIO_MEDIUM, getConfig } from '../config.js'
+
+import BackgroundImage from '../components/BackgroundImage'
+
+const SECONDARY_COLOR = '#bcbcbc'
 
 const Section = styled.section`
-  position: relative;
-  padding: 120px;
+  position: absolute;
   top: 0;
-  height: 100%;
+  height: 100vh;
   width: 100%;
+`
+
+const ImageWrapper = styled(BackgroundImage)`
+  position: absolute;
+  left: ${ props => props.paddingHorizontal }px;
+  width: calc(50% - ${ props => props.paddingHorizontal }px);
+  height: 100%;
+`
+
+const ImageCover = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #fff;
 `
 
 const ContentWrapper = styled.div`
-  position: relative;
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  align-items: center;
+  height: ${ props => props.isTablet
+    ? `calc(100vh - ${ props.paddingVertical * 2 }px)` : '100%' };
+  width: ${ props => props.isTablet ? '100%' : '50%' };
+  left: ${ props => props.isTablet ? 0 : '50%' };
+  top: 0;
+  overflow-y: scroll;
+  padding: ${ props => props.paddingVertical }px;
 `
 
-export const AboutPageTemplate = ({ title, content, contentComponent }) => {
-  const PageContent = contentComponent || Content
+const StyledContent = styled.div`
+  position: relative;
+  max-width: 450px;
+  max-height: 80%;
+  
+  h2 {
+    margin-bottom: ${ props => props.isTablet ? 1 : 2 }em;
+    font-size: ${ props => props.isTablet ? 3 : 5 }em;
+  }
+  
+  & > section {
+    margin-bottom: 60px;
+    
+    p {
+      margin-bottom: 30px;
+    }
+    
+    h3 {
+      margin-bottom: 15px;
+    }
+    
+    a {
+      display: block;
+      font-weight: 700;
+      cursor: pointer;
+      color: inherit;
+      text-decoration: none;
+      transition: all 0.4s;
+      
+      :hover {
+        color: ${ SECONDARY_COLOR };
+      }
+    }
+  }
+  
+  & > section:last-child {
+    margin-bottom: 0;
+  }
+`
+const formatImageCoverStyle = (state, config) => {
+  const transitionStyles = {
+    entered: {
+      transform: 'translateX(-100%)',
+    },
+    exited: {
+      transform: 'translateX(0)',
+    },
+  }
 
-  return (
-    <Section>
-      <ContentWrapper>
-        <div className="columns">
-          <div className="column is-10 is-offset-1">
-            <div className="section">
-              <h2 className="title is-size-3 has-text-weight-bold is-bold-light">
-                {title}
-              </h2>
-              <PageContent className="content" content={content} />
-            </div>
-          </div>
-        </div>
-      </ContentWrapper>
-    </Section>
-  )
+  return {
+    transform: 'transitionX(-100%)',
+    transition: 'all 0.6s ease',
+    ...(state === 'entering' && transitionStyles.entered),
+    ...(state === 'entered' && transitionStyles.entered),
+    ...(state === 'exited' && transitionStyles.exited),
+    ...(state === 'exiting' && transitionStyles.exited),
+  }
 }
 
-AboutPageTemplate.propTypes = {
-  title: PropTypes.string.isRequired,
-  content: PropTypes.string,
-  contentComponent: PropTypes.func,
+class AboutPageTemplate extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      photoVisible: false
+    }
+  }
+
+  componentDidMount () {
+    setTimeout(() => this.setState({ photoVisible: true }), 500)
+  }
+
+  componentWillUnmount () {
+    this.setState({ photoVisible: false })
+  }
+
+  render () {
+    const { content, data, media, title } = this.props
+    const { photoVisible } = this.state
+    const { ratio, height } = media
+    const config = getConfig(media, '/contact')
+
+    const contentStyle = {
+      ...config.contact.content.getPosition()
+    }
+
+    return (
+      <Section>
+        {ratio >= RATIO_MEDIUM && (
+          <Fragment>
+            <ImageWrapper
+              fadeIn
+              fluid={data.images.photos[0].photo.childImageSharp.fluid}
+              paddingHorizontal={ height / 10 }
+            />
+            <Transition
+              in={photoVisible}
+              timeout={0}
+            >
+              {state => {
+                const imageCoverStyle = formatImageCoverStyle(state, config)
+
+                return (
+                  <ImageCover style={imageCoverStyle} />
+                )
+              }}
+            </Transition>
+          </Fragment>
+        )}
+        <ContentWrapper
+          isTablet={ratio < RATIO_MEDIUM}
+          paddingVertical={ height / 10 }
+        >
+          <StyledContent
+            isTablet={ratio < RATIO_MEDIUM}
+            style={contentStyle}
+          >
+            <h2>{title}</h2>
+            <section dangerouslySetInnerHTML={{ __html: content }} />
+          </StyledContent>
+        </ContentWrapper>
+      </Section>
+    )
+  }
 }
-
-const AboutPage = ({ data, location }) => {
-  const { markdownRemark: post } = data
-
-  return (
-    <AboutPageTemplate
-      contentComponent={HTMLContent}
-      title={post.frontmatter.title}
-      content={post.html}
-    />
-  )
-}
-
-AboutPage.propTypes = {
-  data: PropTypes.object.isRequired,
-}
-
-export default AboutPage
 
 export const aboutPageQuery = graphql`
   query AboutPage($id: String!) {
@@ -71,5 +184,61 @@ export const aboutPageQuery = graphql`
         title
       }
     }
+    images: allFile(
+      filter: {
+        sourceInstanceName: { eq: "sessions" }
+        relativePath: { regex: "/Wozniak/big/1.jpg/" }
+      }
+    ) {
+      photos: edges {
+        photo: node {
+          childImageSharp {
+            fluid {
+              ...GatsbyImageSharpFluid
+              presentationWidth
+            }
+          }
+          relativePath
+        }
+      }
+    }
   }
 `
+
+AboutPageTemplate.propTypes = {
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string,
+  contentComponent: PropTypes.func,
+}
+
+export { AboutPageTemplate }
+
+const AboutPage = ({ data, location, media }) => {
+  const { markdownRemark: post } = data
+
+  return (
+    <AboutPageTemplate
+      contentComponent={HTMLContent}
+      title={post.frontmatter.title}
+      data={data}
+      content={post.html}
+      media={media}
+      location={location}
+    />
+  )
+}
+
+AboutPage.propTypes = {
+  data: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = ({ media }) => {
+  return { media }
+}
+
+const mapDispatchToProps = () => {}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AboutPage)

@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Helmet from 'react-helmet'
+import { connect } from 'react-redux'
 import csx from 'classnames'
 import { StaticQuery, graphql } from 'gatsby'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
@@ -9,6 +10,8 @@ import Footer from '../components/Footer'
 import Loader from '../components/Loader'
 import Navbar from '../components/Navbar'
 import UnderConstruction from '../components/UnderConstruction'
+
+import { RATIO_LARGE, RATIO_MEDIUM, getConfig } from '../config.js'
 
 import { GlobalStyle } from '../theme/globalStyle'
 
@@ -22,7 +25,7 @@ const Wrapper = styled.div`
   position: absolute;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 `
 
 const ChildWrapper = styled.div`
@@ -62,6 +65,20 @@ const ContentTransitionGroup = styled(TransitionGroup)`
   }
 `
 
+const LayoutWrapper = styled.div`
+  position: relative;
+`
+
+const Text = styled.div`
+  position: fixed;
+  font-family: Amiko, sans-serif;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  letter-spacing: 0.5em;
+  word-spacing: 0.7em;
+  z-index: 10;
+`
+
 class TemplateWrapper extends React.Component {
   constructor (props) {
     super(props)
@@ -81,28 +98,42 @@ class TemplateWrapper extends React.Component {
   }
 
   render () {
-    const { children, location } = this.props
-
+    const { children, location, media } = this.props
     const { mounted } = this.state
+
+    const { ratio } = media
+    const config = getConfig(media, location.pathname)
 
     const containerClassName = csx({ 'preload': !mounted })
 
+    const layoutWrapperStyle = {
+      ...ratio > RATIO_MEDIUM && config.layout.wrapper.getPosition()
+    }
+
+    const textStyle = {
+      ...config.layout.text.getPosition()
+    }
+
     if (process.env.SITE_STATUS !== 'ready') {
-      return <UnderConstruction />
+      return (
+        <LayoutWrapper style={layoutWrapperStyle}>
+          <UnderConstruction />
+        </LayoutWrapper>
+      )
     }
 
     return (
       <StaticQuery
         query={graphql`
-          query HeadingQuery {
-            site {
-              siteMetadata {
-                title
-                description
+            query HeadingQuery {
+              site {
+                siteMetadata {
+                  title
+                  description
+                }
               }
             }
-          }
-        `}
+          `}
         render={data => (
           <Container className={containerClassName}>
             <GlobalStyle />
@@ -149,26 +180,35 @@ class TemplateWrapper extends React.Component {
             </Helmet>
             {mounted ? (
               <React.Fragment>
-                <Navbar pathname={location && location.pathname} />
+                <LayoutWrapper style={layoutWrapperStyle}>
+                  <Navbar pathname={location && location.pathname} />
+                  {ratio > RATIO_LARGE && (
+                    <Text style={textStyle}>
+                      Fashion & beauty retouch
+                    </Text>
+                  )}
+                  <Footer pathname={location && location.pathname} />
+                </LayoutWrapper>
                 <Wrapper>
                   <ContentTransitionGroup
                     className="content-wrapper"
-                    exitTime={600}
-                    enterTime={600}
+                    exitTime={300}
+                    enterTime={300}
                   >
                     <CSSTransition
-                      timeout={{ enter: 600, exit: 600 }}
+                      timeout={{ enter: 300, exit: 300 }}
                       classNames="content"
-                      key={location.pathname}
+                      key={location.key}
                     >
                       <ChildWrapper>{children}</ChildWrapper>
                     </CSSTransition>
                   </ContentTransitionGroup>
                 </Wrapper>
-                <Footer pathname={location && location.pathname} />
               </React.Fragment>
             ) : (
-              <Loader />
+              <LayoutWrapper style={layoutWrapperStyle}>
+                <Loader />
+              </LayoutWrapper>
             )}
           </Container>
         )}
@@ -177,4 +217,15 @@ class TemplateWrapper extends React.Component {
   }
 }
 
-export default TemplateWrapper
+const mapStateToProps = ({ media }) => {
+  return { media }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {}
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TemplateWrapper)

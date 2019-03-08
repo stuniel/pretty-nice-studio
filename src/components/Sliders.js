@@ -36,9 +36,6 @@ const SlidePrimary = styled.div`
 `
 
 const HoverInfo = styled.div`
-  ${'' /* display: flex;
-  justify-content: center;
-  align-items: center; */}
   height: 100%;
   background-color: rgba(255,255,255,0.3);
 `
@@ -67,8 +64,7 @@ const FirstSlider = styled(Slider)`
 
 const SecondSlider = styled(Slider)`
   &:hover {
-    ${'' /* opacity: 0.5; */}
-    transform: translateX(-50px);
+    ${ props => !props.isTablet && 'transform: translateX(-30px)' };
   }
 `
 
@@ -133,30 +129,6 @@ class Sliders extends React.Component {
     }
   }
 
-  getSliderPrimaryDelay = () => {
-    const { direction, media: { ratio } } = this.props
-
-    // if (ratio < RATIO_SMALL) return 0
-    // 
-    // if (ratio < RATIO_MEDIUM) return 150
-    // 
-    // return direction === DIRECTIONS.backward ? 300 : 0
-    
-    return 0
-  }
-
-  getSliderSecondaryDelay = () => {
-    const { direction, media: { ratio } } = this.props
-
-    // if (ratio < RATIO_SMALL) return 0
-    // 
-    // if (ratio < RATIO_MEDIUM) return 150
-    // 
-    // return direction === DIRECTIONS.backward ? 0 : 300
-    
-    return 0
-  }
-
   getSliderTerceryDelay = () => {
     const { direction, media: { ratio } } = this.props
 
@@ -174,7 +146,6 @@ class Sliders extends React.Component {
       media,
       onPrimarySliderClick,
       onSecondarySliderClick,
-      onTercerySliderClick,
       onSwipe,
       pathname,
       renderContent,
@@ -201,13 +172,12 @@ class Sliders extends React.Component {
       >
         <Transition in={show} key={pathname} timeout={800}>
           {state => {
-            const delay = this.getSliderPrimaryDelay()
             const sliderStyle = this.formatSliderPrimaryStyle(state, config)
 
             return (
               <FirstSlider
                 animationTime={800}
-                delay={delay}
+                delay={0}
                 direction={direction}
                 offset={posts.length - 1}
                 width={sliderStyle.width}
@@ -241,8 +211,9 @@ class Sliders extends React.Component {
         <Transition in={show} key={pathname} timeout={800}>
           {state => (
             <SecondSlider
+              isTablet={ratio < RATIO_MEDIUM}
               animationTime={800}
-              delay={this.getSliderSecondaryDelay()}
+              delay={0}
               direction={direction}
               offset={0}
               style={this.formatSliderSecondaryStyle(state, config)}
@@ -266,36 +237,6 @@ class Sliders extends React.Component {
             </SecondSlider>
           )}
         </Transition>
-        {/* {ratio < RATIO_MEDIUM && ratio > RATIO_SMALL && (
-          <Transition in={show} key={pathname} timeout={800}>
-            {state => (
-              <Slider
-                animationTime={800}
-                delay={this.getSliderTerceryDelay()}
-                direction={direction}
-                offset={1}
-                style={this.formatSliderTercaryStyle(state, config)}
-                value={currentSlideIndex}
-                width={
-                  config.index.sliders.secondary().width
-                }
-              >
-                {posts.map(({ node: post }, index) => (
-                  <SlideSecondary
-                    key={post.frontmatter.session}
-                    onClick={onTercerySliderClick}
-                    style={{
-                      backgroundImage: `url(${ getAssetPath(
-                        post.frontmatter.session,
-                        post.frontmatter.cover
-                      ) })`,
-                    }}
-                  />
-                ))}
-              </Slider>
-            )}
-          </Transition>
-        )} */}
         {ratio < RATIO_SMALL && (
           <SliderMask style={sliderMaskStyle} />
         )}

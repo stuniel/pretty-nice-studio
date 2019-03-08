@@ -14,23 +14,23 @@ const Line = styled.div`
   height: 120px;
   width: 1px;
   margin-top: 36px;
-  border-left: 1px solid black;
+  border-left: 1px solid #464646;
 `
 
 const NumberPrimary = styled.p`
   position: relative;
-  font-size: 32px;
-  line-height: 32px;
+  font-size: 24px;
+  line-height: 24px;
   padding: 44px 0;
 `
 
 const NumberSecondary = styled.li`
   position: relative;
   cursor: pointer;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 12px;
+  line-height: 12px;
   padding: 8px 0;
-  color: #000;
+  color: inherit;
   transition: all 0.4s;
 
   &:hover {
@@ -51,7 +51,7 @@ const Pagination = styled.ul`
 
 const Wrapper = styled.div`
   position: absolute;
-  font-family: Amiko, serif;
+  font-family: Amiko, sans-serif;
   top: 0;
   height: 100%;
   width: 100%;
