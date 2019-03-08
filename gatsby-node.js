@@ -3,6 +3,12 @@ const path = require('path')
 const { createFilePath } = require('gatsby-source-filesystem')
 const { fmImagesToRelative } = require('gatsby-remark-relative-images')
 
+function getIndexInRange (index, length) {
+  return index >= 0
+    ? index % length
+    : (length - (Math.abs(index) % length)) % length
+}
+
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions
 
@@ -34,12 +40,19 @@ exports.createPages = ({ actions, graphql }) => {
     }
 
     const posts = result.data.allMarkdownRemark.edges
+    const sessions = posts.filter(edge =>
+      edge.node.fields.slug.includes('/sessions/')
+    )
 
-    posts.forEach(edge => {
+    posts.forEach((edge, index) => {
+      const sessionIndex = _.indexOf(sessions, edge)
       const session = edge.node.frontmatter.session
       const categoryRegex = `/${ session }/`
       const id = edge.node.id
       const image = edge.node.frontmatter.image
+      const prev = sessions[getIndexInRange(sessionIndex - 1, sessions.length)].node.fields.slug
+      const next = sessions[getIndexInRange(sessionIndex + 1, sessions.length)].node.fields.slug
+
       createPage({
         path: edge.node.fields.slug,
         tags: edge.node.frontmatter.tags,
@@ -51,6 +64,8 @@ exports.createPages = ({ actions, graphql }) => {
           id,
           image,
           categoryRegex,
+          prev,
+          next,
         },
       })
     })

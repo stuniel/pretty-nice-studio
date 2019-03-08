@@ -9,7 +9,7 @@ import {
   throttle
 } from 'lodash'
 
-import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
+import { RATIO_LARGE, RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
 
 import Arrows from '../components/Arrows'
 import Button from '../components/Button'
@@ -50,6 +50,32 @@ class IndexPage extends React.PureComponent {
       direction: '',
       show: false,
     }
+
+    this.tarnsitionActive = false
+  }
+
+  componentDidMount () {
+    window.addEventListener('wheel', this.handleScroll)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('wheel', this.handleScroll)
+  }
+
+  handleScroll = e => {
+    if (this.tarnsitionActive) return
+
+    this.tarnsitionActive = true
+
+    if (e.deltaY > 0) {
+      this.next()
+    } else if (e.deltaY < 0) {
+      this.prev()
+    }
+
+    window.setTimeout(() => {
+      this.tarnsitionActive = false
+    }, 800)
   }
 
   handleNumberClick = (index, direction = DIRECTIONS.forward) => {
@@ -81,15 +107,13 @@ class IndexPage extends React.PureComponent {
   next = () => {
     const { increment } = this.props
 
-    increment()
-    this.setState({ direction: DIRECTIONS.forward })
+    this.setState({ direction: DIRECTIONS.forward }, increment)
   }
 
   prev = () => {
     const { decrement } = this.props
 
-    decrement()
-    this.setState({ direction: DIRECTIONS.backward })
+    this.setState({ direction: DIRECTIONS.backward }, decrement)
   }
 
   handleSlideClick = (post, event) => {
@@ -127,33 +151,7 @@ class IndexPage extends React.PureComponent {
 
     return (
       <Container>
-        {media.width} - {media.height} - {media.ratio}
-        <Sliders
-          direction={direction}
-          edges={edges}
-          media={media}
-          onPrimarySliderClick={() => ratio < RATIO_MEDIUM
-            ? this.handleSlideClick(currentPost.node)
-            : this.next()
-          }
-          onSecondarySliderClick={this.prev}
-          onTercerySliderClick={() => this.handleNumberClick(getIndexInRange(slide + 1, edges.length), DIRECTIONS.backward)}
-          onSwipe={this.handleSwipe}
-          pathname={pathname}
-          renderContent={() => (
-            <SessionInfo
-              currentPost={currentPost}
-              currentPostIndex={currentPostIndex}
-              direction={direction}
-              media={media}
-              onButtonClick={this.handleSlideClick}
-              pathname={pathname}
-            />
-          )}
-          show={show}
-          slide={slide}
-        />
-        {ratio >= RATIO_MEDIUM && (
+        {ratio >= RATIO_LARGE && (
           <Numbers
             currentPostIndex={currentPostIndex}
             direction={direction}
@@ -164,7 +162,7 @@ class IndexPage extends React.PureComponent {
             pathname={pathname}
           />
         )}
-        {ratio >= RATIO_MEDIUM && (
+        {ratio >= RATIO_LARGE && (
           <Content style={contentStyle}>
             <SessionInfo
               currentPost={currentPost}
@@ -184,6 +182,28 @@ class IndexPage extends React.PureComponent {
             pathname={pathname}
           />
         )}
+        <Sliders
+          direction={direction}
+          edges={edges}
+          media={media}
+          onPrimarySliderClick={() => this.handleSlideClick(currentPost.node)}
+          onSecondarySliderClick={this.prev}
+          onTercerySliderClick={() => this.handleNumberClick(getIndexInRange(slide + 1, edges.length), DIRECTIONS.backward)}
+          onSwipe={this.handleSwipe}
+          pathname={pathname}
+          renderContent={() => (
+            <SessionInfo
+              currentPost={currentPost}
+              currentPostIndex={currentPostIndex}
+              direction={direction}
+              media={media}
+              onButtonClick={this.handleSlideClick}
+              pathname={pathname}
+            />
+          )}
+          show={show}
+          slide={slide}
+        />
       </Container>
     )
   }

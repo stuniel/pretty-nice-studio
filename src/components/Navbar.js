@@ -5,9 +5,9 @@ import csx from 'classnames'
 import { Transition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
-import FullLogo from '../img/svg/fulllogo.svg'
+import FullLogo from '../img/svg/logo.svg'
 
-import { RATIO_SMALL, getConfig, getPadding } from '../config.js'
+import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -25,50 +25,75 @@ const Nav = styled.nav`
   z-index: 10;
 `
 
-const Burger = styled.div`
-  position: absolute;
+const BurgerWrapper = styled.div`
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
+const Burger = styled.div`
   & > div {
     cursor: pointer;
-    height: 100%;
-    width: 100%;
+    height: ${ props => `${ props.size * 0.66 }px` };
+    width: ${ props => `${ props.size * 1.33 }px` };
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-
-    &:hover {
-      & > span {
-        background: ${ SECONDARY_COLOR };
-      }
-    }
+    justify-content: space-between;
+    align-items: flex-start;
 
     & > span {
-      height: ${ props => getPadding(props.media).paddingVertical / 15 }px;
+      height: 2px;
       width: 100%;
-      background: #000;
+      background: #464646;
       transition: all 0.4s;
+      
+      &:nth-child(2) {
+        width: 50%;
+      }
     }
   }
 
   &.open {
     & > div {
+      height: ${ props => `${ props.size }px` };
+      width: ${ props => `${ props.size }px` };
+      
       & > span {
         &:nth-child(1) {
-          transform: ${ props =>
-    'translateY(' + (getPadding(props.media).paddingVertical * 0.17) +
-    'px) rotate(-45deg)' };
+          width: 133%;
+          transform-origin: left top;
+          transform: rotate(45deg);
         }
-
+        
         &:nth-child(2) {
-          transform: translateX(50%);
-          opacity: 0;
+          width: 133%;
+          transform-origin: left bottom;
+          transform: rotate(-45deg);
         }
-
-        &:nth-child(3) {
-          transform: ${ props =>
-    'translateY(' + (getPadding(props.media).paddingVertical * -0.17) +
-    'px) rotate(45deg)' };
+      }
+    }
+  }
+  
+  :hover {
+    & > div {
+      & > span {
+        background: ${ SECONDARY_COLOR };
+        
+        &:nth-child(2) {
+          width: 100%;
+        }
+      }
+    }
+    
+    &.open {
+      & > div {
+        & > span {
+          background: ${ SECONDARY_COLOR };
+          
+          &:nth-child(2) {
+            width: 133%;
+          }
         }
       }
     }
@@ -76,7 +101,7 @@ const Burger = styled.div`
 `
 
 const NavWrapper = styled.nav`
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   height: 120px;
@@ -85,11 +110,11 @@ const NavWrapper = styled.nav`
 const NavMenu = styled.nav`
   position: absolute;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   overflow: hidden;
   transition: left 0.6s, opacity 0.4s, transform 0.4s;
-  background-color: ${ props => props.media.ratio < RATIO_SMALL && '#fff' };
+  background-color: #fff;
 `
 
 const LogoWrapper = styled.div`
@@ -97,19 +122,28 @@ const LogoWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: top 0.6s, height 0.6s;
-  transition-delay: 0.15s;
+  transition: width 0.6s, left 0.6s, top 0.6s, height 0.6s;
 `
 
 const StyledLogoLink = styled(Link)`
-  position: absolute;
-  transition: top 0.6s, transform 0.6s;
-  transition-delay: 0.15s;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  transition: left 0.6s, top 0.6s, transform 0.6s;
 `
 
 const StyledLogo = styled(FullLogo)`
   & > g {
     fill: #000;
+    transition: all 0.4s;
+  }
+  
+  :hover {
+    & > g {
+      fill: ${ SECONDARY_COLOR };
+    }
   }
 `
 
@@ -120,18 +154,20 @@ const StyledLink = styled(MaybeLink)`
 
 const Links = styled.div`
   position: relative;
+  flex-direction: ${ props => props.isTablet ? 'column' : 'row' };
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   transition: all 0.4s;
 
   & > * {
-    font-family: Amiko, serif;
+    font-family: Amiko, sans-serif;
+    letter-spacing: 0.6em;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 1em;
+    font-size: 0.8em;
     text-decoration: none;
     transition: color 0.4s;
 
@@ -146,13 +182,6 @@ const Links = styled.div`
 `
 
 const Navbar = class extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      isMenuOpen: false,
-    }
-  }
-
   formatLogoStyle = (state, config) => {
     const transitionStyles = {
       entered: {
@@ -179,21 +208,26 @@ const Navbar = class extends React.Component {
   }
 
   handleBurgerClick = () => {
-    this.setState(state => ({ isMenuOpen: !state.isMenuOpen }))
-  }
+    const { toggleMenu } = this.props
 
-  closeMenu = () => {
-    this.setState({ isMenuOpen: false })
+    toggleMenu()
   }
 
   render () {
-    const { transitions: { logoVisible }, media, pathname } = this.props
-    const { isMenuOpen } = this.state
+    const {
+      closeMenu,
+      transitions: {
+        logoVisible,
+        menuOpen
+      },
+      media,
+      pathname
+    } = this.props
     const { ratio } = media
     const isHome = pathname === '/'
     const config = getConfig(media, pathname)
 
-    const burgerClassName = csx({ 'open': isMenuOpen })
+    const burgerClassName = csx({ 'open': menuOpen })
 
     const navStyle = {
       ...config.navbar.getPosition()
@@ -204,20 +238,18 @@ const Navbar = class extends React.Component {
     }
 
     const navMenuStyle = {
-      opacity: ratio > 1 || isMenuOpen ? 1 : 0,
-      transform: ratio > 1 || isMenuOpen
+      transform: menuOpen
         ? 'translateY(0)'
         : 'translateY(-100%)',
-      boxShadow: ratio < RATIO_SMALL && '0px 5px 50px rgba(0, 0, 0, 0.5)',
       ...config.navbar.navMenu.getPosition(isHome)
     }
 
     const logoWrapper = {
-      ...config.navbar.logo.wrapper.getPosition(isHome)
+      ...config.navbar.logo.wrapper.getPosition(menuOpen)
     }
 
     const logoStyle = {
-      ...config.navbar.logo.getPosition(isHome)
+      ...config.navbar.logo.getPosition(menuOpen)
     }
 
     const linksStyle = {
@@ -227,11 +259,42 @@ const Navbar = class extends React.Component {
     return (
       <Nav role="navigation" aria-label="main-navigation" style={navStyle}>
         <NavWrapper>
+          <NavMenu media={media} style={navMenuStyle}>
+            <Links
+              isTablet={ratio < RATIO_MEDIUM}
+              media={media}
+              key={pathname}
+              style={linksStyle}
+            >
+              <StyledLink
+                pathname={pathname}
+                to="/making_of"
+                onClick={closeMenu}
+              >
+                Making of
+              </StyledLink>
+              <StyledLink
+                pathname={pathname}
+                to="/about"
+                onClick={closeMenu}
+              >
+                About
+              </StyledLink>
+              <StyledLink
+                pathname={pathname}
+                to="/contact"
+                onClick={closeMenu}
+              >
+                Contact
+              </StyledLink>
+            </Links>
+          </NavMenu>
           <LogoWrapper style={logoWrapper}>
             <StyledLogoLink
               to="/"
               style={logoStyle}
               title="Logo"
+              onClick={closeMenu}
             >
               <Transition
                 in={logoVisible}
@@ -253,46 +316,20 @@ const Navbar = class extends React.Component {
               </Transition>
             </StyledLogoLink>
           </LogoWrapper>
-          <NavMenu media={media} style={navMenuStyle}>
-            <Links media={media} key={pathname} style={linksStyle}>
-              <StyledLink
-                pathname={pathname}
-                to="/"
-                onClick={this.closeMenu}
-              >
-                Home
-              </StyledLink>
-              <StyledLink
-                pathname={pathname}
-                to="/making_of"
-                onClick={this.closeMenu}
-              >
-                Making of
-              </StyledLink>
-              <StyledLink
-                pathname={pathname}
-                to="/contact"
-                onClick={this.closeMenu}
-              >
-                Contact
-              </StyledLink>
-            </Links>
-          </NavMenu>
           <div className="navbar-brand">
-            {ratio < RATIO_SMALL && (
+            <BurgerWrapper style={burgerStyle}>
               <Burger
                 media={media}
                 onClick={this.handleBurgerClick}
                 className={burgerClassName}
-                style={burgerStyle}
+                size={20}
               >
                 <div data-target="navMenu">
                   <span />
                   <span />
-                  <span />
                 </div>
               </Burger>
-            )}
+            </BurgerWrapper>
           </div>
         </NavWrapper>
       </Nav>
@@ -304,7 +341,12 @@ const mapStateToProps = ({ transitions, media }) => {
   return { transitions, media }
 }
 
-const mapDispatchToProps = () => ({})
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleMenu: () => dispatch({ type: 'TOGGLE_MENU' }),
+    closeMenu: () => dispatch({ type: 'CLOSE_MENU' }),
+  }
+}
 
 export default connect(
   mapStateToProps,
