@@ -114,13 +114,13 @@ class TemplateWrapper extends React.Component {
       ...config.layout.text.getPosition()
     }
 
-    if (process.env.SITE_STATUS !== 'ready') {
-      return (
-        <LayoutWrapper style={layoutWrapperStyle}>
-          <UnderConstruction />
-        </LayoutWrapper>
-      )
-    }
+    // if (process.env.SITE_STATUS !== 'ready') {
+    //   return (
+    //     <LayoutWrapper style={layoutWrapperStyle}>
+    //       <UnderConstruction />
+    //     </LayoutWrapper>
+    //   )
+    // }
 
     return (
       <StaticQuery
