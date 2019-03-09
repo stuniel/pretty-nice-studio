@@ -9,9 +9,9 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Footer from '../components/Footer'
 import Loader from '../components/Loader'
 import Navbar from '../components/Navbar'
-import UnderConstruction from '../components/UnderConstruction'
+// import UnderConstruction from '../components/UnderConstruction'
 
-import { RATIO_LARGE, RATIO_MEDIUM, getConfig } from '../config.js'
+import { getConfig, isLaptop } from '../config.js'
 
 import './all.sass'
 import { GlobalStyle } from '../theme/globalStyle'
@@ -34,11 +34,6 @@ const ChildWrapper = styled.div`
   top: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
-
-  &::-webkit-scrollbar { 
-    display: none;
-  }
 `
 
 const ContentTransitionGroup = styled(TransitionGroup)`
@@ -109,7 +104,6 @@ class TemplateWrapper extends React.Component {
     const { children, location, media } = this.props
     const { mounted } = this.state
 
-    const { ratio } = media
     const config = getConfig(media, location.pathname)
 
     const containerClassName = csx({ 'preload': !mounted })
@@ -186,7 +180,7 @@ class TemplateWrapper extends React.Component {
               <React.Fragment>
                 <LayoutWrapper>
                   <Navbar pathname={location && location.pathname} />
-                  {ratio > RATIO_LARGE && (
+                  {!isLaptop(media) && (
                     <Text style={textStyle}>
                       Fashion & beauty retouch
                     </Text>

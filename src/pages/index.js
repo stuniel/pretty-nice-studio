@@ -9,7 +9,7 @@ import {
   throttle
 } from 'lodash'
 
-import { RATIO_LARGE, RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
+import { getConfig, isTablet, isLaptop } from '../config.js'
 
 import Arrows from '../components/Arrows'
 import Button from '../components/Button'
@@ -133,8 +133,8 @@ class IndexPage extends React.PureComponent {
   render () {
     const { slide, data, location, media } = this.props
     const { direction, show } = this.state
+
     const { edges } = data.allMarkdownRemark
-    const { ratio } = media
     const { pathname } = location
     const config = getConfig(media, pathname)
 
@@ -149,7 +149,7 @@ class IndexPage extends React.PureComponent {
 
     return (
       <Container>
-        {ratio >= RATIO_LARGE && (
+        {!isLaptop(media) && (
           <Numbers
             currentPostIndex={currentPostIndex}
             direction={direction}
@@ -160,7 +160,7 @@ class IndexPage extends React.PureComponent {
             pathname={pathname}
           />
         )}
-        {ratio >= RATIO_LARGE && (
+        {!isLaptop(media) && (
           <Content style={contentStyle}>
             <SessionInfo
               currentPost={currentPost}
@@ -172,7 +172,7 @@ class IndexPage extends React.PureComponent {
             />
           </Content>
         )}
-        {ratio >= RATIO_MEDIUM && (
+        {!isTablet(media) && (
           <Arrows
             onLeftClick={this.prev}
             onRightClick={this.next}
@@ -186,7 +186,6 @@ class IndexPage extends React.PureComponent {
           media={media}
           onPrimarySliderClick={() => this.handleSlideClick(currentPost.node)}
           onSecondarySliderClick={this.prev}
-          onTercerySliderClick={() => this.handleNumberClick(getIndexInRange(slide + 1, edges.length), DIRECTIONS.backward)}
           onSwipe={this.handleSwipe}
           pathname={pathname}
           renderContent={() => (

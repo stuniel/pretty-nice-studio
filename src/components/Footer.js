@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { Transition } from 'react-transition-group'
 
-import { RATIO_MEDIUM, getConfig } from '../config.js'
+import { getConfig, isTablet } from '../config.js'
 
 import Icons from '../components/Icons'
 
@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   width: 100%;
   z-index: 10;
   transition: all 0.6s;
+  ${ props => props.isTablet && 'background-color: #fff;' }
 `
 
 const Contact = styled.span`
@@ -51,15 +52,18 @@ const formatContactStyle = (state, config) => {
 
 const Footer = ({ media, pathname, transitions: { menuOpen } }) => {
   const config = getConfig(media, pathname)
-  const { ratio } = media
 
   const wrapperStyle = {
     ...config.footer.wrapper.getPosition(menuOpen)
   }
 
   return (
-    <Wrapper between={menuOpen} style={wrapperStyle}>
-      {ratio > RATIO_MEDIUM && (
+    <Wrapper
+      between={menuOpen}
+      style={wrapperStyle}
+      isTablet={isTablet(media)}
+    >
+      {!isTablet(media) && (
         <Transition
           in={menuOpen}
           timeout={0}

@@ -4,14 +4,9 @@ import { Transition } from 'react-transition-group'
 import Swipeable from 'react-swipeable'
 
 import { getAssetPath } from '../utils/paths'
-import { RATIO_LARGE, RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
+import { getConfig, isMobile, isTablet, isLaptop } from '../config.js'
 
 import Slider from '../components/slider/slider'
-
-const DIRECTIONS = {
-  forward: 'forward',
-  backward: 'backward',
-}
 
 const SlidePrimary = styled.div`
   height: 100%;
@@ -129,16 +124,6 @@ class Sliders extends React.Component {
     }
   }
 
-  getSliderTerceryDelay = () => {
-    const { direction, media: { ratio } } = this.props
-
-    if (ratio < RATIO_SMALL) return 0
-
-    if (ratio < RATIO_MEDIUM) return 0
-
-    return direction === DIRECTIONS.backward ? 0 : 300
-  }
-
   render () {
     const {
       direction,
@@ -154,7 +139,6 @@ class Sliders extends React.Component {
     } = this.props
 
     const config = getConfig(media, pathname)
-    const { ratio } = media
     const posts = edges.slice().reverse()
 
     const currentSlideIndex = getIndexInRange(slide, posts.length)
@@ -168,7 +152,7 @@ class Sliders extends React.Component {
       <Swipeable
         onSwipingLeft={() => onSwipe()}
         onSwipingRight={() => onSwipe(true)}
-        trackMouse={ratio < RATIO_SMALL}
+        trackMouse={isMobile(media)}
       >
         <Transition in={show} key={pathname} timeout={800}>
           {state => {
@@ -197,7 +181,7 @@ class Sliders extends React.Component {
                       ) })`,
                     }}
                   >
-                    {ratio < RATIO_LARGE && (
+                    {isLaptop(media) && (
                       <HoverInfo>
                         {renderContent()}
                       </HoverInfo>
@@ -211,7 +195,7 @@ class Sliders extends React.Component {
         <Transition in={show} key={pathname} timeout={800}>
           {state => (
             <SecondSlider
-              isTablet={ratio < RATIO_MEDIUM}
+              isTablet={isTablet(media)}
               animationTime={800}
               delay={0}
               direction={direction}
@@ -237,7 +221,7 @@ class Sliders extends React.Component {
             </SecondSlider>
           )}
         </Transition>
-        {ratio < RATIO_SMALL && (
+        {isMobile(media) && (
           <SliderMask style={sliderMaskStyle} />
         )}
       </Swipeable>

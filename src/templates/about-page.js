@@ -7,7 +7,7 @@ import { Transition } from 'react-transition-group'
 
 import { HTMLContent } from '../components/Content'
 
-import { RATIO_MEDIUM, getConfig } from '../config.js'
+import { getConfig, getPadding, isTablet } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
 
@@ -43,12 +43,14 @@ const ContentWrapper = styled.div`
   text-align: left;
   align-items: center;
   height: ${ props => props.isTablet
-    ? `calc(100vh - ${ props.paddingVertical * 2 }px)` : '100%' };
+    ? `calc(100vh - ${ props.paddingVertical * 3 }px)` : '100%' };
   width: ${ props => props.isTablet ? '100%' : '50%' };
   left: ${ props => props.isTablet ? 0 : '50%' };
-  top: 0;
+  top: ${ props => props.isTablet ? props.paddingVertical * 2 : 0 }px;
   overflow-y: scroll;
-  padding: ${ props => props.paddingVertical }px;
+  padding: ${ props =>
+    `${ props.paddingVertical }px ${ props.paddingHorizontal }px` };
+  ${ props => props.isTablet && `padding-top: 0` };
 `
 
 const StyledContent = styled.div`
@@ -129,8 +131,9 @@ class AboutPageTemplate extends Component {
   render () {
     const { content, data, media, title } = this.props
     const { photoVisible } = this.state
-    const { ratio, height } = media
+
     const config = getConfig(media, '/contact')
+    const { paddingVertical, paddingHorizontal } = getPadding(media)
 
     const contentStyle = {
       ...config.contact.content.getPosition()
@@ -138,12 +141,12 @@ class AboutPageTemplate extends Component {
 
     return (
       <Section>
-        {ratio >= RATIO_MEDIUM && (
+        {!isTablet(media) && (
           <Fragment>
             <ImageWrapper
               fadeIn
               fluid={data.images.photos[0].photo.childImageSharp.fluid}
-              paddingHorizontal={ height / 10 }
+              paddingHorizontal={paddingHorizontal}
             />
             <Transition
               in={photoVisible}
@@ -160,11 +163,12 @@ class AboutPageTemplate extends Component {
           </Fragment>
         )}
         <ContentWrapper
-          isTablet={ratio < RATIO_MEDIUM}
-          paddingVertical={ height / 10 }
+          isTablet={isTablet(media)}
+          paddingVertical={paddingVertical}
+          paddingHorizontal={paddingHorizontal}
         >
           <StyledContent
-            isTablet={ratio < RATIO_MEDIUM}
+            isTablet={isTablet(media)}
             style={contentStyle}
           >
             <h2>{title}</h2>

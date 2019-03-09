@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { graphql } from 'gatsby'
 import { Transition } from 'react-transition-group'
 
-import { RATIO_MEDIUM, getConfig } from '../../config.js'
+import { getConfig, getPadding, isTablet } from '../../config.js'
 
 import BackgroundImage from '../../components/BackgroundImage'
 
@@ -36,10 +36,13 @@ const ContentWrapper = styled.div`
   position: absolute;
   display: flex;
   justify-content: flex-start;
-  padding: ${ props => props.paddingHorizontal }px;
+  padding: ${ props =>
+    `${ props.paddingVertical }px ${ props.paddingHorizontal }px` };
+  ${ props => props.isTablet && `padding-top: 0` };
   text-align: left;
   align-items: center;
-  height: 100%;
+  height: ${ props => props.isTablet
+    ? `calc(100vh - ${ props.paddingVertical * 3 }px)` : '100%' };  top: ${ props => props.isTablet ? props.paddingVertical * 2 : 0 }px;
   width: ${ props => props.isTablet ? '100%' : '50%' };
   overflow-y: scroll;
 `
@@ -118,8 +121,9 @@ class Index extends Component {
   render () {
     const { data, media } = this.props
     const { photoVisible } = this.state
-    const { height, ratio } = media
+    const { height } = media
     const config = getConfig(media, '/contact')
+    const { paddingVertical, paddingHorizontal } = getPadding(media)
 
     const imageWrapperStyle = {
       height,
@@ -132,11 +136,12 @@ class Index extends Component {
     return (
       <Section>
         <ContentWrapper
-          isTablet={ratio < RATIO_MEDIUM}
-          paddingHorizontal={height / 10}
+          isTablet={isTablet(media)}
+          paddingVertical={paddingVertical}
+          paddingHorizontal={paddingHorizontal}
         >
           <Content
-            isTablet={ratio < RATIO_MEDIUM}
+            isTablet={isTablet(media)}
             style={contentStyle}
           >
             <section>
@@ -152,7 +157,7 @@ class Index extends Component {
             </section>
           </Content>
         </ContentWrapper>
-        {ratio >= RATIO_MEDIUM && (
+        {!isTablet(media) && (
           <Fragment>
             <ImageWrapper
               fadeIn

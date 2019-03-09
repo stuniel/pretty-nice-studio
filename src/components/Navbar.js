@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 import FullLogo from '../img/svg/logo.svg'
 
-import { RATIO_MEDIUM, RATIO_SMALL, getConfig } from '../config.js'
+import { getConfig, isTablet } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -123,6 +123,7 @@ const LogoWrapper = styled.div`
   justify-content: center;
   align-items: center;
   transition: width 0.6s, left 0.6s, top 0.6s, height 0.6s;
+  ${ props => props.isTablet && 'background: #fff' };
 `
 
 const StyledLogoLink = styled(Link)`
@@ -223,7 +224,6 @@ const Navbar = class extends React.Component {
       media,
       pathname
     } = this.props
-    const { ratio } = media
     const isHome = pathname === '/'
     const config = getConfig(media, pathname)
 
@@ -261,7 +261,7 @@ const Navbar = class extends React.Component {
         <NavWrapper>
           <NavMenu media={media} style={navMenuStyle}>
             <Links
-              isTablet={ratio < RATIO_MEDIUM}
+              isTablet={isTablet(media)}
               media={media}
               key={pathname}
               style={linksStyle}
@@ -289,7 +289,7 @@ const Navbar = class extends React.Component {
               </StyledLink>
             </Links>
           </NavMenu>
-          <LogoWrapper style={logoWrapper}>
+          <LogoWrapper isTablet={isTablet(media)} style={logoWrapper}>
             <StyledLogoLink
               to="/"
               style={logoStyle}
@@ -301,9 +301,9 @@ const Navbar = class extends React.Component {
                 timeout={0}
               >
                 {state => {
-                  const style = ratio > RATIO_SMALL
-                    ? this.formatLogoStyle(state, config)
-                    : {}
+                  const style = isTablet(media)
+                    ? {}
+                    : this.formatLogoStyle(state, config)
 
                   return (
                     <div style={style}>

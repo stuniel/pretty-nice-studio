@@ -7,7 +7,7 @@ import { find } from 'lodash'
 import Image from 'gatsby-image'
 import { Transition } from 'react-transition-group'
 
-import { RATIO_MEDIUM, getConfig } from '../config.js'
+import { getConfig, getPadding, isTablet } from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -47,9 +47,9 @@ const Wrapper = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   max-width: 100vw;
-  padding: ${ props => props.isMobile
+  padding: ${ props => props.isTablet
     ? `${ props.paddingVertical * 2 }px ${ props.paddingHorizontal / 2 }px
-      ${ props.paddingVertical }px ${ props.paddingHorizontal / 2 }px`
+      0 ${ props.paddingHorizontal / 2 }px`
     : `${ props.paddingVertical }px 0 0 0`
 };
   scrollbar-width: none;
@@ -144,6 +144,9 @@ const ButtonsWrapperSmall = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: pre-line;
 `
 
 const ButtonWrapper = styled.div`
@@ -265,15 +268,15 @@ class ScrollablePosts extends React.Component {
   renderByType (type, first, second) {
     const { media, session } = this.props
     const { mounted } = this.state
-    const { height } = media
+    const { paddingVertical, paddingHorizontal } = getPadding(media)
 
     const LayoutComponent = getLayoutComponent(type)
     const alt = `pretty nice studio - ${ session } session photo`
 
     return (
       <LayoutComponent
-        paddingVertical={height / 10}
-        paddingHorizontal={height / 10}
+        paddingVertical={paddingVertical}
+        paddingHorizontal={paddingHorizontal}
       >
         {first !== null && (
           <Transition
@@ -340,7 +343,7 @@ class ScrollablePosts extends React.Component {
       views
     } = this.props
     const config = getConfig(media, '/sessions')
-    const { height, ratio } = media
+    const { paddingVertical, paddingHorizontal } = getPadding(media)
 
     const buttonsWrapperStyle = {
       ...config.sessions.buttons.wrapper.getPosition()
@@ -350,16 +353,43 @@ class ScrollablePosts extends React.Component {
 
     return (
       <Wrapper
-        paddingVertical={height / 10}
-        paddingHorizontal={height / 10}
-        isMobile={ratio < RATIO_MEDIUM}
+        paddingVertical={paddingVertical}
+        paddingHorizontal={paddingHorizontal}
+        isTablet={isTablet(media)}
       >
-        {ratio < RATIO_MEDIUM
+        {isTablet(media)
           ? views.map(view => this.renderVertical(view.first, view.second))
           : views.map(view =>
             this.renderByType(view.type, view.first, view.second))
         }
-        {ratio >= RATIO_MEDIUM ? (
+        {isTablet(media) ? (
+          <ButtonsWrapperSmall>
+            <ButtonWrapper
+              style={{ marginRight: '3em' }}
+            >
+              <Button
+                onClick={this.prev}
+                style={buttonStyle}
+                paddingHorizontal={paddingHorizontal}
+              >
+                <StyledLink to={prev}>
+                  prev
+                </StyledLink>
+              </Button>
+            </ButtonWrapper>
+            <ButtonWrapper>
+              <Button
+                onClick={this.next}
+                style={buttonStyle}
+                paddingHorizontal={paddingHorizontal}
+              >
+                <StyledLink to={next}>
+                  next
+                </StyledLink>
+              </Button>
+            </ButtonWrapper>
+          </ButtonsWrapperSmall>
+        ) : (
           <ButtonsWrapper style={buttonsWrapperStyle}>
             <ButtonWrapper>
               <Button style={buttonStyle}>
@@ -385,23 +415,6 @@ class ScrollablePosts extends React.Component {
               </ButtonWrapper>
             </ButtonsGroup>
           </ButtonsWrapper>
-        ) : (
-          <ButtonsWrapperSmall>
-            <ButtonWrapper style={{ marginRight: '3em' }}>
-              <Button onClick={this.prev} style={buttonStyle}>
-                <StyledLink to={prev}>
-                  prev project
-                </StyledLink>
-              </Button>
-            </ButtonWrapper>
-            <ButtonWrapper>
-              <Button onClick={this.next} style={buttonStyle}>
-                <StyledLink to={next}>
-                  next project
-                </StyledLink>
-              </Button>
-            </ButtonWrapper>
-          </ButtonsWrapperSmall>
         )}
       </Wrapper>
     )
