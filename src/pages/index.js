@@ -17,8 +17,6 @@ import Numbers from '../components/Numbers'
 import SessionInfo from '../components/SessionInfo'
 import Sliders from '../components/Sliders'
 
-import '../components/all.sass'
-
 const DIRECTIONS = {
   forward: 'forward',
   backward: 'backward',

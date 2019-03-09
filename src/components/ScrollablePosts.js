@@ -33,6 +33,7 @@ const Layout = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  max-width: 100vw;
   
   :not(:first-child) {
     margin-top: ${ props => props.paddingVertical }px;
@@ -43,13 +44,22 @@ const Wrapper = styled.div`
   position: relative;
   height: 100vh;
   width: 100%;
-  overflow-y: scroll;
-  scrollbar-width: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100vw;
   padding: ${ props => props.isMobile
     ? `${ props.paddingVertical * 2 }px ${ props.paddingHorizontal / 2 }px
       ${ props.paddingVertical }px ${ props.paddingHorizontal / 2 }px`
-    : `${ props.paddingVertical }px 0`
+    : `${ props.paddingVertical }px 0 0 0`
 };
+  scrollbar-width: none;
+  
+  &:after {
+    content: "";
+    display: block;
+    height: ${ props => props.paddingVertical }px;
+    width: 100%;
+  }
 
   &::-webkit-scrollbar { 
     display: none;
@@ -222,10 +232,6 @@ class ScrollablePosts extends React.Component {
   componentDidMount () {
     scrollToTop()
     setTimeout(() => this.setState({ mounted: true }))
-  }
-
-  componentWillUnmount () {
-    this.setState({ mounted: false })
   }
 
   prev = () => {

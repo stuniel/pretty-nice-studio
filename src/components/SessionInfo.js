@@ -27,9 +27,13 @@ const PostNumber = styled.div`
 const Text = styled.div`
   position: absolute;
   width: 80%;
-  font-size: 1.15em;
   max-width: 600px;
   height: auto;
+  
+  p {
+    font-size: 1.15em;
+    line-height: 1.5em;
+  }
 `
 
 const Wrapper = styled.div`

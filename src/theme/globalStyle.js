@@ -6,26 +6,17 @@ export const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css?family=Cardo')
 @import url('https://fonts.googleapis.com/css?family=Scheherazada')
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  overscroll-behavior: contain;
   overflow: hidden;
   font-family: Amiri, serif;
   font-size: 14px;
   color: #464646;
+  scroll-behavior: smooth
   -webkit-font-smoothing: antialiased;
-  
-  & > div#___gatsby {
-    position: absolute;
-    overflow: hidden;
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    
+  overflow: hidden;
+
+  &::-webkit-scrollbar { 
+    display: none;
   }
   
   & > div {

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { HTMLContent } from '../components/Content'
 import ScrollablePosts from '../components/ScrollablePosts'
 
-const SessionTemplate = ({
+export const SessionTemplate = ({
   images,
   location,
   media,

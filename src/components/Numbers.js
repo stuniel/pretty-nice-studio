@@ -91,6 +91,7 @@ const Numbers = ({
       <Pagination>
         {orderedPosts.map(post => (
           <NumberSecondary
+            key={post.node.id}
             onClick={() => onNumberClick(indexOf(edges, post))}
           >
             <TransitionGroup

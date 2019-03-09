@@ -376,14 +376,6 @@ export const getConfig = (media, pathname) => {
           }
         }
       },
-      wrapper: {
-        getPosition () {
-          return {
-            width,
-            height
-          }
-        }
-      }
     },
     layouts: {
       getLayout () {

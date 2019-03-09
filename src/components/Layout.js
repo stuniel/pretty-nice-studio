@@ -13,6 +13,7 @@ import UnderConstruction from '../components/UnderConstruction'
 
 import { RATIO_LARGE, RATIO_MEDIUM, getConfig } from '../config.js'
 
+import './all.sass'
 import { GlobalStyle } from '../theme/globalStyle'
 
 const Container = styled.div`
@@ -31,8 +32,13 @@ const Wrapper = styled.div`
 const ChildWrapper = styled.div`
   position: absolute;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  &::-webkit-scrollbar { 
+    display: none;
+  }
 `
 
 const ContentTransitionGroup = styled(TransitionGroup)`
@@ -67,6 +73,8 @@ const ContentTransitionGroup = styled(TransitionGroup)`
 
 const LayoutWrapper = styled.div`
   position: relative;
+  height: 100vh;
+  width: 100vw;
 `
 
 const Text = styled.div`
@@ -106,17 +114,13 @@ class TemplateWrapper extends React.Component {
 
     const containerClassName = csx({ 'preload': !mounted })
 
-    const layoutWrapperStyle = {
-      ...ratio > RATIO_MEDIUM && config.layout.wrapper.getPosition()
-    }
-
     const textStyle = {
       ...config.layout.text.getPosition()
     }
 
     // if (process.env.SITE_STATUS !== 'ready') {
     //   return (
-    //     <LayoutWrapper style={layoutWrapperStyle}>
+    //     <LayoutWrapper}>
     //       <UnderConstruction />
     //     </LayoutWrapper>
     //   )
@@ -180,7 +184,7 @@ class TemplateWrapper extends React.Component {
             </Helmet>
             {mounted ? (
               <React.Fragment>
-                <LayoutWrapper style={layoutWrapperStyle}>
+                <LayoutWrapper>
                   <Navbar pathname={location && location.pathname} />
                   {ratio > RATIO_LARGE && (
                     <Text style={textStyle}>
@@ -206,7 +210,7 @@ class TemplateWrapper extends React.Component {
                 </Wrapper>
               </React.Fragment>
             ) : (
-              <LayoutWrapper style={layoutWrapperStyle}>
+              <LayoutWrapper>
                 <Loader />
               </LayoutWrapper>
             )}
