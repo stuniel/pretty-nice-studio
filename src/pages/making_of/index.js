@@ -19,7 +19,13 @@ const ContentWrapper = styled.div`
   height: 100%;
   width: 100%;
   left: 0;
-  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { 
+    display: none;
+  }
 `
 
 const Content = styled.div`

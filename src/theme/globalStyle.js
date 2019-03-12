@@ -1,11 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css?family=Amiri')
-@import url('https://fonts.googleapis.com/css?family=Amiko')
-@import url('https://fonts.googleapis.com/css?family=Cardo')
-@import url('https://fonts.googleapis.com/css?family=Scheherazada')
-
 body {
   overflow: hidden;
   font-family: Amiri, serif;

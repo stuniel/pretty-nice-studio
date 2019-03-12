@@ -44,7 +44,13 @@ const ContentWrapper = styled.div`
   height: ${ props => props.isTablet
     ? `calc(100vh - ${ props.paddingVertical * 3 }px)` : '100%' };  top: ${ props => props.isTablet ? props.paddingVertical * 2 : 0 }px;
   width: ${ props => props.isTablet ? '100%' : '50%' };
-  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { 
+    display: none;
+  }
 `
 
 const Content = styled.div`
