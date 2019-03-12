@@ -268,6 +268,13 @@ const Navbar = class extends React.Component {
             >
               <StyledLink
                 pathname={pathname}
+                to="/"
+                onClick={closeMenu}
+              >
+                Home
+              </StyledLink>
+              <StyledLink
+                pathname={pathname}
                 to="/making_of"
                 onClick={closeMenu}
               >

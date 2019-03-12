@@ -21,10 +21,10 @@ const Wrapper = styled.div`
 const Contact = styled.span`
   position: absolute;
   left: 0;
+  color: #000;
   font-family: Amiri, serif;
-  font-size: 0.8em;
+  font-size: 0.9em;
   letter-spacing: 0.3em;
-  font-weight: 700;
 `
 
 const formatContactStyle = (state, config) => {

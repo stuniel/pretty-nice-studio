@@ -608,7 +608,7 @@ export const getConfig = (media, pathname) => {
               left: 0,
               height: paddingHorizontal,
               width: height,
-              padding: `0 ${ paddingVertical }px`,
+              padding: `0 ${ paddingVertical }px 0 ${ paddingVertical / 2 }px`,
               transformOrigin: 'left top',
               transform: 'rotate(-90deg)'
             }

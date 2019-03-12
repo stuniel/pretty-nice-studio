@@ -10,7 +10,6 @@ import { getConfig } from '../config.js'
 import Button from '../components/Button'
 
 const PostNumber = styled.div`
-  font-family: 'Cardo', serif;
   font-family: 'Scheherazada', serif;
   font-weight: 500;
   transform: scale(1, 0.8);
