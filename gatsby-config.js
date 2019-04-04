@@ -19,22 +19,6 @@ module.exports = {
     },
     'gatsby-plugin-sass',
     {
-      resolve: `gatsby-plugin-styled-components`,
-      options: {
-        // Add any options here
-      },
-    },
-    {
-      resolve: 'gatsby-source-s3',
-      options: {
-        aws: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID,
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-        },
-        buckets: ['prettynicestudio-website'],
-      },
-    },
-    {
       // keep as first gatsby-source-filesystem plugin for gatsby image support
       resolve: 'gatsby-source-filesystem',
       options: {

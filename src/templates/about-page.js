@@ -98,10 +98,11 @@ const StyledContent = styled.div`
     margin-bottom: 0;
   }
 `
-const formatImageCoverStyle = (state, config) => {
+const formatImageCoverStyle = (state, timeout, transitionMenu, config) => {
   const transitionStyles = {
     entered: {
-      transform: 'translateX(-100%)',
+      transform: 'translateX(100%)',
+      transitionDelay: `${ timeout / 2 }ms`,
     },
     exited: {
       transform: 'translateX(0)',
@@ -109,8 +110,31 @@ const formatImageCoverStyle = (state, config) => {
   }
 
   return {
-    transform: 'transitionX(-100%)',
-    transition: 'all 0.6s ease',
+    transform: 'transitionX(100%)',
+    transition: `all ${ timeout * 0.75 }ms ease`,
+    ...(state === 'entering' && transitionStyles.entered),
+    ...(state === 'entered' && transitionStyles.entered),
+    ...(state === 'exited' && transitionStyles.exited),
+    ...(state === 'exiting' && transitionStyles.exited),
+  }
+}
+
+const formatContentStyle = (state, timeout, transitionMenu, config) => {
+  const transitionStyles = {
+    entered: {
+      opacity: 1,
+      transition: `all ${ timeout * 0.75 }ms ease-in`,
+      transitionDelay: `${ timeout / 2 }ms`,
+    },
+    exited: {
+      transition: `all ${ timeout / 2 }ms ease-out`,
+      opacity: 0
+    },
+  }
+
+  return {
+    opacity: 1,
+    ...config.contact.content.getPosition(),
     ...(state === 'entering' && transitionStyles.entered),
     ...(state === 'entered' && transitionStyles.entered),
     ...(state === 'exited' && transitionStyles.exited),
@@ -119,31 +143,12 @@ const formatImageCoverStyle = (state, config) => {
 }
 
 class AboutPageTemplate extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      photoVisible: false
-    }
-  }
-
-  componentDidMount () {
-    setTimeout(() => this.setState({ photoVisible: true }), 500)
-  }
-
-  componentWillUnmount () {
-    this.setState({ photoVisible: false })
-  }
-
   render () {
-    const { content, data, media, title } = this.props
-    const { photoVisible } = this.state
+    const { activeTransitions, content, data, media,
+      timeout, title, transitionMenu } = this.props
 
     const config = getConfig(media, '/contact')
     const { paddingVertical, paddingHorizontal } = getPadding(media)
-
-    const contentStyle = {
-      ...config.contact.content.getPosition()
-    }
 
     return (
       <Section>
@@ -155,11 +160,14 @@ class AboutPageTemplate extends Component {
               paddingHorizontal={paddingHorizontal}
             />
             <Transition
-              in={photoVisible}
-              timeout={0}
+              in={activeTransitions['about']}
+              timeout={{
+                enter: transitionMenu + timeout / 2,
+                exit: timeout
+              }}
             >
               {state => {
-                const imageCoverStyle = formatImageCoverStyle(state, config)
+                const imageCoverStyle = formatImageCoverStyle(state, timeout, transitionMenu, config)
 
                 return (
                   <ImageCover style={imageCoverStyle} />
@@ -173,13 +181,27 @@ class AboutPageTemplate extends Component {
           paddingVertical={paddingVertical}
           paddingHorizontal={paddingHorizontal}
         >
-          <StyledContent
-            isTablet={isTablet(media)}
-            style={contentStyle}
+          <Transition
+            in={activeTransitions['about']}
+            timeout={{
+              enter: transitionMenu + timeout / 2,
+              exit: timeout
+            }}
           >
-            <h2>{title}</h2>
-            <section dangerouslySetInnerHTML={{ __html: content }} />
-          </StyledContent>
+            {state => {
+              const contentStyle = formatContentStyle(state, timeout, transitionMenu, config)
+
+              return (
+                <StyledContent
+                  isTablet={isTablet(media)}
+                  style={contentStyle}
+                >
+                  <h2>{title}</h2>
+                  <section dangerouslySetInnerHTML={{ __html: content }} />
+                </StyledContent>
+              )
+            }}
+          </Transition>
         </ContentWrapper>
       </Section>
     )
@@ -203,7 +225,7 @@ export const aboutPageQuery = graphql`
       photos: edges {
         photo: node {
           childImageSharp {
-            fluid {
+            fluid(quality: 100) {
               ...GatsbyImageSharpFluid
               presentationWidth
             }
@@ -223,16 +245,19 @@ AboutPageTemplate.propTypes = {
 
 export { AboutPageTemplate }
 
-const AboutPage = ({ data, location, media }) => {
+const AboutPage = ({ activeTransitions, data, location, media, timeout, transitionMenu }) => {
   const { markdownRemark: post } = data
 
   return (
     <AboutPageTemplate
+      activeTransitions={activeTransitions}
       contentComponent={HTMLContent}
       title={post.frontmatter.title}
       data={data}
       content={post.html}
       media={media}
+      timeout={timeout}
+      transitionMenu={transitionMenu}
       location={location}
     />
   )
@@ -242,8 +267,15 @@ AboutPage.propTypes = {
   data: PropTypes.object.isRequired,
 }
 
-const mapStateToProps = ({ media }) => {
-  return { media }
+const mapStateToProps = ({
+  media,
+  transitions: {
+    activeTransitions,
+    timeout,
+    transitionMenu
+  }
+}) => {
+  return { activeTransitions, media, timeout, transitionMenu }
 }
 
 const mapDispatchToProps = () => {}

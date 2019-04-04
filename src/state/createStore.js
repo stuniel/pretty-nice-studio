@@ -13,6 +13,18 @@ const initialState = {
     ratio: windowGlobal
       ? windowGlobal.innerWidth / windowGlobal.innerHeight
       : null
+  },
+  transitions: {
+    logoVisible: true,
+    menuOpen: false,
+    timeout: 1000,
+    transitionMenu: 750,
+    activeTransitions: {
+      'home': false,
+      'sessions': false,
+      'about': false,
+      'contact': false,
+    }
   }
 }
 
@@ -22,4 +34,5 @@ process.env.NODE_ENV === 'development' && windowGlobal.devToolsExtension
   windowGlobal.__REDUX_DEVTOOLS_EXTENSION__()
   : f => f
 
-export const store = createReduxStore(rootReducer, initialState, devtools)
+export const createStore = () =>
+  createReduxStore(rootReducer, initialState, devtools)

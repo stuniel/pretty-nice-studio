@@ -19,6 +19,7 @@ collections:
       - {label: "Body", name: "body", widget: "markdown"}
       - {label: "Tags", name: "tags", widget: "list"}
       - {label: "Images", name: "images", widget: "images"}
+      - {label: "Views", name: "views", widget: "list"}
 
   - name: "pages"
     label: "Pages"

@@ -1,11 +1,28 @@
-import { HIDE_LOGO, SHOW_LOGO, TOGGLE_MENU, CLOSE_MENU } from './actions'
+import {
+  HIDE_LOGO,
+  SHOW_LOGO,
+  TOGGLE_MENU,
+  CLOSE_MENU,
+  CHANGE_TIMEOUT,
+  TOGGLE_TRANSITION
+} from './actions'
 
-const initialState = {
-  logoVisible: true,
-  menuOpen: false,
+function toggleTransition (state, action) {
+  const { key } = action
+  const { activeTransitions } = state
+
+  const transition = activeTransitions[key]
+
+  return {
+    ...state,
+    activeTransitions: {
+      ...activeTransitions,
+      [key]: !transition
+    }
+  }
 }
 
-function media (state = initialState, action) {
+function media (state = {}, action) {
   switch (action.type) {
   case HIDE_LOGO:
     return Object.assign({}, state, {
@@ -23,6 +40,12 @@ function media (state = initialState, action) {
     return Object.assign({}, state, {
       menuOpen: false
     })
+  case CHANGE_TIMEOUT:
+    return Object.assign({}, state, {
+      timeout: action.value
+    })
+  case TOGGLE_TRANSITION:
+    return toggleTransition(state, action)
   default:
     return state
   }

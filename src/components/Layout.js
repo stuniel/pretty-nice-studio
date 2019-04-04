@@ -9,6 +9,8 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Footer from '../components/Footer'
 import Loader from '../components/Loader'
 import Navbar from '../components/Navbar'
+import Media from '../components/Media'
+import Transition from '../components/Transition'
 // import UnderConstruction from '../components/UnderConstruction'
 
 import { getConfig, isLaptop } from '../config.js'
@@ -25,7 +27,7 @@ const Container = styled.div`
 const Wrapper = styled.div`
   position: absolute;
   top: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
 `
 
@@ -79,6 +81,8 @@ const Text = styled.div`
   font-size: 0.7em;
   letter-spacing: 0.5em;
   word-spacing: 0.7em;
+  transform: rotate(-90deg);
+  transform-origin: 100% 0;
   z-index: 10;
 `
 
@@ -133,82 +137,74 @@ class TemplateWrapper extends React.Component {
             }
           `}
         render={data => (
-          <Container className={containerClassName}>
-            <GlobalStyle />
-            <Helmet>
-              <html lang="en" />
-              <title>{data.site.siteMetadata.title}</title>
-              <meta
-                name="description"
-                content={data.site.siteMetadata.description}
-              />
+          <Media>
+            <Container className={containerClassName}>
+              <GlobalStyle />
+              <Helmet>
+                <html lang="en" />
+                <title>{data.site.siteMetadata.title}</title>
+                <meta
+                  name="description"
+                  content={data.site.siteMetadata.description}
+                />
 
-              <link
-                rel="apple-touch-icon"
-                sizes="180x180"
-                href="/img/apple-touch-icon.png"
-              />
-              <link
-                rel="icon"
-                type="image/png"
-                href="/img/favicon-32x32.png"
-                sizes="32x32"
-              />
-              <link
-                rel="icon"
-                type="image/png"
-                href="/img/favicon-16x16.png"
-                sizes="16x16"
-              />
+                <link
+                  rel="apple-touch-icon"
+                  sizes="180x180"
+                  href="/img/apple-touch-icon.png"
+                />
+                <link
+                  rel="icon"
+                  type="image/png"
+                  href="/img/favicon-32x32.png"
+                  sizes="32x32"
+                />
+                <link
+                  rel="icon"
+                  type="image/png"
+                  href="/img/favicon-16x16.png"
+                  sizes="16x16"
+                />
 
-              <link
-                rel="mask-icon"
-                href="/img/safari-pinned-tab.svg"
-                color="#ff4400"
-              />
-              <meta name="theme-color" content="#fff" />
+                <link
+                  rel="mask-icon"
+                  href="/img/safari-pinned-tab.svg"
+                  color="#ff4400"
+                />
+                <meta name="theme-color" content="#fff" />
 
-              <meta property="og:type" content="business.business" />
-              <meta
-                property="og:title"
-                content={data.site.siteMetadata.title}
-              />
-              <meta property="og:url" content="/" />
-              <meta property="og:image" content="/img/og-image.jpg" />
-            </Helmet>
-            {mounted ? (
-              <React.Fragment>
-                <LayoutWrapper>
-                  <Navbar pathname={location && location.pathname} />
-                  {!isLaptop(media) && (
-                    <Text style={textStyle}>
-                      Fashion & beauty retouch
-                    </Text>
-                  )}
-                  <Footer pathname={location && location.pathname} />
-                </LayoutWrapper>
-                <Wrapper>
-                  <ContentTransitionGroup
-                    className="content-wrapper"
-                    exitTime={300}
-                    enterTime={300}
-                  >
-                    <CSSTransition
-                      timeout={{ enter: 300, exit: 300 }}
-                      classNames="content"
-                      key={location.key}
-                    >
+                <meta property="og:type" content="business.business" />
+                <meta
+                  property="og:title"
+                  content={data.site.siteMetadata.title}
+                />
+                <meta property="og:url" content="/" />
+                <meta property="og:image" content="/img/og-image.jpg" />
+              </Helmet>
+              {mounted ? (
+                <React.Fragment>
+                  <LayoutWrapper>
+                    <Navbar pathname={location && location.pathname} />
+                    {!isLaptop(media) && (
+                      <Text style={textStyle}>
+                        Fashion & beauty retouch
+                      </Text>
+                    )}
+                    <Footer pathname={location && location.pathname} />
+                  </LayoutWrapper>
+                  <Wrapper>
+                    <Transition location={location}>
                       <ChildWrapper>{children}</ChildWrapper>
-                    </CSSTransition>
-                  </ContentTransitionGroup>
-                </Wrapper>
-              </React.Fragment>
-            ) : (
-              <LayoutWrapper>
-                <Loader />
-              </LayoutWrapper>
-            )}
-          </Container>
+                    </Transition>
+                  </Wrapper>
+                </React.Fragment>
+              ) : (
+                <LayoutWrapper>
+                  <Loader />
+                </LayoutWrapper>
+              )}
+            </Container>
+          </Media>
         )}
       />
     )

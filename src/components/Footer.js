@@ -3,8 +3,14 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { Transition } from 'react-transition-group'
 
-import { getConfig, isTablet } from '../config.js'
-
+import {
+  firstSliderWidth,
+  isMobile,
+  isTablet,
+  isLaptop,
+  RATIO_SMALL
+} from '../config.js'
+import { formatContactStyle } from '../formatters/style'
 import Icons from '../components/Icons'
 
 const Wrapper = styled.div`
@@ -14,8 +20,27 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   z-index: 10;
-  transition: all 0.6s;
-  ${ props => props.isTablet && 'background-color: #fff;' }
+  transition: ${ props => `all ${ props.timeout }ms` };
+  transition-delay: ${ props => `${ props.timeout / 2 }ms` };
+  
+  top: 90vh;
+  left: 10vh;
+  height: 10vh;
+  width: ${ props => props.isHome
+    ? (props.isLaptop ? 165 : `calc(${ firstSliderWidth(props.ratio) })`)
+    : 'calc(100vw - 20vh)' };)
+    
+  ${ props => props.isTablet && `
+    left: 0;
+    padding: 0 calc(6.66vw *
+      ${ ((1 + (props.ratio - RATIO_SMALL) * 1.5) / 2) });
+    background-color: #fff;
+  ` }
+
+  ${ props => props.isMobile && `
+    left: 0;
+    padding: 0 6.66vw;
+  ` }
 `
 
 const Contact = styled.span`
@@ -27,49 +52,26 @@ const Contact = styled.span`
   letter-spacing: 0.3em;
 `
 
-const formatContactStyle = (state, config) => {
-  const transitionStyles = {
-    entered: {
-      transform: 'translateX(0)',
-      opacity: 1,
-    },
-    exited: {
-      transform: 'translateX(-200%)',
-      opacity: 0,
-    },
-  }
-
-  return {
-    transform: 'transitionX(0)',
-    opacity: 1,
-    transition: 'all 0.6s ease',
-    ...(state === 'entering' && transitionStyles.entered),
-    ...(state === 'entered' && transitionStyles.entered),
-    ...(state === 'exited' && transitionStyles.exited),
-    ...(state === 'exiting' && transitionStyles.exited),
-  }
-}
-
-const Footer = ({ media, pathname, transitions: { menuOpen } }) => {
-  const config = getConfig(media, pathname)
-
-  const wrapperStyle = {
-    ...config.footer.wrapper.getPosition(menuOpen)
-  }
+const Footer = ({ media, pathname, transitions: { menuOpen, timeout } }) => {
+  const { ratio } = media
 
   return (
     <Wrapper
       between={menuOpen}
-      style={wrapperStyle}
+      isHome={pathname === '/' && !menuOpen}
+      isMobile={isMobile(media)}
       isTablet={isTablet(media)}
+      isLaptop={isLaptop(media)}
+      ratio={ratio}
+      timeout={timeout}
     >
       {!isTablet(media) && (
         <Transition
           in={menuOpen}
-          timeout={0}
+          timeout={timeout}
         >
           {state => {
-            const style = formatContactStyle(state, config)
+            const style = formatContactStyle(state, timeout)
 
             return (
               <Contact style={style}>contact@prettynicestudio.com</Contact>

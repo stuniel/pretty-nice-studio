@@ -23,6 +23,120 @@ const PostNumber = styled.div`
   opacity: 0.3;
 `
 
+const StyledTransitionGroup = styled(TransitionGroup)`
+  position: relative;
+  height: auto;
+  float: left;
+
+  span {
+    display: inline-block;
+  }
+
+  .big-number-primary-forward-enter {
+    transition: all 1000ms;
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  .big-number-primary-forward-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .big-number-primary-forward-exit {
+    transition: all 1000ms;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .big-number-primary-forward-exit-active {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  .big-number-primary-backward-enter {
+    transition: all 1000ms;
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  .big-number-primary-backward-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .big-number-primary-backward-exit {
+    transition: all 1000ms;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .big-number-primary-backward-exit-active {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+`
+
+const StyledDescriptionTransitionGroup = styled(TransitionGroup)`
+  .description-forward-enter {
+    transition: all 400ms;
+    transition-delay: 600ms;
+    transform: translateX(-33%);
+    opacity: 0;
+  }
+
+  .description-forward-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .description-forward-exit {
+    transition: all 1000ms;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .description-forward-exit-active {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+
+  .description-backward-enter {
+    transition: all 400ms;
+    transition-delay: 600ms;
+    transform: translateX(33%);
+    opacity: 0;
+  }
+
+  .description-backward-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .description-backward-exit {
+    transition: all 1000ms;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .description-backward-exit-active {
+    transform: translateX(-150%);
+    opacity: 0;
+  }
+`
+
 const Text = styled.div`
   position: absolute;
   width: 80%;
@@ -56,6 +170,7 @@ const SessionInfo = ({
   media,
   onButtonClick,
   pathname,
+  style
 }) => {
   const config = getConfig(media, pathname)
 
@@ -74,32 +189,33 @@ const SessionInfo = ({
 
   const sessionInfoStyle = {
     ...config.index.content.sessionInfo.getPosition(),
+    ...style
   }
 
   return (
     <Wrapper style={sessionInfoStyle}>
       <PostNumber style={postNumberStyle}>
-        <TransitionGroup
+        <StyledTransitionGroup
           childFactory={child =>
             createChildFactory(child, {
-              classNames: `number-primary-${ direction }`,
+              classNames: `big-number-primary-${ direction }`,
             })
           }
-          className={`number-primary-${ direction }`}
+          className={`big-number-primary-${ direction }`}
           component="span"
         >
           <CSSTransition
-            className={`number-primary-${ direction }-enter`}
-            classNames={`number-primary-${ direction }`}
+            className={`big-number-primary-${ direction }-enter`}
+            classNames={`big-number-primary-${ direction }`}
             key={currentPostIndex}
-            timeout={{ enter: 400, exit: 400 }}
+            timeout={{ enter: 1000, exit: 1000 }}
           >
             <span>{formatNumber(currentPostIndex + 1)}</span>
           </CSSTransition>
-        </TransitionGroup>
+        </StyledTransitionGroup>
       </PostNumber>
       <Text style={textStyle}>
-        <TransitionGroup
+        <StyledDescriptionTransitionGroup
           childFactory={child =>
             createChildFactory(child, {
               classNames: `description-${ direction }`,
@@ -126,7 +242,7 @@ const SessionInfo = ({
               </Button>
             </div>
           </CSSTransition>
-        </TransitionGroup>
+        </StyledDescriptionTransitionGroup>
       </Text>
     </Wrapper>
   )

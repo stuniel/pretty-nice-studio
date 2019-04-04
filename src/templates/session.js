@@ -129,7 +129,7 @@ export const pageQuery = graphql`
       photos: edges {
         photo: node {
           childImageSharp {
-            fluid {
+            fluid(quality: 100) {
               ...GatsbyImageSharpFluid
               presentationWidth
             }

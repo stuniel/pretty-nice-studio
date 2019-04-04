@@ -1,28 +1,37 @@
 import React from 'react'
-
-import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
+import { Provider } from 'react-redux'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
-import wrapWithProvider from './wrap-with-provider'
-import { store } from './src/state/createStore'
+import { createStore } from './src/state/createStore'
+
+const sheetByPathname = new Map()
 
 export const replaceRenderer = ({
   bodyComponent,
-  replaceBodyHTMLString,
-  setHeadComponents,
+  pathname,
+  replaceBodyHTMLString
 }) => {
   const sheet = new ServerStyleSheet()
+  sheetByPathname.set(pathname, sheet)
 
-  const ConnectedBody = () => (
-    <Provider store={store}>
-      <StyleSheetManager sheet={sheet.instance}>
-        {bodyComponent}
-      </StyleSheetManager>
-    </Provider>
+  const store = createStore()
+
+  replaceBodyHTMLString(
+    renderToString(
+      <Provider store={store}>
+        <StyleSheetManager sheet={sheet.instance}>
+          {bodyComponent}
+        </StyleSheetManager>
+      </Provider>
+    )
   )
-  replaceBodyHTMLString(renderToString(<ConnectedBody />))
-  setHeadComponents([sheet.getStyleElement()])
 }
 
-export const wrapRootElement = wrapWithProvider
+export const onRenderBody = ({ setHeadComponents, pathname }) => {
+  const sheet = sheetByPathname.get(pathname)
+  if (sheet) {
+    setHeadComponents([sheet.getStyleElement()])
+    sheetByPathname.delete(pathname)
+  }
+}

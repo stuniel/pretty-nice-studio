@@ -75,11 +75,13 @@ const Numbers = ({
   onNumberClick,
   orderedPosts,
   pathname,
+  style
 }) => {
   const config = getConfig(media, pathname)
 
   const numbersStyle = {
-    ...config.index.numbers.getPosition()
+    ...config.index.numbers.getPosition(),
+    ...style
   }
 
   const numberPrimaryStyle = {
@@ -91,7 +93,6 @@ const Numbers = ({
       <Pagination>
         {orderedPosts.map(post => (
           <NumberSecondary
-            key={post.node.id}
             onClick={() => onNumberClick(indexOf(edges, post))}
           >
             <TransitionGroup

@@ -8,6 +8,10 @@ import Image from 'gatsby-image'
 import { Transition } from 'react-transition-group'
 
 import { getConfig, getPadding, isTablet } from '../config.js'
+import {
+  formatPhotoStyle,
+  formatSessionButtonsStyle
+} from '../formatters/style'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -204,26 +208,6 @@ function scrollToTop () {
   window.scrollTo(0, 0)
 }
 
-const formatPhotoStyle = (state, left) => {
-  const transitionStyles = {
-    entered: {
-      transform: 'translateX(0)',
-    },
-    exited: {
-      transform: `translateX(${ left ? '-' : '' }150%)`,
-    },
-  }
-
-  return {
-    transform: 'transitionX(0)',
-    transition: 'all 0.6s ease',
-    ...(state === 'entering' && transitionStyles.entered),
-    ...(state === 'entered' && transitionStyles.entered),
-    ...(state === 'exited' && transitionStyles.exited),
-    ...(state === 'exiting' && transitionStyles.exited),
-  }
-}
-
 class ScrollablePosts extends React.Component {
   constructor (props) {
     super(props)
@@ -258,7 +242,7 @@ class ScrollablePosts extends React.Component {
     const filteredPhotos = images.photos
       .map(image => image.photo)
       .filter(photo =>
-        photo.relativePath.includes(height < 768 ? 'small' : 'big'))
+        photo.relativePath.includes(height <= 768 ? 'big' : 'big'))
 
     return find(filteredPhotos, photo =>
       photo.relativePath.includes(photoName)
@@ -266,7 +250,7 @@ class ScrollablePosts extends React.Component {
   }
 
   renderByType (type, first, second) {
-    const { media, session } = this.props
+    const { media, session, timeout } = this.props
     const { mounted } = this.state
     const { paddingVertical, paddingHorizontal } = getPadding(media)
 
@@ -281,10 +265,10 @@ class ScrollablePosts extends React.Component {
         {first !== null && (
           <Transition
             in={mounted}
-            timeout={0}
+            timeout={timeout * (4 / 3)}
           >
             {state => {
-              const photoStyle = formatPhotoStyle(state, true)
+              const photoStyle = formatPhotoStyle(state, timeout, true)
 
               return (
                 <Photo style={photoStyle}>
@@ -297,10 +281,10 @@ class ScrollablePosts extends React.Component {
         {second !== null && (
           <Transition
             in={mounted}
-            timeout={0}
+            timeout={timeout}
           >
             {state => {
-              const photoStyle = formatPhotoStyle(state, false)
+              const photoStyle = formatPhotoStyle(state, timeout, false)
 
               return (
                 <Photo style={photoStyle}>
@@ -340,8 +324,10 @@ class ScrollablePosts extends React.Component {
       media,
       prev,
       next,
+      timeout,
       views
     } = this.props
+    const { mounted } = this.state
     const config = getConfig(media, '/sessions')
     const { paddingVertical, paddingHorizontal } = getPadding(media)
 
@@ -398,22 +384,33 @@ class ScrollablePosts extends React.Component {
                 </StyledLink>
               </Button>
             </ButtonWrapper>
-            <ButtonsGroup>
-              <ButtonWrapper style={{ marginRight: '3em' }}>
-                <Button onClick={this.prev} style={buttonStyle}>
-                  <StyledLink to={prev}>
-                    prev project
-                  </StyledLink>
-                </Button>
-              </ButtonWrapper>
-              <ButtonWrapper>
-                <Button onClick={this.next} style={buttonStyle}>
-                  <StyledLink to={next}>
-                    next project
-                  </StyledLink>
-                </Button>
-              </ButtonWrapper>
-            </ButtonsGroup>
+            <Transition
+              in={mounted}
+              timeout={timeout}
+            >
+              {state => {
+                const sessionButtonsStyle = formatSessionButtonsStyle(state, timeout)
+
+                return (
+                  <ButtonsGroup style={sessionButtonsStyle}>
+                    <ButtonWrapper style={{ marginRight: '3em' }}>
+                      <Button onClick={this.next} style={buttonStyle}>
+                        <StyledLink to={next}>
+                          next project
+                        </StyledLink>
+                      </Button>
+                    </ButtonWrapper>
+                    <ButtonWrapper>
+                      <Button onClick={this.prev} style={buttonStyle}>
+                        <StyledLink to={prev}>
+                          prev project
+                        </StyledLink>
+                      </Button>
+                    </ButtonWrapper>
+                  </ButtonsGroup>
+                )
+              }}
+            </Transition>
           </ButtonsWrapper>
         )}
       </Wrapper>
@@ -423,7 +420,11 @@ class ScrollablePosts extends React.Component {
 
 ScrollablePosts.propTypes = propTypes
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({
+  transitions: {
+    timeout
+  }
+}) => ({ timeout })
 
 const mapDispatchToProps = dispatch => {
   return {

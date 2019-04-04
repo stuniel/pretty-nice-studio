@@ -8,8 +8,14 @@ import {
   indexOf,
   throttle
 } from 'lodash'
+import { Transition } from 'react-transition-group'
 
 import { getConfig, isTablet, isLaptop } from '../config.js'
+import {
+  formatArrowsStyle,
+  formatNumbersStyle,
+  formatSessionInfoStyle
+} from '../formatters/style'
 
 import Arrows from '../components/Arrows'
 import Button from '../components/Button'
@@ -44,10 +50,6 @@ const Content = styled.div`
 class IndexPage extends React.PureComponent {
   constructor (props) {
     super()
-    this.state = {
-      direction: '',
-      show: false,
-    }
 
     this.tarnsitionActive = false
   }
@@ -117,7 +119,6 @@ class IndexPage extends React.PureComponent {
   handleSlideClick = (post, event) => {
     event && event.stopPropagation()
 
-    this.setState({ show: true })
     navigate(post.fields.slug)
   }
 
@@ -131,8 +132,9 @@ class IndexPage extends React.PureComponent {
   )
 
   render () {
-    const { slide, data, location, media } = this.props
-    const { direction, show } = this.state
+    const { activeTransitions, slide, data,
+      location, media, timeout } = this.props
+    const { direction } = this.state
 
     const { edges } = data.allMarkdownRemark
     const { pathname } = location
@@ -150,35 +152,71 @@ class IndexPage extends React.PureComponent {
     return (
       <Container>
         {!isLaptop(media) && (
-          <Numbers
-            currentPostIndex={currentPostIndex}
-            direction={direction}
-            edges={edges}
-            media={media}
-            onNumberClick={this.handleNumberClick}
-            orderedPosts={orderedPosts}
-            pathname={pathname}
-          />
+          <Transition
+            in={activeTransitions['home']}
+            timeout={timeout}
+          >
+            {state => {
+              const numbersStyle = formatNumbersStyle(state, timeout)
+
+              return (
+                <Numbers
+                  currentPostIndex={currentPostIndex}
+                  direction={direction}
+                  edges={edges}
+                  media={media}
+                  onNumberClick={this.handleNumberClick}
+                  orderedPosts={orderedPosts}
+                  pathname={pathname}
+                  style={numbersStyle}
+                />
+              )
+            }}
+          </Transition>
         )}
         {!isLaptop(media) && (
           <Content style={contentStyle}>
-            <SessionInfo
-              currentPost={currentPost}
-              currentPostIndex={currentPostIndex}
-              direction={direction}
-              media={media}
-              onButtonClick={this.handleSlideClick}
-              pathname={pathname}
-            />
+            <Transition
+              in={activeTransitions['home']}
+              timeout={timeout}
+            >
+              {state => {
+                const sessionInfoStyle = formatSessionInfoStyle(state, timeout)
+
+                return (
+                  <SessionInfo
+                    currentPost={currentPost}
+                    currentPostIndex={currentPostIndex}
+                    direction={direction}
+                    media={media}
+                    onButtonClick={this.handleSlideClick}
+                    pathname={pathname}
+                    style={sessionInfoStyle}
+                  />
+                )
+              }}
+            </Transition>
           </Content>
         )}
         {!isTablet(media) && (
-          <Arrows
-            onLeftClick={this.prev}
-            onRightClick={this.next}
-            media={media}
-            pathname={pathname}
-          />
+          <Transition
+            in={activeTransitions['home']}
+            timeout={timeout}
+          >
+            {state => {
+              const arrowsStyle = formatArrowsStyle(state, timeout)
+
+              return (
+                <Arrows
+                  onLeftClick={this.prev}
+                  onRightClick={this.next}
+                  media={media}
+                  pathname={pathname}
+                  style={arrowsStyle}
+                />
+              )
+            }}
+          </Transition>
         )}
         <Sliders
           direction={direction}
@@ -198,7 +236,7 @@ class IndexPage extends React.PureComponent {
               pathname={pathname}
             />
           )}
-          show={show}
+          show={activeTransitions['home']}
           slide={slide}
         />
       </Container>
@@ -214,8 +252,15 @@ IndexPage.propTypes = {
   }),
 }
 
-const mapStateToProps = ({ slide, media }) => {
-  return { slide, media }
+const mapStateToProps = ({
+  slide,
+  media,
+  transitions: {
+    activeTransitions,
+    timeout
+  }
+}) => {
+  return { activeTransitions, slide, media, timeout }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -223,6 +268,7 @@ const mapDispatchToProps = dispatch => {
     decrement: () => dispatch({ type: 'DECREMENT' }),
     go: index => dispatch({ type: 'GO', index }),
     increment: () => dispatch({ type: 'INCREMENT' }),
+    toggleTransition: key => dispatch({ type: 'TOGGLE_TRANSITION', key })
   }
 }
 

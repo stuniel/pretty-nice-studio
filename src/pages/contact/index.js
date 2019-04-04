@@ -88,10 +88,11 @@ const Content = styled.div`
     margin-bottom: 0;
   }
 `
-const formatImageCoverStyle = (state, config) => {
+const formatImageCoverStyle = (state, timeout, transitionMenu, config) => {
   const transitionStyles = {
     entered: {
       transform: 'translateX(100%)',
+      transitionDelay: `${ timeout / 2 }ms`,
     },
     exited: {
       transform: 'translateX(0)',
@@ -100,7 +101,30 @@ const formatImageCoverStyle = (state, config) => {
 
   return {
     transform: 'transitionX(100%)',
-    transition: 'all 0.6s ease',
+    transition: `all ${ timeout * 0.75 }ms ease`,
+    ...(state === 'entering' && transitionStyles.entered),
+    ...(state === 'entered' && transitionStyles.entered),
+    ...(state === 'exited' && transitionStyles.exited),
+    ...(state === 'exiting' && transitionStyles.exited),
+  }
+}
+
+const formatContentStyle = (state, timeout, transitionMenu, config) => {
+  const transitionStyles = {
+    entered: {
+      opacity: 1,
+      transition: `all ${ timeout * 0.75 }ms ease-in`,
+      transitionDelay: `${ timeout / 2 }ms`,
+    },
+    exited: {
+      transition: `all ${ timeout / 2 }ms ease-out`,
+      opacity: 0
+    },
+  }
+
+  return {
+    opacity: 1,
+    ...config.contact.content.getPosition(),
     ...(state === 'entering' && transitionStyles.entered),
     ...(state === 'entered' && transitionStyles.entered),
     ...(state === 'exited' && transitionStyles.exited),
@@ -125,7 +149,7 @@ class Index extends Component {
   }
 
   render () {
-    const { data, media } = this.props
+    const { activeTransitions, data, media, timeout, transitionMenu } = this.props
     const { photoVisible } = this.state
     const { height } = media
     const config = getConfig(media, '/contact')
@@ -135,10 +159,6 @@ class Index extends Component {
       height,
     }
 
-    const contentStyle = {
-      ...config.contact.content.getPosition()
-    }
-
     return (
       <Section>
         <ContentWrapper
@@ -146,22 +166,36 @@ class Index extends Component {
           paddingVertical={paddingVertical}
           paddingHorizontal={paddingHorizontal}
         >
-          <Content
-            isTablet={isTablet(media)}
-            style={contentStyle}
+          <Transition
+            in={activeTransitions['contact']}
+            timeout={{
+              enter: transitionMenu + timeout / 2,
+              exit: timeout
+            }}
           >
-            <section>
-              <h2>Get in touch</h2>
-              <p>
-                <a href="mailto:contact@prettynicestudio.com">
-                  contact@prettynicestudio.com
-                </a>
-              </p>
-              <p>
-                Let's create some pretty nice pictures! Contact us to discuss your project!
-              </p>
-            </section>
-          </Content>
+            {state => {
+              const contentStyle = formatContentStyle(state, timeout, transitionMenu, config)
+
+              return (
+                <Content
+                  isTablet={isTablet(media)}
+                  style={contentStyle}
+                >
+                  <section>
+                    <h2>Get in touch</h2>
+                    <p>
+                      <a href="mailto:contact@prettynicestudio.com">
+                        contact@prettynicestudio.com
+                      </a>
+                    </p>
+                    <p>
+                      Let's create some pretty nice pictures! Contact us to discuss your project!
+                    </p>
+                  </section>
+                </Content>
+              )
+            }}
+          </Transition>
         </ContentWrapper>
         {!isTablet(media) && (
           <Fragment>
@@ -171,11 +205,14 @@ class Index extends Component {
               style={imageWrapperStyle}
             />
             <Transition
-              in={photoVisible}
-              timeout={0}
+              in={activeTransitions['contact']}
+              timeout={{
+                enter: transitionMenu + timeout / 2,
+                exit: timeout
+              }}
             >
               {state => {
-                const imageCoverStyle = formatImageCoverStyle(state, config)
+                const imageCoverStyle = formatImageCoverStyle(state, timeout, transitionMenu, config)
 
                 return (
                   <ImageCover style={imageCoverStyle} />
@@ -189,8 +226,15 @@ class Index extends Component {
   }
 }
 
-const mapStateToProps = ({ media }) => {
-  return { media }
+const mapStateToProps = ({
+  media,
+  transitions: {
+    activeTransitions,
+    timeout,
+    transitionMenu
+  }
+}) => {
+  return { activeTransitions, media, timeout, transitionMenu }
 }
 
 const mapDispatchToProps = () => {}

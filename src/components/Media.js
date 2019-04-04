@@ -22,6 +22,15 @@ class Media extends React.Component {
     this.handleResize()
   }
 
+  componsnetDidUpdate () {
+    if (typeof window !== 'object') return
+
+    this.targetWindow = window
+
+    this.targetWindow.addEventListener('resize', this.handleResize)
+    this.handleResize()
+  }
+
   componentWillUnmount () {
     this.targetWindow.removeEventListener('resize', this.handleResize)
   }
@@ -38,6 +47,7 @@ class Media extends React.Component {
       width,
       ratio,
     })
+    this.forceUpdate()
   }
   render () {
     const { children } = this.props

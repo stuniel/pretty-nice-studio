@@ -3,21 +3,34 @@ export const RATIO_MEDIUM = 1.1
 export const RATIO_LARGE = 1.5
 export const RATIO_HUGE = 1.6
 
-export const isMobile = ({ ratio }) => {
+export const isMobile = ({ ratio = 2 }) => {
   return ratio < RATIO_SMALL
 }
 
-export const isTablet = ({ ratio }) => {
+export const isTablet = ({ ratio = 2 }) => {
   return ratio < RATIO_MEDIUM
 }
 
-export const isLaptop = ({ ratio }) => {
+export const isLaptop = ({ ratio = 2 }) => {
   return ratio < RATIO_LARGE
 }
 
-export const isWide = ({ ratio }) => {
+export const isWide = ({ ratio = 2 }) => {
   return ratio >= RATIO_HUGE
 }
+
+const widthModifier = ratio => (ratio !== null ? ratio / 2 : 2)
+
+export const firstSliderHeight = paddingVertical =>
+  `(90vh)`
+
+export const firstSliderWidth = ratio =>
+  `(90vh * 0.8 * ${ widthModifier(ratio) })`
+
+export const sliderWidth = isMobile =>
+  (isMobile ? `86.68vw` : `(100vw - 20vh)`)
+export const sliderHeight = isMobile =>
+  (isMobile ? `(86.68vw * 1.25)` : `((100vw - 20vh) * 1.25)`)
 
 export const getPadding = ({ width, height, ratio }, pathname) => {
   let paddingVertical = height / 10
@@ -130,49 +143,51 @@ export const getConfig = (media, pathname) => {
         }
       }
     },
-    footer: {
-      wrapper: {
-        getPosition (menuOpen) {
-          if (mobile) {
-            return {
-              top: height - footer.height,
-              left: 0,
-              height: footer.height,
-              padding: `0 ${ paddingHorizontal }px`,
-            }
-          }
-
-          if (tablet) {
-            return {
-              top: height - footer.height,
-              left: 0,
-              height: footer.height,
-              padding: `0 ${ paddingHorizontalMedium }px`,
-            }
-          }
-
-          if (laptop) {
-            return {
-              top: height - paddingVertical,
-              left: paddingHorizontal,
-              height: paddingVertical,
-              width: pathname === '/' && !menuOpen
-                ? 165
-                : width - paddingHorizontal * 2
-            }
-          }
-
-          return {
-            top: height - paddingVertical,
-            left: paddingHorizontal,
-            height: paddingVertical,
-            width: pathname === '/' && !menuOpen
-              ? firstSliderWidth
-              : width - paddingHorizontal * 2
-          }
-        }
-      },
-    },
+    // Moved to styled-components
+    //
+    // footer: {
+    //   wrapper: {
+    //     getPosition (menuOpen) {
+    //       if (mobile) {
+    //         return {
+    //           top: height - footer.height,
+    //           left: 0,
+    //           height: footer.height,
+    //           padding: `0 ${ paddingHorizontal }px`,
+    //         }
+    //       }
+    // 
+    //       if (tablet) {
+    //         return {
+    //           top: height - footer.height,
+    //           left: 0,
+    //           height: footer.height,
+    //           padding: `0 ${ paddingHorizontalMedium }px`,
+    //         }
+    //       }
+    // 
+    //       if (laptop) {
+    //         return {
+    //           top: height - paddingVertical,
+    //           left: paddingHorizontal,
+    //           height: paddingVertical,
+    //           width: pathname === '/' && !menuOpen
+    //             ? 165
+    //             : width - paddingHorizontal * 2
+    //         }
+    //       }
+    // 
+    //       return {
+    //         top: height - paddingVertical,
+    //         left: paddingHorizontal,
+    //         height: paddingVertical,
+    //         width: pathname === '/' && !menuOpen
+    //           ? firstSliderWidth
+    //           : width - paddingHorizontal * 2
+    //       }
+    //     }
+    //   },
+    // },
     index: {
       arrows: {
         getPosition () {
@@ -355,8 +370,6 @@ export const getConfig = (media, pathname) => {
             top: paddingVertical / 2,
             right: paddingHorizontal,
             height: paddingHorizontal,
-            transform: 'rotate(-90deg)',
-            transformOrigin: '100% 0',
             lineHeight: `${ paddingHorizontal }px`
           }
         }
@@ -429,39 +442,40 @@ export const getConfig = (media, pathname) => {
       }
     },
     navbar: {
-      burger: {
-        getPosition () {
-          if (tablet) {
-            return {
-              top: paddingHorizontal / 2,
-              left: paddingHorizontal / 2,
-            }
-          }
-
-          return {
-            top: 0,
-            left: 0,
-            width: paddingHorizontal,
-            height: paddingVertical,
-          }
-        }
-      },
-      getPosition () {
-        if (tablet) {
-          return {
-            top: 0,
-            height: height - sliderHeight - footer.height,
-            left: 0,
-            maxHeight: height - sliderHeight - footer.height,
-          }
-        }
-
-        return {
-          top: 0,
-          height: paddingVertical,
-          maxHeight: paddingVertical,
-        }
-      },
+      // Moved to styled-componets
+      // burger: {
+      //   getPosition () {
+      //     if (tablet) {
+      //       return {
+      //         top: paddingHorizontal / 2,
+      //         left: paddingHorizontal / 2,
+      //       }
+      //     }
+      //
+      //     return {
+      //       top: 0,
+      //       left: 0,
+      //       width: paddingHorizontal,
+      //       height: paddingVertical,
+      //     }
+      //   }
+      // },
+      // getPosition () {
+      //   if (tablet) {
+      //     return {
+      //       top: 0,
+      //       height: height - sliderHeight - footer.height,
+      //       left: 0,
+      //       maxHeight: height - sliderHeight - footer.height,
+      //     }
+      //   }
+      // 
+      //   return {
+      //     top: 0,
+      //     height: paddingVertical,
+      //     maxHeight: paddingVertical,
+      //   }
+      // },
       links: {
         getPosition (isHome) {
           if (mobile) {
@@ -563,35 +577,36 @@ export const getConfig = (media, pathname) => {
           }
         }
       },
-      navMenu: {
-        getPosition (isSession) {
-          if (mobile) {
-            return {
-              top: 0,
-              left: 0,
-              height,
-              width,
-            }
-          }
-
-          if (tablet) {
-            return {
-              top: 0,
-              left: 0,
-              height,
-              width,
-              alignItems: 'center',
-            }
-          }
-
-          return {
-            top: 0,
-            left: 0,
-            height,
-            width,
-          }
-        }
-      }
+      // Moved to styled-components
+      // navMenu: {
+      //   getPosition (isSession) {
+      //     if (mobile) {
+      //       return {
+      //         top: 0,
+      //         left: 0,
+      //         height,
+      //         width,
+      //       }
+      //     }
+      // 
+      //     if (tablet) {
+      //       return {
+      //         top: 0,
+      //         left: 0,
+      //         height,
+      //         width,
+      //         alignItems: 'center',
+      //       }
+      //     }
+      // 
+      //     return {
+      //       top: 0,
+      //       left: 0,
+      //       height,
+      //       width,
+      //     }
+      //   }
+      // }
     },
     sessions: {
       buttons: {

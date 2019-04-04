@@ -1,10 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 import { Transition } from 'react-transition-group'
 import Swipeable from 'react-swipeable'
 
 import { getAssetPath } from '../utils/paths'
 import { getConfig, isMobile, isTablet, isLaptop } from '../config.js'
+import {
+  formatSliderPrimaryStyle,
+  formatSliderSecondaryStyle
+} from '../formatters/style'
 
 import Slider from '../components/slider/slider'
 
@@ -75,55 +80,6 @@ function getIndexInRange (index, length) {
 }
 
 class Sliders extends React.Component {
-  formatSliderPrimaryStyle = (state, config) => {
-    const { media } = this.props
-    const { index: { sliders } } = config
-
-    return {
-      position: 'absolute',
-      transition: 'all 0.6s',
-      ...sliders.primary(media),
-    }
-  }
-
-  formatSliderSecondaryStyle = (state, config) => {
-    const { media } = this.props
-    const { index: { sliders } } = config
-
-    const transitionStyles = {
-      entering: {
-        opacity: 0,
-      },
-    }
-
-    return {
-      position: 'absolute',
-      transition: 'all 0.6s',
-      ...sliders.secondary(media),
-      ...(state === 'entering' && transitionStyles.entering),
-      ...(state === 'entered' && transitionStyles.entering),
-    }
-  }
-
-  formatSliderTercaryStyle = (state, config) => {
-    const { media } = this.props
-    const { index: { sliders } } = config
-
-    const transitionStyles = {
-      entering: {
-        opacity: 0,
-      },
-    }
-
-    return {
-      position: 'absolute',
-      transition: 'all 0.6s',
-      ...sliders.tercery(media),
-      ...(state === 'entering' && transitionStyles.entering),
-      ...(state === 'entered' && transitionStyles.entering),
-    }
-  }
-
   render () {
     const {
       direction,
@@ -136,6 +92,7 @@ class Sliders extends React.Component {
       renderContent,
       show,
       slide,
+      timeout
     } = this.props
 
     const config = getConfig(media, pathname)
@@ -154,9 +111,10 @@ class Sliders extends React.Component {
         onSwipingRight={() => onSwipe(true)}
         trackMouse={isMobile(media)}
       >
-        <Transition in={show} key={pathname} timeout={800}>
+        <Transition in={show} key={pathname} timeout={timeout}>
           {state => {
-            const sliderStyle = this.formatSliderPrimaryStyle(state, config)
+            const sliderStyle =
+              formatSliderPrimaryStyle(state, timeout, config, media)
 
             return (
               <FirstSlider
@@ -192,7 +150,7 @@ class Sliders extends React.Component {
             )
           }}
         </Transition>
-        <Transition in={show} key={pathname} timeout={800}>
+        <Transition in={show} key={pathname} timeout={timeout}>
           {state => (
             <SecondSlider
               isTablet={isTablet(media)}
@@ -200,7 +158,7 @@ class Sliders extends React.Component {
               delay={0}
               direction={direction}
               offset={0}
-              style={this.formatSliderSecondaryStyle(state, config)}
+              style={formatSliderSecondaryStyle(state, timeout, config, media)}
               value={currentSlideIndex}
               width={
                 config.index.sliders.secondary().width
@@ -229,4 +187,15 @@ class Sliders extends React.Component {
   }
 }
 
-export default Sliders
+const mapStateToProps = ({
+  transitions: {
+    activeTransitions,
+    timeout
+  } }) => ({ activeTransitions, timeout })
+
+const mapDispatchToProps = dispatch => ({})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Sliders)

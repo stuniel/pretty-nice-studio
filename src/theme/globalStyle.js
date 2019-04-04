@@ -54,58 +54,6 @@ body {
     opacity: 0;
   }
 }
-
-.description-forward-enter {
-  transition: all 0.4s;
-  transition-delay: 0.8s;
-  transform: translateX(-33%);
-  opacity: 0;
-  
-  &.description-forward-enter-active {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-  
-.description-forward-exit {
-  transition: all 1s;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  transform: translateX(0);
-  opacity: 1;
-  
-  &.description-forward-exit-active {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-.description-backward-enter {
-  transition: all 0.4s;
-  transition-delay: 0.8s;
-  transform: translateX(33%);
-  opacity: 0;
-  
-  &.description-backward-enter-active {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-  
-.description-backward-exit {
-  transition: all 1s;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  transform: translateX(0);
-  opacity: 1;
-  
-  &.description-backward-exit-active {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-}
     
 .number-primary-backward  {
   position: relative;

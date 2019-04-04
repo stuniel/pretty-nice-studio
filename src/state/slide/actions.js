@@ -2,14 +2,14 @@ export const DECREMENT = 'DECREMENT'
 export const GO = 'GO'
 export const INCREMENT = 'INCREMENT'
 
-export function decrement() {
+export function decrement () {
   return { type: DECREMENT }
 }
 
-export function go(index) {
+export function go (index) {
   return { type: GO, index }
 }
 
-export function increment() {
+export function increment () {
   return { type: INCREMENT }
 }

@@ -99,11 +99,13 @@ const Arrows = ({
   onRightClick,
   media,
   pathname,
+  style
 }) => {
   const config = getConfig(media, pathname)
 
   const arrowsStyle = {
     ...config.index.arrows.getPosition(),
+    ...style
   }
   return (
     <Wrapper style={arrowsStyle}>

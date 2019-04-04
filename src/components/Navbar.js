@@ -1,13 +1,18 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import styled from 'styled-components'
-import csx from 'classnames'
 import { Transition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
 import FullLogo from '../img/svg/logo.svg'
 
-import { getConfig, isTablet } from '../config.js'
+import {
+  getConfig,
+  isMobile,
+  isTablet,
+  isLaptop,
+  sliderHeight
+} from '../config.js'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -23,6 +28,15 @@ const MaybeLink = ({ children, pathname, to, ...passedProps }) =>
 const Nav = styled.nav`
   position: relative;
   z-index: 10;
+  top: 0;
+  left: 0;
+  height: 10vh;
+  max-height: 10vh
+  
+  ${ props => props.isTablet && `
+    height: calc(90vh - ${ sliderHeight(props.isMobile) });
+    max-height: calc(90vh - ${ sliderHeight(props.isMobile) });
+  ` }
 `
 
 const BurgerWrapper = styled.div`
@@ -30,13 +44,28 @@ const BurgerWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  top: 0;
+  left: 0;
+  width: 10vh;
+  height: 10vh;
+  
+  ${ props => props.isLaptop && `
+    width: 6.66vw;
+  ` }
+  
+  ${ props => props.isTablet && `
+    top: 5vh;
+    left: 5vh;
+  ` }
 `
 
 const Burger = styled.div`
   & > div {
     cursor: pointer;
-    height: ${ props => `${ props.size * 0.66 }px` };
-    width: ${ props => `${ props.size * 1.33 }px` };
+    height: ${ props =>
+    `${ props.menuOpen ? props.size : props.size * 0.66 }px` };
+    width: ${ props =>
+    `${ props.menuOpen ? props.size : props.size * 1.33 }px` };
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -54,11 +83,8 @@ const Burger = styled.div`
     }
   }
 
-  &.open {
+  ${ props => props.menuOpen && `
     & > div {
-      height: ${ props => `${ props.size }px` };
-      width: ${ props => `${ props.size }px` };
-      
       & > span {
         &:nth-child(1) {
           width: 133%;
@@ -73,7 +99,7 @@ const Burger = styled.div`
         }
       }
     }
-  }
+  ` }
   
   :hover {
     & > div {
@@ -86,7 +112,7 @@ const Burger = styled.div`
       }
     }
     
-    &.open {
+    ${ props => props.menuOpen && `
       & > div {
         & > span {
           background: ${ SECONDARY_COLOR };
@@ -96,7 +122,7 @@ const Burger = styled.div`
           }
         }
       }
-    }
+    ` }
   }
 `
 
@@ -113,8 +139,16 @@ const NavMenu = styled.nav`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  transition: left 0.6s, opacity 0.4s, transform 0.4s;
+  transition: left 0.6s, opacity 0.4s,
+  transform ${ props => props.transitionMenu }ms;
   background-color: #fff;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  transform: ${ props => props.menuOpen
+    ? 'translateY(0)'
+    : 'translateY(-100%)' };
 `
 
 const LogoWrapper = styled.div`
@@ -219,30 +253,14 @@ const Navbar = class extends React.Component {
       closeMenu,
       transitions: {
         logoVisible,
-        menuOpen
+        menuOpen,
+        transitionMenu
       },
       media,
-      pathname
+      pathname,
     } = this.props
     const isHome = pathname === '/'
     const config = getConfig(media, pathname)
-
-    const burgerClassName = csx({ 'open': menuOpen })
-
-    const navStyle = {
-      ...config.navbar.getPosition()
-    }
-
-    const burgerStyle = {
-      ...config.navbar.burger.getPosition()
-    }
-
-    const navMenuStyle = {
-      transform: menuOpen
-        ? 'translateY(0)'
-        : 'translateY(-100%)',
-      ...config.navbar.navMenu.getPosition(isHome)
-    }
 
     const logoWrapper = {
       ...config.navbar.logo.wrapper.getPosition(menuOpen)
@@ -257,9 +275,14 @@ const Navbar = class extends React.Component {
     }
 
     return (
-      <Nav role="navigation" aria-label="main-navigation" style={navStyle}>
+      <Nav
+        role="navigation"
+        aria-label="main-navigation"
+        isMobile={isMobile(media)}
+        isTablet={isTablet(media)}
+      >
         <NavWrapper>
-          <NavMenu media={media} style={navMenuStyle}>
+          <NavMenu menuOpen={menuOpen} transitionMenu={transitionMenu}>
             <Links
               isTablet={isTablet(media)}
               media={media}
@@ -324,11 +347,14 @@ const Navbar = class extends React.Component {
             </StyledLogoLink>
           </LogoWrapper>
           <div className="navbar-brand">
-            <BurgerWrapper style={burgerStyle}>
+            <BurgerWrapper
+              isTablet={isTablet(media)}
+              isLaptop={isLaptop(media)}
+            >
               <Burger
                 media={media}
                 onClick={this.handleBurgerClick}
-                className={burgerClassName}
+                menuOpen={menuOpen}
                 size={20}
               >
                 <div data-target="navMenu">
