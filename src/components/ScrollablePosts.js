@@ -209,16 +209,8 @@ function scrollToTop () {
 }
 
 class ScrollablePosts extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      mounted: false
-    }
-  }
-
   componentDidMount () {
     scrollToTop()
-    setTimeout(() => this.setState({ mounted: true }))
   }
 
   prev = () => {
@@ -234,15 +226,14 @@ class ScrollablePosts extends React.Component {
   }
 
   getFluid (photoName) {
-    const { images, media } = this.props
-    const { height } = media
+    const { images } = this.props
 
     if (!photoName) return
 
     const filteredPhotos = images.photos
       .map(image => image.photo)
       .filter(photo =>
-        photo.relativePath.includes(height <= 768 ? 'big' : 'big'))
+        photo.relativePath.includes('big'))
 
     return find(filteredPhotos, photo =>
       photo.relativePath.includes(photoName)
@@ -250,8 +241,7 @@ class ScrollablePosts extends React.Component {
   }
 
   renderByType (type, first, second) {
-    const { media, session, timeout } = this.props
-    const { mounted } = this.state
+    const { activeTransitions, media, session, timeout } = this.props
     const { paddingVertical, paddingHorizontal } = getPadding(media)
 
     const LayoutComponent = getLayoutComponent(type)
@@ -264,7 +254,7 @@ class ScrollablePosts extends React.Component {
       >
         {first !== null && (
           <Transition
-            in={mounted}
+            in={activeTransitions['sessions']}
             timeout={timeout * (4 / 3)}
           >
             {state => {
@@ -280,7 +270,7 @@ class ScrollablePosts extends React.Component {
         )}
         {second !== null && (
           <Transition
-            in={mounted}
+            in={activeTransitions['sessions']}
             timeout={timeout}
           >
             {state => {
@@ -299,21 +289,43 @@ class ScrollablePosts extends React.Component {
   }
 
   renderVertical (first, second) {
-    const { session } = this.props
+    const { activeTransitions, session, timeout } = this.props
 
     const alt = `pretty nice studio - ${ session } session photo`
 
     return (
       <Fragment>
         {first !== null && (
-          <PhotoSmall>
-            <Image alt={alt} fluid={this.getFluid(first)} />
-          </PhotoSmall>
+          <Transition
+            in={activeTransitions['sessions']}
+            timeout={timeout * (4 / 3)}
+          >
+            {state => {
+              const photoStyle = formatPhotoStyle(state, timeout, true)
+
+              return (
+                <PhotoSmall style={photoStyle}>
+                  <Image alt={alt} fluid={this.getFluid(first)} />
+                </PhotoSmall>
+              )
+            }}
+          </Transition>
         )}
         {second !== null && (
-          <PhotoSmall>
-            <Image alt={alt} fluid={this.getFluid(second)} />
-          </PhotoSmall>
+          <Transition
+            in={activeTransitions['sessions']}
+            timeout={timeout * (4 / 3)}
+          >
+            {state => {
+              const photoStyle = formatPhotoStyle(state, timeout, true)
+
+              return (
+                <PhotoSmall style={photoStyle}>
+                  <Image alt={alt} fluid={this.getFluid(second)} />
+                </PhotoSmall>
+              )
+            }}
+          </Transition>
         )}
       </Fragment>
     )
@@ -321,13 +333,13 @@ class ScrollablePosts extends React.Component {
 
   render () {
     const {
+      activeTransitions,
       media,
       prev,
       next,
       timeout,
       views
     } = this.props
-    const { mounted } = this.state
     const config = getConfig(media, '/sessions')
     const { paddingVertical, paddingHorizontal } = getPadding(media)
 
@@ -385,11 +397,12 @@ class ScrollablePosts extends React.Component {
               </Button>
             </ButtonWrapper>
             <Transition
-              in={mounted}
+              in={activeTransitions['sessions']}
               timeout={timeout}
             >
               {state => {
-                const sessionButtonsStyle = formatSessionButtonsStyle(state, timeout)
+                const sessionButtonsStyle =
+                  formatSessionButtonsStyle(state, timeout)
 
                 return (
                   <ButtonsGroup style={sessionButtonsStyle}>
@@ -422,9 +435,10 @@ ScrollablePosts.propTypes = propTypes
 
 const mapStateToProps = ({
   transitions: {
+    activeTransitions,
     timeout
   }
-}) => ({ timeout })
+}) => ({ activeTransitions, timeout })
 
 const mapDispatchToProps = dispatch => {
   return {

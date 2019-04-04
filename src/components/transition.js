@@ -209,7 +209,7 @@ class Transition extends React.PureComponent {
       changeTimeout(1000)
       setTimeout(() => {
         toggleTransition('sessions')
-      }, transitionMenu + 1000)
+      }, 1000)
       this.setState({ transitionStyle })
       return
     }
@@ -320,8 +320,6 @@ class Transition extends React.PureComponent {
                   )[transitionStyle][status],
                 }}
               >
-                {status}
-                {transitionStyle}
                 {children}
               </div>
             )}

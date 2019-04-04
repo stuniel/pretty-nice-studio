@@ -50,6 +50,9 @@ const Content = styled.div`
 class IndexPage extends React.PureComponent {
   constructor (props) {
     super()
+    this.state = {
+      direction: null
+    }
 
     this.tarnsitionActive = false
   }
