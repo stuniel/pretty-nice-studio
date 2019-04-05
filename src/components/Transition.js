@@ -176,7 +176,20 @@ class Transition extends React.PureComponent {
       }, transitionMenu)
     }
 
-    if (pathnameChangedFrom('sessions', this.props, nextProps, true)) {
+    if (
+      pathnameChangedFrom('sessions', this.props, nextProps, true) &&
+      !pathnameChangedTo('sessions', this.props, nextProps, true)
+    ) {
+      setTimeout(() => {
+        toggleTransition('sessions')
+      }, transitionMenu)
+    }
+
+    if (
+      pathnameChangedFrom('sessions', this.props, nextProps, true) &&
+      pathnameChangedTo('sessions', this.props, nextProps, true)
+    ) {
+      toggleTransition('sessions')
       setTimeout(() => {
         toggleTransition('sessions')
       }, transitionMenu)
@@ -204,7 +217,10 @@ class Transition extends React.PureComponent {
       return
     }
 
-    if (pathnameChangedTo('sessions', this.props, nextProps, true)) {
+    if (
+      pathnameChangedTo('sessions', this.props, nextProps, true) &&
+      !pathnameChangedFrom('sessions', this.props, nextProps, true)
+    ) {
       const transitionStyle = 'sessions'
       changeTimeout(1000)
       setTimeout(() => {

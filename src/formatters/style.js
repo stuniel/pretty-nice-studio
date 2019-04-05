@@ -156,21 +156,23 @@ export function formatPhotoStyle (state, timeout, left) {
     },
     entered: {
       transform: 'translateX(0)',
+      transition: `transform ${ timeout }ms ease`,
       opacity: 1
     },
     exited: {
       opacity: 0,
-      transform: `translateX(${ left ? '-' : '' }100vw)`,
+      transform: 'translateX(0)',
     },
     exiting: {
       opacity: 0,
+      transition: `opacity ${ timeout }ms ease`,
+      transform: 'translateX(0)',
     },
   }
 
   return {
     opacity: 0,
-    transform: 'transitionX(0)',
-    transition: `all ${ timeout }ms ease`,
+    transform: `translateX(${ left ? '-' : '' }100vw)`,
     ...(state === 'entering' && transitionStyles.entering),
     ...(state === 'entered' && transitionStyles.entered),
     ...(state === 'exited' && transitionStyles.exited),
