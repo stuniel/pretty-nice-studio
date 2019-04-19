@@ -9,6 +9,7 @@ info:
   - 'Model: Cathrina Torres'
   - 'Agency: Divide Management'
   - 'Hair: Silver Orchid Salon'
+  - 'Retouch: Pretty Nice Studio'
 cover: _MG_3460
 views:
   - type: 1

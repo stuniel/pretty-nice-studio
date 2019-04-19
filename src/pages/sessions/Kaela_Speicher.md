@@ -10,6 +10,7 @@ info:
   - 'Agency: MAJOR Models NYC'
   - 'Makeup: Brazil Raine'
   - 'Hair: Danielle Mock'
+  - 'Retouch: Pretty Nice Studio'
 cover: P73A8973
 views:
   - type: 13

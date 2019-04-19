@@ -5,10 +5,12 @@ session: Alessandra_Wysocka
 date: 2019-01-15T15:04:10.000Z
 description:
 info:
-  - 'Photographer: Alessandra Wysocka'
-  - 'Model: Cathrina Torres'
-  - 'Agency: Divide Management'
-  - 'Hair: Silver Orchid Salon'
+  - 'Photographer: Mateusz Szcepaniak'
+  - 'Model: Zuzanna Matuszek'
+  - 'Agency: ClarisModelManagement'
+  - 'Make Up: Julita Nowak'
+  - 'Stylist: Aleksandra Wszola'
+  - 'Retouch: Pretty Nice Studio'
 cover: _MG_4832b
 views:
   - type: 3

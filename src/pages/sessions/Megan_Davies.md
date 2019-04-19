@@ -6,9 +6,9 @@ date: 2019-01-15T15:04:10.000Z
 description:
 info:
   - 'Photographer: Megan Davies'
-  - 'Model: Cathrina Torres'
-  - 'Agency: Divide Management'
-  - 'Hair: Silver Orchid Salon'
+  - 'Model: Phoeby Montari'
+  - 'Make Up: Bea Elizabeth'
+  - 'Retouch: Pretty Nice Studio'
 cover: Phoeby-475
 views:
   - type: 3

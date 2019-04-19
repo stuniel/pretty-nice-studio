@@ -5,10 +5,12 @@ session: Dominika_Pawlas
 date: 2019-01-15T15:04:10.000Z
 description:
 info:
-  - 'Photographer: Dominika Pawlas'
-  - 'Model: Cathrina Torres'
-  - 'Agency: Divide Management'
-  - 'Hair: Silver Orchid Salon'
+  - 'Photographer: Dominika Pawlas' 
+  - 'Model: Patrycja Gręda' 
+  - 'Agency: United for Models'
+  - 'Hair: Tomasz Kopeć'
+  - 'Make Up: Koko Makeup Story'
+  - 'Retouch: Pretty Nice Studio'
 cover: IMG_3509
 views:
   - type: 13

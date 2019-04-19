@@ -9,6 +9,7 @@ info:
   - 'Model: Puma Rose Buck'
   - 'Agency: Next Models LA'
   - 'Makeup: Jacqueline Holden'
+  - 'Retouch: Pretty Nice Studio'
 cover: Puma_Test_080118_0427
 views:
   - type: 12
