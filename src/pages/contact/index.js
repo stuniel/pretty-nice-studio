@@ -249,7 +249,7 @@ export const pageQuery = graphql`
     images: allFile(
       filter: {
         sourceInstanceName: { eq: "sessions" }
-        relativePath: { regex: "/Muth/big/1.jpg/" }
+        relativePath: { regex: "/Sumanta_Muth/Puma_Test_080118_0427.jpg/" }
       }
     ) {
       photos: edges {

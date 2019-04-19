@@ -7,7 +7,14 @@ import { find } from 'lodash'
 import Image from 'gatsby-image'
 import { Transition } from 'react-transition-group'
 
-import { getConfig, getPadding, isTablet } from '../config.js'
+import {
+  getConfig,
+  getPadding,
+  isScrollable,
+  isTablet,
+  RATIO_LARGE,
+  RATIO_SCROLL
+} from '../config.js'
 import {
   formatPhotoStyle,
   formatSessionButtonsStyle
@@ -19,6 +26,30 @@ const propTypes = {
   images: PropTypes.array,
   session: PropTypes.string,
   views: PropTypes.array,
+}
+
+function getMarginLayoutSimple (isScrollable, paddingHorizontal, ratio) {
+  return `${ isScrollable
+    ? paddingHorizontal * 3
+    : Math.max(
+      paddingHorizontal * (1 +
+        (2 * (ratio - RATIO_LARGE) /
+        (RATIO_SCROLL - RATIO_LARGE))
+      ),
+      paddingHorizontal
+    ) }px`
+}
+
+function getMarginLayoutOffsetBig (isScrollable, paddingHorizontal, ratio) {
+  return `calc(50vw + ${ isScrollable
+    ? paddingHorizontal * 1.5
+    : Math.max(
+      paddingHorizontal * (1 +
+        (2 * (ratio - RATIO_LARGE) /
+        (RATIO_SCROLL - RATIO_LARGE))
+      ) / 2,
+      paddingHorizontal / 2
+    ) }px)`
 }
 
 const Photo = styled.div`
@@ -38,10 +69,9 @@ const Layout = styled.div`
   width: 100%;
   height: 100%;
   max-width: 100vw;
-  
-  :not(:first-child) {
-    margin-top: ${ props => props.paddingVertical }px;
-  }
+  margin-bottom: ${ props => props.paddingVertical * 3 }px;
+  ${ props => props.isLast &&
+    `margin-bottom: 0;` }
 `
 
 const Wrapper = styled.div`
@@ -79,43 +109,283 @@ const LayoutSimple = styled(Layout)`
 
   div${ Photo } {
     height: auto;
-    width: calc((100vh - ${ props => props.paddingVertical * 2 }px) * 0.8);
+    ${ props => props.isScrollable
+    ? `
+      width: calc(((100vw / ${ RATIO_SCROLL }) -
+      ${ props.paddingVertical * 2 }px) * 0.8);`
+    : `width: calc((100vh - ${ props.paddingVertical * 2 }px) * 0.8);` }
         
     :first-child {
-      margin-right: ${ props => props.paddingHorizontal }px;
+      margin-right: ${ props => getMarginLayoutSimple(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
     }
   }
 `
 
-const LayoutOffset = styled(LayoutSimple)`
+const LayoutOffsetLeft = styled(LayoutSimple)`
   div${ Photo } {
-    width: calc((100vh - ${ props => props.paddingVertical * 2 }px) * 0.8);
-        
     :first-child {
       align-self: flex-start;
     }
     
     :last-child {
-      margin-top: 35%;
+      margin-top: ${ props => props.isScrollable
+    ? `calc(((100vw / ${ RATIO_SCROLL }) -
+      ${ props.paddingVertical * 2 }px) * (2 / 3))`
+    : `calc((100vh - ${ props.paddingVertical * 2 }px) * (2 / 3))` };
       align-self: flex-end;
+    };
+  }
+`
+
+const LayoutOffsetRight = styled(LayoutSimple)`
+  div${ Photo } {  
+    :first-child {
+      margin-top: ${ props => props.isScrollable
+    ? `calc(((100vw / ${ RATIO_SCROLL }) -
+      ${ props.paddingVertical * 2 }px) * (2 / 3))`
+    : `calc((100vh - ${ props.paddingVertical * 2 }px) * (2 / 3))` };
+      align-self: flex-end;
+    }
+    
+    :last-child {
+      align-self: flex-start;
     }
   }
 `
 
-const LayoutOffsetBig = styled(LayoutOffset)`
+const LayoutOffsetBigLeftTop = styled(LayoutOffsetLeft)`
   padding: 0;
   justify-content: flex-start;
   height: auto;
+  padding: 0 ${ props => props.paddingHorizontal }px 0 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
 
   div${ Photo } {
     :first-child {
-      width: calc(50vw - ${ props => props.paddingHorizontal / 2 }px);
-      min-width: calc(50vw - ${ props => props.paddingHorizontal / 2 }px);
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
       max-width: none;
+      margin-right: ${ props => props.paddingHorizontal }px;
     }
     
     :last-child {
       align-self: flex-end;
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-top: 50%;
+    }
+  }
+`
+
+const LayoutOffsetBigLeftTopMiddle = styled(LayoutOffsetLeft)`
+  padding: 0;
+  justify-content: flex-start;
+  height: auto;
+  padding: 0 ${ props => props.paddingHorizontal }px 0 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    :first-child {
+      width: calc(50vw + ${ props => props.paddingHorizontal / 2 }px);
+      min-width: calc(50vw + ${ props => props.paddingHorizontal / 2 }px);
+      max-width: none;
+      margin-right: ${ props => props.paddingHorizontal }px;
+    }
+    
+    :last-child {
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-top: 0;
+    }
+  }
+`
+
+const LayoutOffsetBigLeftMiddle = styled(LayoutOffsetLeft)`
+  padding: 0;
+  justify-content: flex-start;
+  height: auto;
+  padding: 0 ${ props => props.paddingHorizontal }px 0 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    :first-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+      margin-right: ${ props => props.paddingHorizontal }px;
+    }
+    
+    :last-child {
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-top: ${ props => props.paddingVertical }px;
+      align-self: flex-start;
+    }
+  }
+`
+const LayoutOffsetBigRightMiddle = styled(LayoutOffsetRight)`
+  padding: 0;
+  justify-content: flex-end;
+  height: auto;
+  padding: 0 0 0 ${ props => props.paddingHorizontal }px;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    :first-child {
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-top: 0;
+      margin-right: ${ props => props.paddingHorizontal }px;
+      align-self: center;
+    }
+    
+    :last-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+    }
+  }
+`
+
+const LayoutOffsetBigRightTop = styled(LayoutOffsetRight)`
+  padding: 0;
+  justify-content: flex-end;
+  height: auto;
+  padding: 0 0 0 ${ props => props.paddingHorizontal }px;
+
+  div${ Photo } {
+    :first-child {
+      align-self: flex-start;
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-right: ${ props => props.paddingHorizontal }px;
+      margin-top: 50%;
+    }
+    
+    :last-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+    }
+  }
+`
+
+const LayoutBig = styled(Layout)`
+  padding: 0;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: auto;
+  padding: 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+    min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+    max-width: none;
+    margin-top: 0;
+  }
+`
+
+const LayoutBigLeft = styled(LayoutBig)``
+
+const LayoutBigRight = styled(LayoutBig)`
+  div${ Photo } {
+    margin-left: auto;
+  }
+`
+
+const LayoutOffsetBigLeftBottom = styled(LayoutOffsetRight)`
+  padding: 0;
+  justify-content: flex-start;
+  height: auto;
+  padding: 0 ${ props => props.paddingHorizontal }px 0 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    :first-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+      margin-top: 0;
+      margin-right: ${ props => props.paddingHorizontal }px;
+    }
+    
+    :last-child {
+      align-self: flex-start;
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-bottom: 50%;
+    }
+  }
+`
+
+const LayoutOffsetBigRightBottom = styled(LayoutOffsetLeft)`
+  padding: 0;
+  justify-content: flex-end;
+  height: auto;
+  padding: 0 0 0 ${ props => props.paddingHorizontal }px;
+
+  div${ Photo } {
+    :first-child {
+      align-self: flex-start;
+      width: calc(
+        (100vh - ${ props => props.paddingVertical * 2 }px) * 0.8 -
+        ${ props => props.paddingHorizontal }px
+      );
+      margin-bottom: 50%;
+      margin-right: ${ props => props.paddingHorizontal }px;
+    }
+    
+    :last-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+      margin-top: 0;
     }
   }
 `
@@ -124,13 +394,88 @@ const LayoutSingleBig = styled(Layout)`
   display: flex;
   justify-content: center;
   height: auto;
-  
+  padding: 0 ${ props => props.paddingHorizontal }px;
+
   div${ Photo } {
     height: auto;
-    width: calc(
-      (100vh - ${ props => props.paddingVertical * 2 }px)
-      * 1.6 + ${ props => props.paddingHorizontal }px
-    );
+    width: ${ props => props.isScrollable
+    ? `calc((((100vw / ${ RATIO_SCROLL }) -
+    ${ props.paddingVertical * 2 }px) * 1.6) +
+    ${ getMarginLayoutSimple(props.isScrollable,
+    props.paddingHorizontal, props.ratio) })`
+    : `calc(((100vh - ${ props.paddingVertical * 2 }px) * 1.6) +
+    ${ getMarginLayoutSimple(props.isScrollable,
+    props.paddingHorizontal, props.ratio) })` };
+  }
+`
+
+const LayoutBigLeftMiddle = styled(LayoutOffsetLeft)`
+  padding: 0;
+  justify-content: flex-start;
+  height: auto;
+  padding: 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    :first-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+      margin-right: ${ props => getMarginLayoutSimple(props.isScrollable,
+    props.paddingHorizontal, props.ratio) }px;
+    }
+    
+    :last-child {
+      align-self: flex-end;
+      width: ${ props => `calc(100vw - ${
+    getMarginLayoutOffsetBig(props.isScrollable,
+      props.paddingHorizontal, props.ratio) } - ${
+    getMarginLayoutSimple(props.isScrollable,
+      props.paddingHorizontal, props.ratio) } )` };
+      margin-top: 50%;
+      margin-top: 0;
+      align-self: center;
+    }
+  }
+`
+
+const LayoutBigRightMiddle = styled(LayoutOffsetRight)`
+  padding: 0;
+  justify-content: flex-start;
+  height: auto;
+  padding: 0;
+  ${ props => props.isFirst &&
+    `margin-top: -${ props.paddingVertical }px;` }
+  ${ props => props.isLast &&
+    `margin-bottom: -${ props.paddingVertical }px;` }
+
+  div${ Photo } {
+    :first-child {
+      align-self: flex-end;
+      width: ${ props => `calc(100vw - ${
+    getMarginLayoutOffsetBig(props.isScrollable,
+      props.paddingHorizontal, props.ratio) } - ${
+    getMarginLayoutSimple(props.isScrollable,
+      props.paddingHorizontal, props.ratio) } )` };
+      margin-top: 50%;
+      margin-top: 0;
+      align-self: center;
+      margin-right: ${ props => getMarginLayoutSimple(props.isScrollable,
+    props.paddingHorizontal, props.ratio) }px;
+    }
+    
+    :last-child {
+      width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      min-width: ${ props => getMarginLayoutOffsetBig(props.isScrollable,
+    props.paddingHorizontal, props.ratio) };
+      max-width: none;
+    }
   }
 `
 
@@ -190,14 +535,36 @@ const StyledLink = styled(Link)`
 
 function getLayoutComponent (type) {
   switch (type) {
-  case 0:
-    return LayoutOffset
+  case 1:
+    return LayoutOffsetLeft
   case 2:
+    return LayoutOffsetRight
+  case 3:
     return LayoutSingleBig
   case 4:
-    return LayoutOffsetBig
+    return LayoutOffsetBigLeftTop
+  case 5:
+    return LayoutOffsetBigLeftBottom
+  case 6:
+    return LayoutOffsetBigRightTop
+  case 7:
+    return LayoutOffsetBigRightBottom
+  case 8:
+    return LayoutOffsetBigLeftTopMiddle
+  case 9:
+    return LayoutOffsetBigLeftMiddle
+  case 10:
+    return LayoutOffsetBigRightMiddle
+  case 12:
+    return LayoutBigLeft
+  case 13:
+    return LayoutBigRight
+  case 14:
+    return LayoutBigLeftMiddle
+  case 15:
+    return LayoutBigRightMiddle
   default:
-  case 1:
+  case 0:
     return LayoutSimple
   }
 }
@@ -232,17 +599,16 @@ class ScrollablePosts extends React.Component {
 
     const filteredPhotos = images.photos
       .map(image => image.photo)
-      .filter(photo =>
-        photo.relativePath.includes('big'))
 
     return find(filteredPhotos, photo =>
-      photo.relativePath.includes(photoName)
+      photo.relativePath.includes(photoName) // TODO: Fix this: str.split('\\').pop().split('/').pop();
     ).childImageSharp.fluid
   }
 
-  renderByType (type, first, second) {
+  renderByType (type, first, second, description, index, length) {
     const { activeTransitions, media, session, timeout } = this.props
     const { paddingVertical, paddingHorizontal } = getPadding(media)
+    const { ratio } = media
 
     const LayoutComponent = getLayoutComponent(type)
     const alt = `pretty nice studio - ${ session } session photo`
@@ -251,6 +617,10 @@ class ScrollablePosts extends React.Component {
       <LayoutComponent
         paddingVertical={paddingVertical}
         paddingHorizontal={paddingHorizontal}
+        isFirst={index === 0}
+        isLast={index === length - 1}
+        isScrollable={isScrollable(media)}
+        ratio={ratio}
       >
         {first !== null && (
           <Transition
@@ -347,8 +717,6 @@ class ScrollablePosts extends React.Component {
       ...config.sessions.buttons.wrapper.getPosition()
     }
 
-    const buttonStyle = {}
-
     return (
       <Wrapper
         paddingVertical={paddingVertical}
@@ -357,8 +725,9 @@ class ScrollablePosts extends React.Component {
       >
         {isTablet(media)
           ? views.map(view => this.renderVertical(view.first, view.second))
-          : views.map(view =>
-            this.renderByType(view.type, view.first, view.second))
+          : views.map((view, index) =>
+            this.renderByType(view.type, view.first, view.second,
+              view.description, index, views.length))
         }
         {isTablet(media) ? (
           <ButtonsWrapperSmall>
@@ -367,7 +736,6 @@ class ScrollablePosts extends React.Component {
             >
               <Button
                 onClick={this.prev}
-                style={buttonStyle}
                 paddingHorizontal={paddingHorizontal}
               >
                 <StyledLink to={prev}>
@@ -378,7 +746,6 @@ class ScrollablePosts extends React.Component {
             <ButtonWrapper>
               <Button
                 onClick={this.next}
-                style={buttonStyle}
                 paddingHorizontal={paddingHorizontal}
               >
                 <StyledLink to={next}>
@@ -390,7 +757,7 @@ class ScrollablePosts extends React.Component {
         ) : (
           <ButtonsWrapper style={buttonsWrapperStyle}>
             <ButtonWrapper>
-              <Button style={buttonStyle}>
+              <Button>
                 <StyledLink to='/'>
                   return
                 </StyledLink>
@@ -407,14 +774,14 @@ class ScrollablePosts extends React.Component {
                 return (
                   <ButtonsGroup style={sessionButtonsStyle}>
                     <ButtonWrapper style={{ marginRight: '3em' }}>
-                      <Button onClick={this.next} style={buttonStyle}>
+                      <Button onClick={this.next}>
                         <StyledLink to={next}>
                           next project
                         </StyledLink>
                       </Button>
                     </ButtonWrapper>
                     <ButtonWrapper>
-                      <Button onClick={this.prev} style={buttonStyle}>
+                      <Button onClick={this.prev}>
                         <StyledLink to={prev}>
                           prev project
                         </StyledLink>

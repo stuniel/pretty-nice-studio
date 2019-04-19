@@ -9,6 +9,7 @@ import ScrollablePosts from '../components/ScrollablePosts'
 
 export const SessionTemplate = ({
   images,
+  info,
   location,
   media,
   prev,
@@ -19,6 +20,7 @@ export const SessionTemplate = ({
   return (
     <ScrollablePosts
       key={location.key}
+      info={info}
       images={images}
       media={media}
       session={session}
@@ -59,6 +61,7 @@ const Session = ({
       views={post.frontmatter.views}
       image={post.frontmatter.image}
       images={images}
+      info={post.frontmatter.info}
       prev={prev}
       next={next}
       location={location}
@@ -108,11 +111,13 @@ export const pageQuery = graphql`
       html
       frontmatter {
         cover
+        info
         session
         views {
           type
           first
           second
+          description
         }
         date(formatString: "MMMM DD, YYYY")
         title

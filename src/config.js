@@ -2,6 +2,7 @@ export const RATIO_SMALL = 0.7
 export const RATIO_MEDIUM = 1.1
 export const RATIO_LARGE = 1.5
 export const RATIO_HUGE = 1.6
+export const RATIO_SCROLL = 2.2
 
 export const isMobile = ({ ratio = 2 }) => {
   return ratio < RATIO_SMALL
@@ -17,6 +18,10 @@ export const isLaptop = ({ ratio = 2 }) => {
 
 export const isWide = ({ ratio = 2 }) => {
   return ratio >= RATIO_HUGE
+}
+
+export const isScrollable = ({ ratio = 2 }) => {
+  return ratio >= RATIO_SCROLL
 }
 
 const widthModifier = ratio => (ratio !== null ? ratio / 2 : 2)
@@ -39,6 +44,11 @@ export const getPadding = ({ width, height, ratio }, pathname) => {
   if (!isLaptop({ ratio })) {
     paddingVertical = height / 10
     paddingHorizontal = height / 10
+  }
+
+  if (isScrollable({ ratio })) {
+    paddingVertical = (width / 2.5) / 10
+    paddingHorizontal = (width / 2.5) / 10
   }
 
   return {

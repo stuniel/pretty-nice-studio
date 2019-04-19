@@ -139,6 +139,7 @@ class IndexPage extends React.PureComponent {
       location, media, timeout } = this.props
     const { direction } = this.state
 
+    const { images } = data
     const { edges } = data.allMarkdownRemark
     const { pathname } = location
     const config = getConfig(media, pathname)
@@ -225,6 +226,7 @@ class IndexPage extends React.PureComponent {
           direction={direction}
           edges={edges}
           media={media}
+          images={images}
           onPrimarySliderClick={() => this.handleSlideClick(currentPost.node)}
           onSecondarySliderClick={this.prev}
           onSwipe={this.handleSwipe}
@@ -281,7 +283,7 @@ export default connect(
 )(IndexPage)
 
 export const pageQuery = graphql`
-  query IndexQuery {
+  query IndexQuery($categoryRegex: String) {
     allMarkdownRemark(
       sort: { order: DESC, fields: [frontmatter___date] }
       filter: { frontmatter: { templateKey: { eq: "session" } } }
@@ -302,6 +304,24 @@ export const pageQuery = graphql`
             templateKey
             date(formatString: "MMMM DD, YYYY")
           }
+        }
+      }
+    }
+    images: allFile(
+      filter: {
+        sourceInstanceName: { eq: "sessions" }
+        name: { regex: $categoryRegex }
+      }
+    ) {
+      photos: edges {
+        photo: node {
+          childImageSharp {
+            fluid(quality: 100) {
+              ...GatsbyImageSharpFluid
+              presentationWidth
+            }
+          }
+          relativePath
         }
       }
     }

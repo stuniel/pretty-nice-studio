@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const path = require('path')
+const fs = require('fs')
 const { createFilePath } = require('gatsby-source-filesystem')
 const { fmImagesToRelative } = require('gatsby-remark-relative-images')
 
@@ -93,6 +94,39 @@ exports.createPages = ({ actions, graphql }) => {
         },
       })
     })
+  })
+}
+
+exports.onCreatePage = ({ page, actions, getNodes }) => {
+  const { createPage, deletePage } = actions
+
+  if (page.path !== '/') return
+
+  deletePage(page)
+
+  const nodes = getNodes()
+    .filter(node =>
+      node.absolutePath && node.absolutePath.includes('/pages/sessions/'))
+
+  const covers = nodes
+    .map(node => {
+      const document = fs.readFileSync(node.absolutePath, 'utf8')
+      const regex = /(cover:)\s(.*?)\n/
+      const cover = document.match(regex)
+
+      if (!cover || !cover.length) return
+
+      return cover[2]
+    })
+    .join('|')
+
+  const categoryRegex = `/${ covers }/`
+
+  return createPage({
+    ...page,
+    context: {
+      categoryRegex
+    },
   })
 }
 

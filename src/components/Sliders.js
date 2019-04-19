@@ -3,15 +3,21 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { Transition } from 'react-transition-group'
 import Swipeable from 'react-swipeable'
+import { find } from 'lodash'
 
-import { getAssetPath } from '../utils/paths'
-import { getConfig, isMobile, isTablet, isLaptop } from '../config.js'
+import { getConfig, isMobile, isTablet } from '../config.js'
 import {
   formatSliderPrimaryStyle,
   formatSliderSecondaryStyle
 } from '../formatters/style'
 
+import BackgroundImage from '../components/BackgroundImage'
 import Slider from '../components/slider/slider'
+
+const HoverInfo = styled.div`
+  height: 100%;
+  background-color: rgba(255,255,255,0.3);
+`
 
 const SlidePrimary = styled.div`
   height: 100%;
@@ -23,21 +29,16 @@ const SlidePrimary = styled.div`
   transition: all 0.3s ease-out;
   opacity: 1;
   
-  > * {
+  div${ HoverInfo } {
     opacity: 0;
     transition: opacity 0.4s ease;
   }
   
   :hover {
-    & > * {
+    div${ HoverInfo } {
       opacity: 1;
     }
   }
-`
-
-const HoverInfo = styled.div`
-  height: 100%;
-  background-color: rgba(255,255,255,0.3);
 `
 
 const SlideSecondary = styled.div`
@@ -84,12 +85,12 @@ class Sliders extends React.Component {
     const {
       direction,
       edges,
+      images,
       media,
       onPrimarySliderClick,
       onSecondarySliderClick,
       onSwipe,
       pathname,
-      renderContent,
       show,
       slide,
       timeout
@@ -126,26 +127,24 @@ class Sliders extends React.Component {
                 style={sliderStyle}
                 value={currentSlideIndex}
               >
-                {posts.map(({ node: post }, index) => (
-                  <SlidePrimary
-                    className="content"
-                    key={post.frontmatter.session}
-                    onClick={onPrimarySliderClick}
-                    role="link"
-                    style={{
-                      backgroundImage: `url(${ getAssetPath(
-                        post.frontmatter.session,
-                        post.frontmatter.cover
-                      ) })`,
-                    }}
-                  >
-                    {isLaptop(media) && (
-                      <HoverInfo>
-                        {renderContent()}
-                      </HoverInfo>
-                    )}
-                  </SlidePrimary>
-                ))}
+                {posts.map(({ node: post }, index) => {
+                  const { photo } = find(images.photos, image =>
+                    image.photo.relativePath.includes(post.frontmatter.cover))
+
+                  return (
+                    <SlidePrimary
+                      className="content"
+                      key={post.frontmatter.session}
+                      onClick={onPrimarySliderClick}
+                      role="link"
+                    >
+                      <BackgroundImage
+                        height="100%"
+                        fluid={photo.childImageSharp.fluid}
+                      />
+                    </SlidePrimary>
+                  )
+                })}
               </FirstSlider>
             )
           }}
@@ -164,18 +163,22 @@ class Sliders extends React.Component {
                 config.index.sliders.secondary().width
               }
             >
-              {posts.map(({ node: post }, index) => (
-                <SlideSecondary
-                  key={post.frontmatter.session}
-                  onClick={onSecondarySliderClick}
-                  style={{
-                    backgroundImage: `url(${ getAssetPath(
-                      post.frontmatter.session,
-                      post.frontmatter.cover
-                    ) })`,
-                  }}
-                />
-              ))}
+              {posts.map(({ node: post }, index) => {
+                const { photo } = find(images.photos, image =>
+                  image.photo.relativePath.includes(post.frontmatter.cover))
+
+                return (
+                  <SlideSecondary
+                    key={post.frontmatter.session}
+                    onClick={onSecondarySliderClick}
+                  >
+                    <BackgroundImage
+                      height="100%"
+                      fluid={photo.childImageSharp.fluid}
+                    />
+                  </SlideSecondary>
+                )
+              })}
             </SecondSlider>
           )}
         </Transition>
