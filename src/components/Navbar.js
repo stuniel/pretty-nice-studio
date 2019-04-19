@@ -74,7 +74,7 @@ const Burger = styled.div`
     & > span {
       height: 2px;
       width: 100%;
-      background: #464646;
+      background: #232323;
       transition: all 0.4s;
       
       &:nth-child(2) {
@@ -171,7 +171,7 @@ const StyledLogoLink = styled(Link)`
 
 const StyledLogo = styled(FullLogo)`
   & > g {
-    fill: #000;
+    fill: inherit;
     transition: all 0.4s;
   }
   
@@ -184,7 +184,7 @@ const StyledLogo = styled(FullLogo)`
 
 const StyledLink = styled(MaybeLink)`
   cursor: ${ props => (props.to === props.pathname ? 'default' : 'pointer') };
-  color: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : '#000') };
+  color: ${ props => (props.to === props.pathname ? SECONDARY_COLOR : 'inherit') };
 `
 
 const Links = styled.div`

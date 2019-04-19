@@ -20,7 +20,7 @@ const Wrapper = styled.div`
     height: 24px;
 
     & > svg {
-      fill: #000;
+      fill: inherit;
       transition: fill 0.4s;
     }
 

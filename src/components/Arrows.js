@@ -17,7 +17,7 @@ border-radius: 4px;
 
 .left-bar {
   position: absolute;
-  background-color: #464646;
+  background-color: #232323;
   top: 25%;
   left:-8%;
   width: 120%;
@@ -28,7 +28,7 @@ border-radius: 4px;
   transition: all 0.3s ease;
   &:after {
     content:"";
-    background-color: #464646;
+    background-color: #232323;
     width: 120%;
     height: 8%;
     display: block;
@@ -40,7 +40,7 @@ border-radius: 4px;
 
 .right-bar {
   position: absolute;
-  background-color: #464646;
+  background-color: #232323;
   top: 65%;
   left:-8%;
   width: 120%;
@@ -51,7 +51,7 @@ border-radius: 4px;
   transition: all 0.3s ease;
   &:after {
     content:"";
-    background-color: #464646;
+    background-color: #232323;
     width: 120%;
     height: 8%;
     display: block;

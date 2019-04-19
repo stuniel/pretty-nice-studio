@@ -8,7 +8,7 @@ const Button = styled.div`
   text-transform: uppercase;
   font-size: 12px;
   line-height: 12px;
-  color: #000;
+  color: inherit;
   cursor: pointer;
   margin-top: 30px;
   transition: color 0.4s;

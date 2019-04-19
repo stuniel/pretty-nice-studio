@@ -285,7 +285,7 @@ export default connect(
 export const pageQuery = graphql`
   query IndexQuery($categoryRegex: String) {
     allMarkdownRemark(
-      sort: { order: DESC, fields: [frontmatter___date] }
+      sort: { order: ASC, fields: [frontmatter___position] }
       filter: { frontmatter: { templateKey: { eq: "session" } } }
     ) {
       edges {
@@ -301,6 +301,7 @@ export const pageQuery = graphql`
             title
             description
             info
+            position
             templateKey
             date(formatString: "MMMM DD, YYYY")
           }
@@ -316,9 +317,18 @@ export const pageQuery = graphql`
       photos: edges {
         photo: node {
           childImageSharp {
-            fluid(quality: 100) {
-              ...GatsbyImageSharpFluid
+            fluid(
+              quality: 100,
+              traceSVG: {
+                color: "#f7f7f7",
+                turnPolicy: TURNPOLICY_MAJORITY,
+              }
+            ) {
+              ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
+            }
+            sizes {
+              ...GatsbyImageSharpSizes
             }
           }
           relativePath

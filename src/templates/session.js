@@ -134,9 +134,18 @@ export const pageQuery = graphql`
       photos: edges {
         photo: node {
           childImageSharp {
-            fluid(quality: 100) {
-              ...GatsbyImageSharpFluid
+            fluid(
+              quality: 100,
+              traceSVG: {
+                color: "#f7f7f7",
+                turnPolicy: TURNPOLICY_MAJORITY,
+              }
+            ) {
+              ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
+            }
+            sizes {
+              ...GatsbyImageSharpSizes
             }
           }
           relativePath

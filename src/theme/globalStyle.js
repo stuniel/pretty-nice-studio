@@ -5,7 +5,8 @@ body {
   overflow: hidden;
   font-family: Amiri, serif;
   font-size: 14px;
-  color: #464646;
+  color: #232323;
+  fill: #232323;
   scroll-behavior: smooth
   -webkit-font-smoothing: antialiased;
   overflow: hidden;

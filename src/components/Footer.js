@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 const Contact = styled.span`
   position: absolute;
   left: 0;
-  color: #000;
+  color: inherit;
   font-family: Amiri, serif;
   font-size: 0.9em;
   letter-spacing: 0.3em;

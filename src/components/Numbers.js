@@ -14,7 +14,7 @@ const Line = styled.div`
   height: 120px;
   width: 1px;
   margin-top: 36px;
-  border-left: 1px solid #464646;
+  border-left: 1px solid #232323;
 `
 
 const NumberPrimary = styled.p`

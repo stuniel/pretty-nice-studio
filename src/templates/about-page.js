@@ -2,10 +2,12 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { graphql } from 'gatsby'
+import { Link, graphql } from 'gatsby'
 import { Transition } from 'react-transition-group'
 
 import { HTMLContent } from '../components/Content'
+import Button from '../components/Button'
+import Return from '../components/Return'
 
 import { getConfig, getPadding, isTablet } from '../config.js'
 
@@ -98,6 +100,12 @@ const StyledContent = styled.div`
     margin-bottom: 0;
   }
 `
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`
+
 const formatImageCoverStyle = (state, timeout, transitionMenu, config) => {
   const transitionStyles = {
     entered: {
@@ -152,10 +160,12 @@ class AboutPageTemplate extends Component {
 
     return (
       <Section>
+        <Return media={media} />
         {!isTablet(media) && (
           <Fragment>
             <ImageWrapper
               fadeIn
+              sizes={data.images.photos[0].photo.childImageSharp.sizes}
               fluid={data.images.photos[0].photo.childImageSharp.fluid}
               paddingHorizontal={paddingHorizontal}
             />
@@ -198,6 +208,11 @@ class AboutPageTemplate extends Component {
                 >
                   <h2>{title}</h2>
                   <section dangerouslySetInnerHTML={{ __html: content }} />
+                  <StyledLink to='/contact'>
+                    <Button>
+                      Contact Us
+                    </Button>
+                  </StyledLink>
                 </StyledContent>
               )
             }}
@@ -225,9 +240,18 @@ export const aboutPageQuery = graphql`
       photos: edges {
         photo: node {
           childImageSharp {
-            fluid(quality: 100) {
-              ...GatsbyImageSharpFluid
+            fluid(
+              quality: 100,
+              traceSVG: {
+                color: "#f7f7f7",
+                turnPolicy: TURNPOLICY_MAJORITY,
+              }
+            ) {
+              ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
+            }
+            sizes {
+              ...GatsbyImageSharpSizes
             }
           }
           relativePath

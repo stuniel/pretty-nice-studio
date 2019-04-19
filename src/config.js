@@ -632,10 +632,10 @@ export const getConfig = (media, pathname) => {
               top: height,
               left: 0,
               height: paddingHorizontal,
-              width: height,
-              padding: `0 ${ paddingVertical }px 0 ${ paddingVertical / 2 }px`,
+              width: height - paddingHorizontal * 1.5,
               transformOrigin: 'left top',
-              transform: 'rotate(-90deg)'
+              transform: 'rotate(-90deg)',
+              marginTop: `-${ paddingHorizontal * 0.5 }px`
             }
           }
         }

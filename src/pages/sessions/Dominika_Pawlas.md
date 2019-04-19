@@ -4,6 +4,7 @@ title: Dominika Pawlas
 session: Dominika_Pawlas
 date: 2019-01-15T15:04:10.000Z
 description:
+position: 2
 info:
   - 'Photographer: Dominika Pawlas' 
   - 'Model: Patrycja Gręda' 

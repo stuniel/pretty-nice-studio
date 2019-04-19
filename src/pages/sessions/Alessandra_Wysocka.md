@@ -4,6 +4,7 @@ title: Alessandra Wysocka
 session: Alessandra_Wysocka
 date: 2019-01-15T15:04:10.000Z
 description:
+position: 1
 info:
   - 'Photographer: Mateusz Szcepaniak'
   - 'Model: Zuzanna Matuszek'
@@ -11,7 +12,7 @@ info:
   - 'Make Up: Julita Nowak'
   - 'Stylist: Aleksandra Wszola'
   - 'Retouch: Pretty Nice Studio'
-cover: _MG_4832b
+cover: _MG_4841 v2
 views:
   - type: 3
     first: null

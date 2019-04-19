@@ -7,6 +7,7 @@ import { Transition } from 'react-transition-group'
 import { getConfig, getPadding, isTablet } from '../../config.js'
 
 import BackgroundImage from '../../components/BackgroundImage'
+import Return from '../../components/Return'
 
 const SECONDARY_COLOR = '#bcbcbc'
 
@@ -161,6 +162,7 @@ class Index extends Component {
 
     return (
       <Section>
+        <Return media={media} />
         <ContentWrapper
           isTablet={isTablet(media)}
           paddingVertical={paddingVertical}
@@ -201,6 +203,7 @@ class Index extends Component {
           <Fragment>
             <ImageWrapper
               fadeIn
+              sizes={data.images.photos[0].photo.childImageSharp.sizes}
               fluid={data.images.photos[0].photo.childImageSharp.fluid}
               style={imageWrapperStyle}
             />
@@ -249,15 +252,24 @@ export const pageQuery = graphql`
     images: allFile(
       filter: {
         sourceInstanceName: { eq: "sessions" }
-        relativePath: { regex: "/Sumanta_Muth/Puma_Test_080118_0427.jpg/" }
+        relativePath: { regex: "/Megan_Davies/Phoeby-193.jpg/" }
       }
     ) {
       photos: edges {
         photo: node {
           childImageSharp {
-            fluid {
-              ...GatsbyImageSharpFluid
+            fluid(
+              quality: 100,
+              traceSVG: {
+                color: "#f7f7f7",
+                turnPolicy: TURNPOLICY_MAJORITY,
+              }
+            ) {
+              ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
+            }
+            sizes {
+              ...GatsbyImageSharpSizes
             }
           }
           relativePath

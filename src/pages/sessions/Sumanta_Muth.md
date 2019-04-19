@@ -4,6 +4,7 @@ title: Sumanta Muth
 session: Sumanta_Muth
 date: 2019-01-17T15:04:10.000Z
 description:
+position: 6
 info:
   - 'Photographer: Sumanta Muth'
   - 'Model: Puma Rose Buck'

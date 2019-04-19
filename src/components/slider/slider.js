@@ -16,6 +16,12 @@ const defaultProps = {
   animationTime: 1000,
 }
 
+function getIndexInRange (index, length) {
+  return index >= 0
+    ? index % length
+    : (length - (Math.abs(index) % length)) % length
+}
+
 function reflow (node) {
   return node.offsetHeight
 }
@@ -106,7 +112,14 @@ class Slider extends React.PureComponent {
 
     // Update value if it's controlled & changed
     if (props.value != null && this.props.value !== props.value) {
-      if (props.direction === directions.forward) {
+      const prevValue = getIndexInRange(props.value, props.children.length)
+      const value = getIndexInRange(this.props.value, this.props.children.length)
+      const difference = Math.abs(prevValue - value)
+      console.log({ prevValue, value });
+
+      if (difference !== 1 && difference !== this.props.children.length - 1) {
+        this.change(props.value + props.offset, 'backward')
+      } else if (props.direction === directions.forward) {
         this.handleForward()
       } else if (props.direction === directions.backward) {
         this.handleBack()

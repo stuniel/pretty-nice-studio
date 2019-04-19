@@ -4,6 +4,7 @@ title: Kaela Speicher
 session: Kaela_Speicher
 date: 2019-01-16T15:04:10.000Z
 description:
+position: 3
 info:
   - 'Photographer: Kaela Speicher'
   - 'Model: Ovo Drenth'
