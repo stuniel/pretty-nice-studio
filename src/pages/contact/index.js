@@ -261,15 +261,14 @@ export const pageQuery = graphql`
             fluid(
               quality: 100,
               traceSVG: {
-                color: "#f7f7f7",
-                turnPolicy: TURNPOLICY_MAJORITY,
+                color: "#f7f7f7"
               }
             ) {
               ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
             }
             sizes {
-              ...GatsbyImageSharpSizes
+              ...GatsbyImageSharpSizes_tracedSVG
             }
           }
           relativePath
