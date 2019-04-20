@@ -3,7 +3,6 @@ templateKey: session
 title: Meaghan Wozniak
 session: Meaghan_Wozniak
 date: 2019-01-15T15:04:10.000Z
-description:
 position: 4
 info:
   - 'Photographer: Meaghan Wozniak'

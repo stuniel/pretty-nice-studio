@@ -299,7 +299,6 @@ export const pageQuery = graphql`
             cover
             session
             title
-            description
             info
             position
             templateKey

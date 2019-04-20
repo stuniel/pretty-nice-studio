@@ -3,7 +3,6 @@ templateKey: session
 title: Alessandra Wysocka
 session: Alessandra_Wysocka
 date: 2019-01-15T15:04:10.000Z
-description:
 position: 5
 info:
   - 'Photographer: Mateusz Szcepaniak'

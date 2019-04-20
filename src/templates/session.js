@@ -66,7 +66,6 @@ const Session = ({
       next={next}
       location={location}
       media={media}
-      description={post.frontmatter.description}
       helmet={
         <Helmet titleTemplate="%s | Session">
           <title>{`${ post.frontmatter.title }`}</title>
@@ -121,7 +120,6 @@ export const pageQuery = graphql`
         }
         date(formatString: "MMMM DD, YYYY")
         title
-        description
         tags
       }
     }
@@ -143,7 +141,12 @@ export const pageQuery = graphql`
               ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
             }
-            sizes {
+            sizes(
+              quality: 100,
+              traceSVG: {
+                color: "#f7f7f7"
+              }
+            ) {
               ...GatsbyImageSharpSizes_tracedSVG
             }
           }

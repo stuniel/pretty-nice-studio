@@ -132,80 +132,96 @@ class TemplateWrapper extends React.Component {
                 siteMetadata {
                   title
                   description
+                  siteUrl
                 }
               }
             }
           `}
-        render={data => (
-          <Media>
-            <Container className={containerClassName}>
-              <GlobalStyle />
-              <Helmet>
-                <html lang="en" />
-                <title>{data.site.siteMetadata.title}</title>
-                <meta
-                  name="description"
-                  content={data.site.siteMetadata.description}
-                />
+        render={data => {
+          const seo = {
+            url: `${ data.site.siteMetadata.siteUrl }
+            ${ location.pathname || '/' }`
+          }
 
-                <link
-                  rel="apple-touch-icon"
-                  sizes="180x180"
-                  href="/img/apple-touch-icon.png"
-                />
-                <link
-                  rel="icon"
-                  type="image/png"
-                  href="/img/favicon-32x32.png"
-                  sizes="32x32"
-                />
-                <link
-                  rel="icon"
-                  type="image/png"
-                  href="/img/favicon-16x16.png"
-                  sizes="16x16"
-                />
+          return (
+            <Media>
+              <Container className={containerClassName}>
+                <GlobalStyle />
+                <Helmet>
+                  <html lang="en" />
+                  <title>{data.site.siteMetadata.title}</title>
+                  <meta
+                    name="description"
+                    content={data.site.siteMetadata.description}
+                  />
 
-                <link
-                  rel="mask-icon"
-                  href="/img/safari-pinned-tab.svg"
-                  color="#ff4400"
-                />
-                <meta name="theme-color" content="#fff" />
+                  <link
+                    rel="apple-touch-icon"
+                    sizes="180x180"
+                    href="/img/apple-touch-icon.png"
+                  />
+                  <link
+                    rel="icon"
+                    type="image/png"
+                    href="/img/favicon-32x32.png"
+                    sizes="32x32"
+                  />
+                  <link
+                    rel="icon"
+                    type="image/png"
+                    href="/img/favicon-16x16.png"
+                    sizes="16x16"
+                  />
 
-                <meta property="og:type" content="business.business" />
-                <meta
-                  property="og:title"
-                  content={data.site.siteMetadata.title}
-                />
-                <meta property="og:url" content="/" />
-                <meta property="og:image" content="/img/og-image.jpg" />
-              </Helmet>
-              {mounted ? (
-                <React.Fragment>
+                  <link
+                    rel="mask-icon"
+                    href="/img/safari-pinned-tab.svg"
+                    color="#ff4400"
+                  />
+                  <meta name="theme-color" content="#fff" />
+                  <meta property="og:type" content="website" />
+                  <meta
+                    property="og:site_name"
+                    content="pretty nice studio"
+                  />
+                  <meta
+                    property="og:title"
+                    content={data.site.siteMetadata.title}
+                  />
+                  {seo.url && (
+                    <meta
+                      property="og:url"
+                      content={seo.url}
+                    />
+                  )}
+                  <meta property="og:image" content="/img/Phoeby-317.jpg" />
+                </Helmet>
+                {mounted ? (
+                  <React.Fragment>
+                    <LayoutWrapper>
+                      <Navbar pathname={location && location.pathname} />
+                      {!isLaptop(media) && (
+                        <Text style={textStyle}>
+                          Fashion & beauty retouch
+                        </Text>
+                      )}
+                      <Footer pathname={location && location.pathname} />
+                    </LayoutWrapper>
+                    <Wrapper>
+                      <Transition location={location}>
+                        <ChildWrapper>{children}</ChildWrapper>
+                      </Transition>
+                    </Wrapper>
+                  </React.Fragment>
+                ) : (
                   <LayoutWrapper>
-                    <Navbar pathname={location && location.pathname} />
-                    {!isLaptop(media) && (
-                      <Text style={textStyle}>
-                        Fashion & beauty retouch
-                      </Text>
-                    )}
-                    <Footer pathname={location && location.pathname} />
+                    <Loader />
                   </LayoutWrapper>
-                  <Wrapper>
-                    <Transition location={location}>
-                      <ChildWrapper>{children}</ChildWrapper>
-                    </Transition>
-                  </Wrapper>
-                </React.Fragment>
-              ) : (
-                <LayoutWrapper>
-                  <Loader />
-                </LayoutWrapper>
-              )}
-            </Container>
-          </Media>
-        )}
+                )}
+              </Container>
+            </Media>
+          )
+        }}
       />
     )
   }

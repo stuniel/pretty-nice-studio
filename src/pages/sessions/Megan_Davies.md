@@ -3,7 +3,6 @@ templateKey: session
 title: Megan Davies
 session: Megan_Davies
 date: 2019-01-15T15:04:10.000Z
-description:
 position: 1
 info:
   - 'Photographer: Megan Davies'

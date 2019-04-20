@@ -12,7 +12,7 @@ const TagsPage = ({
   },
 }) => (
   <section className="section">
-    <Helmet title={`Tags | ${title}`} />
+    <Helmet title={`Tags | ${ title }`} />
     <div className="container content">
       <div className="columns">
         <div

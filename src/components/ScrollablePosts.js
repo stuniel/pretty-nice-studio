@@ -618,7 +618,7 @@ class ScrollablePosts extends React.Component {
     ).childImageSharp.sizes
   }
 
-  renderByType (type, first, second, description, index, length) {
+  renderByType (type, first, second, index, length) {
     const { activeTransitions, media, session, timeout } = this.props
     const { paddingVertical, paddingHorizontal } = getPadding(media)
     const { ratio } = media
@@ -755,8 +755,7 @@ class ScrollablePosts extends React.Component {
         {isTablet(media)
           ? views.map(view => this.renderVertical(view.first, view.second))
           : views.map((view, index) =>
-            this.renderByType(view.type, view.first, view.second,
-              view.description, index, views.length))
+            this.renderByType(view.type, view.first, view.second, index, views.length))
         }
         {isTablet(media) ? (
           <ButtonsWrapperSmall>

@@ -25,9 +25,6 @@ exports.createPages = ({ actions, graphql }) => {
             frontmatter {
               tags
               templateKey
-              image {
-                absolutePath
-              }
               session
             }
           }
@@ -50,7 +47,6 @@ exports.createPages = ({ actions, graphql }) => {
       const session = edge.node.frontmatter.session
       const categoryRegex = `/${ session }/`
       const id = edge.node.id
-      const image = edge.node.frontmatter.image
       const prev = sessions[getIndexInRange(sessionIndex - 1, sessions.length)].node.fields.slug
       const next = sessions[getIndexInRange(sessionIndex + 1, sessions.length)].node.fields.slug
 
@@ -63,7 +59,6 @@ exports.createPages = ({ actions, graphql }) => {
         // additional data can be passed via context
         context: {
           id,
-          image,
           categoryRegex,
           prev,
           next,
