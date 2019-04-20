@@ -325,14 +325,6 @@ export const pageQuery = graphql`
               ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
             }
-            sizes(
-              quality: 100,
-              traceSVG: {
-                color: "#f7f7f7"
-              }
-            ) {
-              ...GatsbyImageSharpSizes_tracedSVG
-            }
           }
           relativePath
         }

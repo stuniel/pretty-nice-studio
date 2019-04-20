@@ -605,19 +605,6 @@ class ScrollablePosts extends React.Component {
     ).childImageSharp.fluid
   }
 
-  getSizes (photoName) {
-    const { images } = this.props
-
-    if (!photoName) return
-
-    const filteredPhotos = images.photos
-      .map(image => image.photo)
-
-    return find(filteredPhotos, photo =>
-      photo.relativePath.includes(photoName) // TODO: Fix this: str.split('\\').pop().split('/').pop();
-    ).childImageSharp.sizes
-  }
-
   renderByType (type, first, second, index, length) {
     const { activeTransitions, media, session, timeout } = this.props
     const { paddingVertical, paddingHorizontal } = getPadding(media)
@@ -647,7 +634,6 @@ class ScrollablePosts extends React.Component {
                 <Photo style={photoStyle}>
                   <Image
                     alt={alt}
-                    sizes={this.getSizes(first)}
                     fluid={this.getFluid(first)}
                   />
                 </Photo>
@@ -667,7 +653,6 @@ class ScrollablePosts extends React.Component {
                 <Photo style={photoStyle}>
                   <Image
                     alt={alt}
-                    sizes={this.getSizes(second)}
                     fluid={this.getFluid(second)}
                   />
                 </Photo>
@@ -698,7 +683,6 @@ class ScrollablePosts extends React.Component {
                 <PhotoSmall style={photoStyle}>
                   <Image
                     alt={alt}
-                    sizes={this.getSizes(first)}
                     fluid={this.getFluid(first)}
                   />
                 </PhotoSmall>
@@ -718,7 +702,6 @@ class ScrollablePosts extends React.Component {
                 <PhotoSmall style={photoStyle}>
                   <Image
                     alt={alt}
-                    sizes={this.getSizes(second)}
                     fluid={this.getFluid(second)}
                   />
                 </PhotoSmall>

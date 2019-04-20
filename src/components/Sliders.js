@@ -140,7 +140,6 @@ class Sliders extends React.Component {
                     >
                       <BackgroundImage
                         height="100%"
-                        sizes={photo.childImageSharp.sizes}
                         fluid={photo.childImageSharp.fluid}
                       />
                     </SlidePrimary>
@@ -175,7 +174,6 @@ class Sliders extends React.Component {
                   >
                     <BackgroundImage
                       height="100%"
-                      sizes={photo.childImageSharp.sizes}
                       fluid={photo.childImageSharp.fluid}
                     />
                   </SlideSecondary>

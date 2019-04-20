@@ -203,7 +203,6 @@ class Index extends Component {
           <Fragment>
             <ImageWrapper
               fadeIn
-              sizes={data.images.photos[0].photo.childImageSharp.sizes}
               fluid={data.images.photos[0].photo.childImageSharp.fluid}
               style={imageWrapperStyle}
             />
@@ -266,14 +265,6 @@ export const pageQuery = graphql`
             ) {
               ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
-            }
-            sizes(
-              quality: 100,
-              traceSVG: {
-                color: "#f7f7f7"
-              }
-            ) {
-              ...GatsbyImageSharpSizes_tracedSVG
             }
           }
           relativePath

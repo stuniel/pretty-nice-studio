@@ -165,7 +165,6 @@ class AboutPageTemplate extends Component {
           <Fragment>
             <ImageWrapper
               fadeIn
-              sizes={data.images.photos[0].photo.childImageSharp.sizes}
               fluid={data.images.photos[0].photo.childImageSharp.fluid}
               paddingHorizontal={paddingHorizontal}
             />
@@ -248,14 +247,6 @@ export const aboutPageQuery = graphql`
             ) {
               ...GatsbyImageSharpFluid_tracedSVG
               presentationWidth
-            }
-            sizes(
-              quality: 100,
-              traceSVG: {
-                color: "#f7f7f7"
-              }
-            ) {
-              ...GatsbyImageSharpSizes_tracedSVG
             }
           }
           relativePath

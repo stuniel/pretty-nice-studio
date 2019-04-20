@@ -71,7 +71,13 @@ module.exports = {
         component: require.resolve(`./src/components/Layout.js`),
       },
     },
-    'gatsby-plugin-sharp',
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        useMozJpeg: true,
+        defaultQuality: 100,
+      },
+    },
     'gatsby-transformer-sharp',
     {
       resolve: 'gatsby-transformer-remark',
