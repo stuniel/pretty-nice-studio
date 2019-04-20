@@ -139,8 +139,8 @@ class TemplateWrapper extends React.Component {
           `}
         render={data => {
           const seo = {
-            url: `${ data.site.siteMetadata.siteUrl }
-            ${ location.pathname || '/' }`
+            url: `${ data.site.siteMetadata.siteUrl }${ location.pathname || '/' }`,
+            image: `${ data.site.siteMetadata.siteUrl }/img/og-image.jpg`,
           }
 
           return (
@@ -194,7 +194,7 @@ class TemplateWrapper extends React.Component {
                       content={seo.url}
                     />
                   )}
-                  <meta property="og:image" content="/img/Phoeby-317.jpg" />
+                  <meta property="og:image" content={seo.image} />
                 </Helmet>
                 {mounted ? (
                   <React.Fragment>

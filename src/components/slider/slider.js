@@ -115,7 +115,6 @@ class Slider extends React.PureComponent {
       const prevValue = getIndexInRange(props.value, props.children.length)
       const value = getIndexInRange(this.props.value, this.props.children.length)
       const difference = Math.abs(prevValue - value)
-      console.log({ prevValue, value });
 
       if (difference !== 1 && difference !== this.props.children.length - 1) {
         this.change(props.value + props.offset, 'backward')
