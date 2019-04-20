@@ -19,6 +19,14 @@ module.exports = {
         head: true,
       },
     },
+    {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        host: 'http://www.prettynicestudio.com',
+        sitemap: 'http://www.prettynicestudio.com/sitemap.xml',
+        policy: [{ userAgent: '*', allow: '/' }]
+      }
+    },
     'gatsby-plugin-sass',
     {
       // keep as first gatsby-source-filesystem plugin for gatsby image support
