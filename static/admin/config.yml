@@ -19,7 +19,13 @@ collections:
       - {label: "Body", name: "body", widget: "markdown"}
       - {label: "Tags", name: "tags", widget: "list"}
       - {label: "Images", name: "images", widget: "images"}
-      - {label: "Views", name: "views", widget: "list"}
+      - label: "Views"
+        name: "views"
+        widget: "list"
+        fields:
+          - {label: "Type", name: "type", widget: "number" }
+          - {label: "First", name: "first", widget: "string" }
+          - {label: "Second", name: "second", widget: "string" }
 
   - name: "pages"
     label: "Pages"
