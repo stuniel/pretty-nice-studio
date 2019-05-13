@@ -47,6 +47,14 @@ const Content = styled.div`
   overflow: hidden;
 `
 
+const StyledMobileButton = styled(Button)`
+  color: #fff;
+  font-size: 14px;
+  padding: 1em;
+  background: rgba(0,0,0,0.15);
+  border: 1px solid #fff;
+`
+
 class IndexPage extends React.PureComponent {
   constructor (props) {
     super()
@@ -231,15 +239,13 @@ class IndexPage extends React.PureComponent {
           onSecondarySliderClick={this.prev}
           onSwipe={this.handleSwipe}
           pathname={pathname}
-          renderContent={() => (
-            <SessionInfo
-              currentPost={currentPost}
-              currentPostIndex={currentPostIndex}
-              direction={direction}
-              media={media}
-              onButtonClick={this.handleSlideClick}
-              pathname={pathname}
-            />
+          renderContent={() => isTablet(media) && (
+            <StyledMobileButton
+              onClick={() => this.handleSlideClick(currentPost.node)}
+              role="link"
+            >
+              see whole project
+            </StyledMobileButton>
           )}
           show={activeTransitions['home']}
           slide={slide}

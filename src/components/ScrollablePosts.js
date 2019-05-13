@@ -90,7 +90,8 @@ const Wrapper = styled.div`
   
   &:after {
     content: "";
-    display: block;
+    ${'' /* display: block; */}
+    position: absolute;
     height: ${ props => props.paddingVertical }px;
     width: 100%;
   }

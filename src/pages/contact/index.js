@@ -58,6 +58,13 @@ const Content = styled.div`
   position: relative;
   max-width: 450px;
   
+  &:after {
+    content: '';
+    position: absolute;
+    height: ${ props => `${ props.paddingVertical }px` };
+    width: 100%;
+  }
+  
   & > section {
     margin-bottom: 60px;
     
@@ -181,6 +188,7 @@ class Index extends Component {
               return (
                 <Content
                   isTablet={isTablet(media)}
+                  paddingVertical={paddingVertical}
                   style={contentStyle}
                 >
                   <section>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Transition } from 'react-transition-group'
 
 import {
+  getPadding,
   firstSliderWidth,
   isMobile,
   isTablet,
@@ -16,25 +17,25 @@ import Icons from '../components/Icons'
 const Wrapper = styled.div`
   position: absolute;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   z-index: 10;
   transition: ${ props => `all ${ props.timeout }ms` };
   transition-delay: ${ props => `${ props.timeout / 2 }ms` };
   
-  top: 90vh;
-  left: 10vh;
-  height: 10vh;
+  bottom: 0;
+  left: 10vw;
+  height: ${ props => props.paddingVertical }px;
   width: ${ props => props.isHome
     ? (props.isLaptop ? 165 : `calc(${ firstSliderWidth(props.ratio) })`)
-    : 'calc(100vw - 20vh)' };)
+    : 'calc(100vw - 20vw)' };
     
   ${ props => props.isTablet && `
     left: 0;
+    width: 100%;
     padding: 0 calc(6.66vw *
       ${ ((1 + (props.ratio - RATIO_SMALL) * 1.5) / 2) });
-    background-color: #fff;
   ` }
 
   ${ props => props.isMobile && `
@@ -54,6 +55,7 @@ const Contact = styled.span`
 
 const Footer = ({ media, pathname, transitions: { menuOpen, timeout } }) => {
   const { ratio } = media
+  const { paddingVertical } = getPadding(media)
 
   return (
     <Wrapper
@@ -62,6 +64,7 @@ const Footer = ({ media, pathname, transitions: { menuOpen, timeout } }) => {
       isMobile={isMobile(media)}
       isTablet={isTablet(media)}
       isLaptop={isLaptop(media)}
+      paddingVertical={paddingVertical}
       ratio={ratio}
       timeout={timeout}
     >
@@ -79,7 +82,10 @@ const Footer = ({ media, pathname, transitions: { menuOpen, timeout } }) => {
           }}
         </Transition>
       )}
-      <Icons width='165px' />
+      <Icons
+        isMobile={isMobile(media)}
+        width={isMobile(media) ? '120px' : '165px'}
+      />
     </Wrapper>
   )
 }

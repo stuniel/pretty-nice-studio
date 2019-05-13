@@ -47,7 +47,7 @@ const Wrapper = styled.div`
   height: 100%;
   transform: translateX(0);
   ${'' /* transition-timing-function: ease-out; */}
-  transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  ${'' /* transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1); */}
   -webkit-transform: translateZ(0);
 `
 

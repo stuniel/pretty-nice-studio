@@ -146,6 +146,36 @@ export function formatSliderSecondaryStyle (state, timeout, config, media) {
   }
 }
 
+export function formatContentStyle (state, timeout, config, media) {
+  const transitionStyles = {
+    entering: {
+      transform: `translateY(0)`,
+    },
+    entered: {
+      opacity: 1,
+      transform: 'transitionY(0)',
+    },
+    exited: {
+      opacity: 0,
+      transform: `translateY(-100vh)`,
+    },
+    exiting: {
+      transform: `translateY(-100vh)`,
+      transitionDelay: `${ timeout * (1 / 2) }ms`,
+    }
+  }
+
+  return {
+    position: 'absolute',
+    transform: 'transitionY(0)',
+    transition: `all ${ timeout }ms`,
+    ...(state === 'entering' && transitionStyles.entering),
+    ...(state === 'entered' && transitionStyles.entered),
+    ...(state === 'exited' && transitionStyles.exited),
+    ...(state === 'exiting' && transitionStyles.exiting),
+  }
+}
+
 // Sessions
 
 export function formatPhotoStyle (state, timeout, left) {

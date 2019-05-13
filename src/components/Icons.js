@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
   & > a {
     cursor: pointer;
-    height: 24px;
+    height: ${ props => props.isMobile ? '20px' : '24px' };
 
     & > svg {
       fill: inherit;
@@ -32,34 +32,37 @@ const Wrapper = styled.div`
   }
 `
 
-const iconStyle = {
-  height: '24px',
-  width: '24px',
+const getIconStyle = isMobile => ({
+  height: isMobile ? '20px' : '24px',
+  width: isMobile ? '20px' : '24px',
   transform: 'scaleY(-1)',
-}
+})
 
-const Icons = ({ width }) => (
-  <Wrapper width={width}>
+const Icons = ({ isMobile, width }) => (
+  <Wrapper isMobile={isMobile} width={width}>
     <OutboundLink
+      aria-label="Instagram"
       href="http://www.instagram.com/prettynicestudio"
       rel="noopener"
       target="_blank"
     >
-      <Instagram style={iconStyle} />
+      <Instagram isMobile={isMobile} style={getIconStyle(isMobile)} />
     </OutboundLink>
     <OutboundLink
+      aria-label="Facebook"
       href="http://www.facebook.com/prettynicestudio"
       rel="noopener"
       target="_blank"
     >
-      <Facebook style={iconStyle} />
+      <Facebook isMobile={isMobile} style={getIconStyle(isMobile)} />
     </OutboundLink>
     <OutboundLink
+      aria-label="Behance"
       href="http://www.behance.com/prettynicestudio"
       rel="noopener"
       target="_blank"
     >
-      <Behance style={iconStyle} />
+      <Behance isMobile={isMobile} style={getIconStyle(isMobile)} />
     </OutboundLink>
   </Wrapper>
 )

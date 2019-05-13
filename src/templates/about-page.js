@@ -66,6 +66,13 @@ const StyledContent = styled.div`
   max-width: 450px;
   max-height: 80%;
   
+  &:after {
+    content: '';
+    position: absolute;
+    height: ${ props => `${ props.paddingVertical }px` };
+    width: 100%;
+  }
+  
   h2 {
     margin-bottom: ${ props => props.isTablet ? 1 : 2 }em;
     font-size: ${ props => props.isTablet ? 3 : 5 }em;
@@ -203,6 +210,7 @@ class AboutPageTemplate extends Component {
               return (
                 <StyledContent
                   isTablet={isTablet(media)}
+                  paddingVertical={paddingVertical}
                   style={contentStyle}
                 >
                   <h2>{title}</h2>

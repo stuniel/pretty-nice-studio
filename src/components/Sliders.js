@@ -5,8 +5,9 @@ import { Transition } from 'react-transition-group'
 import Swipeable from 'react-swipeable'
 import { find } from 'lodash'
 
-import { getConfig, isMobile, isTablet } from '../config.js'
+import { getConfig, getPadding, isMobile, isTablet } from '../config.js'
 import {
+  formatContentStyle,
   formatSliderPrimaryStyle,
   formatSliderSecondaryStyle
 } from '../formatters/style'
@@ -74,6 +75,18 @@ const SliderMask = styled.div`
   background: #fff;
 `
 
+const Content = styled.div`
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: ${ props => props.paddingHorizontal }px;
+`
+
 function getIndexInRange (index, length) {
   return index >= 0
     ? index % length
@@ -91,12 +104,14 @@ class Sliders extends React.Component {
       onSecondarySliderClick,
       onSwipe,
       pathname,
+      renderContent,
       show,
       slide,
       timeout
     } = this.props
 
     const config = getConfig(media, pathname)
+    const { paddingHorizontal } = getPadding(media)
     const posts = edges.slice().reverse()
 
     const currentSlideIndex = getIndexInRange(slide, posts.length)
@@ -138,6 +153,21 @@ class Sliders extends React.Component {
                       onClick={onPrimarySliderClick}
                       role="link"
                     >
+                      <Transition in={show} key={slide} timeout={timeout}>
+                        {state => {
+                          const contentStyle =
+                            formatContentStyle(state, timeout, config, media)
+
+                          return (
+                            <Content
+                              style={contentStyle}
+                              paddingHorizontal={paddingHorizontal}
+                            >
+                              {renderContent()}
+                            </Content>
+                          )
+                        }}
+                      </Transition>
                       <BackgroundImage
                         height="100%"
                         fluid={photo.childImageSharp.fluid}

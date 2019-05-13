@@ -1,6 +1,19 @@
 import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+}
+
 body {
   overflow: hidden;
   font-family: Amiri, serif;

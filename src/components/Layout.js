@@ -70,8 +70,8 @@ const ContentTransitionGroup = styled(TransitionGroup)`
 
 const LayoutWrapper = styled.div`
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 `
 
 const Text = styled.div`

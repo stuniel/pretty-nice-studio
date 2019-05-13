@@ -110,7 +110,8 @@ export const getConfig = (media, pathname) => {
 
   if (mobile) {
     sliderWidth = Math.floor(width - (paddingHorizontal * 2))
-    sliderHeight = Math.floor(sliderWidth * 1.25)
+    sliderHeight = Math.floor(height * 0.8)
+    // sliderHeight = Math.floor(sliderWidth * 1.25)
   }
 
   if (!mobile) {
@@ -521,7 +522,7 @@ export const getConfig = (media, pathname) => {
         getPosition (menuOpen) {
           if (mobile) {
             return {
-              width: width - paddingHorizontal * 3,
+              width: width * 0.6 - paddingHorizontal * 2,
               maxWidth: paddingVertical * 4,
             }
           }
@@ -554,7 +555,7 @@ export const getConfig = (media, pathname) => {
             if (mobile) {
               return {
                 top: 0,
-                height: wrapperHeight,
+                height: 'auto',
                 width
               }
             }
@@ -573,7 +574,6 @@ export const getConfig = (media, pathname) => {
                 width: sliderSecondaryWidth,
                 top: paddingVertical,
                 heigh: 'auto',
-                background: 'red',
                 alignItems: 'flex-start'
 
               }

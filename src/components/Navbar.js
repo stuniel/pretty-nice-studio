@@ -8,6 +8,7 @@ import FullLogo from '../img/svg/logo.svg'
 
 import {
   getConfig,
+  getPadding,
   isMobile,
   isTablet,
   isLaptop,
@@ -54,8 +55,9 @@ const BurgerWrapper = styled.div`
   ` }
   
   ${ props => props.isTablet && `
-    top: 5vh;
-    left: 5vh;
+    width: 10vw;
+    top: 0;
+    left: 85vw;
   ` }
 `
 
@@ -154,9 +156,11 @@ const NavMenu = styled.nav`
 const LogoWrapper = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: width 0.6s, left 0.6s, top 0.6s, height 0.6s;
+  opacity: ${ props => props.isLogoVisible ? 1 : 0 };
+  justify-content: ${ props => props.isTablet ? 'flex-start' : 'center' };
+  align-items: ${ props => props.isTablet ? 'flex-start' : 'center' };
+  ${ props => props.isTablet && `padding: ${ props.paddingHorizontal }px;` }
+  transition: opacity 0.6s, width 0.6s, left 0.6s, top 0.6s, height 0.6s;
   ${ props => props.isTablet && 'background: #fff' };
 `
 
@@ -170,6 +174,8 @@ const StyledLogoLink = styled(Link)`
 `
 
 const StyledLogo = styled(FullLogo)`
+  display: block;
+
   & > g {
     fill: inherit;
     transition: all 0.4s;
@@ -261,7 +267,8 @@ const Navbar = class extends React.Component {
     } = this.props
     const isHome = pathname === '/'
     const config = getConfig(media, pathname)
-
+    const { paddingHorizontal } = getPadding(media)
+    const isLogoVisible = !(isTablet(media) && (pathname === '/about' || pathname === '/contact'))
     const logoWrapper = {
       ...config.navbar.logo.wrapper.getPosition(menuOpen)
     }
@@ -319,7 +326,12 @@ const Navbar = class extends React.Component {
               </StyledLink>
             </Links>
           </NavMenu>
-          <LogoWrapper isTablet={isTablet(media)} style={logoWrapper}>
+          <LogoWrapper
+            isTablet={isTablet(media)}
+            isLogoVisible={isLogoVisible}
+            paddingHorizontal={paddingHorizontal}
+            style={logoWrapper}
+          >
             <StyledLogoLink
               to="/"
               style={logoStyle}
@@ -355,7 +367,7 @@ const Navbar = class extends React.Component {
                 media={media}
                 onClick={this.handleBurgerClick}
                 menuOpen={menuOpen}
-                size={20}
+                size={isMobile(media) ? 15 : 20}
               >
                 <div data-target="navMenu">
                   <span />
