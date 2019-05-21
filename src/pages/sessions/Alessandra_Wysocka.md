@@ -12,7 +12,7 @@ info:
   - role: 'Agency'
     name: 'ClarisModelManagement'
   - role: 'Make Up'
-    name': Julita Nowak'
+    name: 'Julita Nowak'
   - role: 'Stylist'
     name: 'Aleksandra Wszola'
   - role: 'Retouch'
