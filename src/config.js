@@ -44,7 +44,7 @@ export const sliderHeight = isMobile =>
 
 export const getPadding = ({ width, height, ratio }, pathname) => {
   let paddingVertical = height / 10
-  let paddingHorizontal = width / 15
+  let paddingHorizontal = height / 10
 
   if (!isWide({ ratio })) {
     paddingVertical = height / 10
