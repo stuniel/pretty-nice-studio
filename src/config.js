@@ -48,7 +48,7 @@ export const getPadding = ({ width, height, ratio }, pathname) => {
 
   if (!isWide({ ratio })) {
     paddingVertical = height / 10
-    paddingHorizontal = height / 10
+    paddingHorizontal = width / 15
   }
 
   if (isScrollable({ ratio })) {
