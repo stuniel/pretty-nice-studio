@@ -5,11 +5,16 @@ session: Sumanta_Muth
 date: 2019-01-17T15:04:10.000Z
 position: 6
 info:
-  - 'Photographer: Sumanta Muth'
-  - 'Model: Puma Rose Buck'
-  - 'Agency: Next Models LA'
-  - 'Makeup: Jacqueline Holden'
-  - 'Retouch: Pretty Nice Studio'
+  - role: 'Photographer'
+    name: 'Sumanta Muth'
+  - role: 'Model'
+    name: 'Puma Rose Buck'
+  - role: 'Agency'
+    name: 'Next Models LA'
+  - role: 'Make Up'
+    name: 'Jacqueline Holden'
+  - role: 'Retouch'
+    name: 'Pretty Nice Studio'
 cover: Puma_Test_080118_0427
 views:
   - type: 12

@@ -13,7 +13,7 @@ import Media from '../components/Media'
 import Transition from '../components/Transition'
 // import UnderConstruction from '../components/UnderConstruction'
 
-import { getConfig, isLaptop } from '../config.js'
+import { getConfig, isLaptop, isTablet } from '../config.js'
 
 import './all.sass'
 import { GlobalStyle } from '../theme/globalStyle'
@@ -27,15 +27,25 @@ const Container = styled.div`
 const Wrapper = styled.div`
   position: absolute;
   top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  
+  & > div {
+    height: 100%;
+    width: 100%;
+
+    & > div {
+      height: 100%;
+      width: 100%;
+    }
+  }
 `
 
 const ChildWrapper = styled.div`
   position: absolute;
   top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 `
 
 const ContentTransitionGroup = styled(TransitionGroup)`
@@ -82,8 +92,12 @@ const Text = styled.div`
   letter-spacing: 0.5em;
   word-spacing: 0.7em;
   transform: rotate(-90deg);
-  transform-origin: 100% 0;
+  transform-origin: ${ props => props.isLaptop && props.isHome
+    ? '0 0'
+    : '100% 0'
+};
   z-index: 10;
+  white-space: nowrap;
 `
 
 class TemplateWrapper extends React.Component {
@@ -107,13 +121,16 @@ class TemplateWrapper extends React.Component {
   render () {
     const { children, location, media } = this.props
     const { mounted } = this.state
+    const { pathname } = location
 
-    const config = getConfig(media, location.pathname)
+    const isHome = pathname === '/'
+
+    const config = getConfig(media, pathname)
 
     const containerClassName = csx({ 'preload': !mounted })
 
     const textStyle = {
-      ...config.layout.text.getPosition()
+      ...config.layout.text.getPosition(isHome)
     }
 
     // if (process.env.SITE_STATUS !== 'ready') {
@@ -200,8 +217,12 @@ class TemplateWrapper extends React.Component {
                   <React.Fragment>
                     <LayoutWrapper>
                       <Navbar pathname={location && location.pathname} />
-                      {!isLaptop(media) && (
-                        <Text style={textStyle}>
+                      {!isTablet(media) && (
+                        <Text
+                          style={textStyle}
+                          isLaptop={isLaptop(media)}
+                          isHome={isHome}
+                        >
                           Fashion & beauty retouch
                         </Text>
                       )}

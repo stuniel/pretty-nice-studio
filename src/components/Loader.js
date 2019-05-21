@@ -26,8 +26,8 @@ const Elipsis = styled.div`
   div {
     position: absolute;
     top: 27px;
-    width: 11px;
-    height: 11px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #000;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
@@ -69,13 +69,14 @@ const Elipsis = styled.div`
       transform: translate(0, 0);
     }
     100% {
-      transform: translate(19px, 0);
+      transform: translate(15px, 0);
     }
   }
 `
 
 const StyledLogo = styled(Logo)`
   width: 300px;
+  max-width: 50%;
 `
 
 const Loader = () => {

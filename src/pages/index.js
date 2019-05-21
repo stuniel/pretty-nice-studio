@@ -8,9 +8,13 @@ import {
   indexOf,
   throttle
 } from 'lodash'
-import { Transition } from 'react-transition-group'
+import {
+  Transition,
+  TransitionGroup,
+  CSSTransition
+} from 'react-transition-group'
 
-import { getConfig, isTablet, isLaptop } from '../config.js'
+import { getConfig, isMobile, isTablet, isLaptop } from '../config.js'
 import {
   formatArrowsStyle,
   formatNumbersStyle,
@@ -20,7 +24,9 @@ import {
 import Arrows from '../components/Arrows'
 import Button from '../components/Button'
 import Numbers from '../components/Numbers'
-import SessionInfo from '../components/SessionInfo'
+import SessionInfo, {
+  createChildFactory
+} from '../components/SessionInfo'
 import Sliders from '../components/Sliders'
 
 const DIRECTIONS = {
@@ -47,12 +53,54 @@ const Content = styled.div`
   overflow: hidden;
 `
 
+const StyledContentText = styled.div`
+  position: relative;
+
+  p {
+    color: #fff;
+    font-size: 1.15em;
+    line-height: 1.5em;
+  }
+`
+
 const StyledMobileButton = styled(Button)`
   color: #fff;
-  font-size: 14px;
-  padding: 1em;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 12px 12px 11px 12px;
   background: rgba(0,0,0,0.15);
   border: 1px solid #fff;
+  width: fit-content;
+`
+
+const StyledDescriptionTransitionGroup = styled(TransitionGroup)`
+  .description-forward-enter,
+  .description-backward-enter {
+    transition: all 900ms;
+    transition-delay: 600ms;
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  .description-forward-enter-active,
+  .description-backward-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .description-forward-exit,
+  .description-backward-exit {
+    transition: all 300ms;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    opacity: 1;
+  }
+
+  .description-forward-exit-active,
+  .description-backward-exit-active {
+    opacity: 0;
+  }
 `
 
 class IndexPage extends React.PureComponent {
@@ -142,6 +190,57 @@ class IndexPage extends React.PureComponent {
     </Button>
   )
 
+  renderSlidersContent = (currentPost, currentPostIndex) => {
+    const { media } = this.props
+    const { direction } = this.state
+
+    if (isMobile(media)) {
+      return (
+        <StyledMobileButton
+          onClick={() => this.handleSlideClick(currentPost.node)}
+          role="link"
+        >
+          view project
+        </StyledMobileButton>
+      )
+    }
+
+    if (isTablet(media)) {
+      return (
+        <StyledContentText>
+          <StyledDescriptionTransitionGroup
+            childFactory={child =>
+              createChildFactory(child, {
+                classNames: `description-${ direction }`,
+              })
+            }
+            className={`description-${ direction }`}
+            component="div"
+          >
+            <CSSTransition
+              className={`description-${ direction }-enter`}
+              classNames={`description-${ direction }`}
+              key={currentPostIndex}
+              timeout={{ enter: 1500, exit: 1500 }}
+            >
+              <div>
+                {currentPost.node.frontmatter.info.map(line => (
+                  <p><strong>{line.role}: </strong>{line.name}</p>
+                ))}
+                <StyledMobileButton
+                  onClick={() => this.handleSlideClick(currentPost.node)}
+                  role="link"
+                >
+                  view project
+                </StyledMobileButton>
+              </div>
+            </CSSTransition>
+          </StyledDescriptionTransitionGroup>
+        </StyledContentText>
+      )
+    }
+  }
+
   render () {
     const { activeTransitions, slide, data,
       location, media, timeout } = this.props
@@ -186,7 +285,7 @@ class IndexPage extends React.PureComponent {
             }}
           </Transition>
         )}
-        {!isLaptop(media) && (
+        {!isTablet(media) && (
           <Content style={contentStyle}>
             <Transition
               in={activeTransitions['home']}
@@ -239,14 +338,7 @@ class IndexPage extends React.PureComponent {
           onSecondarySliderClick={this.prev}
           onSwipe={this.handleSwipe}
           pathname={pathname}
-          renderContent={() => isTablet(media) && (
-            <StyledMobileButton
-              onClick={() => this.handleSlideClick(currentPost.node)}
-              role="link"
-            >
-              see whole project
-            </StyledMobileButton>
-          )}
+          renderContent={() => this.renderSlidersContent(currentPost, currentPostIndex)}
           show={activeTransitions['home']}
           slide={slide}
         />
@@ -305,7 +397,10 @@ export const pageQuery = graphql`
             cover
             session
             title
-            info
+            info {
+              role
+              name
+            }
             position
             templateKey
             date(formatString: "MMMM DD, YYYY")

@@ -18,14 +18,20 @@ collections:
       - {label: "Position", name: "position", widget: "string"}
       - {label: "Body", name: "body", widget: "markdown"}
       - {label: "Tags", name: "tags", widget: "list"}
-      - {label: "Images", name: "images", widget: "images"}
+      - {label: "Cover", name: "cover", widget: "string"}
       - label: "Views"
         name: "views"
         widget: "list"
         fields:
-          - {label: "Type", name: "type", widget: "number" }
+          - {label: "Type", name: "type", widget: "string" }
           - {label: "First", name: "first", widget: "string" }
           - {label: "Second", name: "second", widget: "string" }
+      - label: "Info"
+        name: "info"
+        widget: "list"
+        fields:
+          - {label: "Role", name: "role", widget: "string" }
+          - {label: "Name", name: "name", widget: "string" }
 
   - name: "pages"
     label: "Pages"

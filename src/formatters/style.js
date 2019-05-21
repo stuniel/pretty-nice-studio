@@ -116,12 +116,10 @@ export function formatSliderSecondaryStyle (state, timeout, config, media) {
 
   const transitionStyles = {
     entering: {
-      transform: `translateY(0)`,
       transitionDelay: `${ timeout * (1 / 3) }ms`,
     },
     entered: {
       opacity: 1,
-      transform: 'transitionY(0)',
     },
     exited: {
       opacity: 0,
@@ -135,7 +133,6 @@ export function formatSliderSecondaryStyle (state, timeout, config, media) {
 
   return {
     position: 'absolute',
-    transform: 'transitionY(0)',
     opacity: 1,
     transition: `all ${ timeout }ms ease`,
     ...sliders.secondary(media),
@@ -149,19 +146,16 @@ export function formatSliderSecondaryStyle (state, timeout, config, media) {
 export function formatContentStyle (state, timeout, config, media) {
   const transitionStyles = {
     entering: {
-      transform: `translateY(0)`,
+      opacity: 0
     },
     entered: {
-      opacity: 1,
-      transform: 'transitionY(0)',
+      opacity: 1
     },
     exited: {
-      opacity: 0,
-      transform: `translateY(-100vh)`,
+      opacity: 0
     },
     exiting: {
-      transform: `translateY(-100vh)`,
-      transitionDelay: `${ timeout * (1 / 2) }ms`,
+      opacity: 0
     }
   }
 

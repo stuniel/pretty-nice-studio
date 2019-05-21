@@ -7,6 +7,10 @@ import rootReducer from './index'
 const windowGlobal = typeof window !== 'undefined' && window
 
 const initialState = {
+  color: {
+    burger: null,
+    icons: null
+  },
   media: {
     height: windowGlobal ? windowGlobal.innerHeight : null,
     width: windowGlobal ? windowGlobal.innerWidth : null,

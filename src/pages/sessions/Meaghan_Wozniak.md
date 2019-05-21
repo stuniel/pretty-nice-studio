@@ -5,11 +5,16 @@ session: Meaghan_Wozniak
 date: 2019-01-15T15:04:10.000Z
 position: 4
 info:
-  - 'Photographer: Meaghan Wozniak'
-  - 'Model: Cathrina Torres'
-  - 'Agency: Divide Management'
-  - 'Hair: Silver Orchid Salon'
-  - 'Retouch: Pretty Nice Studio'
+  - role: 'Photographer'
+    name: 'Meaghan Wozniak'
+  - role: 'Model'
+    name: 'Cathrina Torres'
+  - role: 'Agency'
+    name: 'Divide Management'
+  - role: 'Hair'
+    name: 'Silver Orchid Salon'
+  - role: 'Retouch'
+    name: 'Pretty Nice Studio'
 cover: _MG_3460
 views:
   - type: 1

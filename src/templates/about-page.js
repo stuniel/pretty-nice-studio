@@ -18,7 +18,7 @@ const SECONDARY_COLOR = '#bcbcbc'
 const Section = styled.section`
   position: absolute;
   top: 0;
-  height: 100vh;
+  height: 100%;
   width: 100%;
 `
 
@@ -45,10 +45,10 @@ const ContentWrapper = styled.div`
   text-align: left;
   align-items: center;
   height: ${ props => props.isTablet
-    ? `calc(100vh - ${ props.paddingVertical * 3 }px)` : '100%' };
+    ? `calc(100vh - ${ props.paddingVertical * 2 }px)` : '100%' };
   width: ${ props => props.isTablet ? '100%' : '50%' };
   left: ${ props => props.isTablet ? 0 : '50%' };
-  top: ${ props => props.isTablet ? props.paddingVertical * 2 : 0 }px;
+  top: ${ props => props.isTablet ? props.paddingVertical : 0 }px;
   padding: ${ props =>
     `${ props.paddingVertical }px ${ props.paddingHorizontal }px` };
   ${ props => props.isTablet && `padding-top: 0` };
@@ -159,7 +159,7 @@ const formatContentStyle = (state, timeout, transitionMenu, config) => {
 
 class AboutPageTemplate extends Component {
   render () {
-    const { activeTransitions, content, data, media,
+    const { activeTransitions, content, data, media, menuOpen,
       timeout, title, transitionMenu } = this.props
 
     const config = getConfig(media, '/contact')
@@ -167,7 +167,7 @@ class AboutPageTemplate extends Component {
 
     return (
       <Section>
-        <Return media={media} />
+        {!menuOpen && <Return media={media} />}
         {!isTablet(media) && (
           <Fragment>
             <ImageWrapper
@@ -272,7 +272,7 @@ AboutPageTemplate.propTypes = {
 
 export { AboutPageTemplate }
 
-const AboutPage = ({ activeTransitions, data, location, media, timeout, transitionMenu }) => {
+const AboutPage = ({ activeTransitions, data, location, media, menuOpen, timeout, transitionMenu }) => {
   const { markdownRemark: post } = data
 
   return (
@@ -283,6 +283,7 @@ const AboutPage = ({ activeTransitions, data, location, media, timeout, transiti
       data={data}
       content={post.html}
       media={media}
+      menuOpen={menuOpen}
       timeout={timeout}
       transitionMenu={transitionMenu}
       location={location}
@@ -298,11 +299,12 @@ const mapStateToProps = ({
   media,
   transitions: {
     activeTransitions,
+    menuOpen,
     timeout,
     transitionMenu
   }
 }) => {
-  return { activeTransitions, media, timeout, transitionMenu }
+  return { activeTransitions, media, menuOpen, timeout, transitionMenu }
 }
 
 const mapDispatchToProps = () => {}

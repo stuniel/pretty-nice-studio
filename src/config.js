@@ -24,7 +24,12 @@ export const isScrollable = ({ ratio = 2 }) => {
   return ratio >= RATIO_SCROLL
 }
 
-const widthModifier = ratio => (ratio !== null ? ratio / 2 : 2)
+const widthModifier = ratio => (ratio !== null
+  ? isLaptop({ ratio })
+    ? ratio / 1.6
+    : ratio / 2
+  : 2
+)
 
 export const firstSliderHeight = paddingVertical =>
   `(90vh)`
@@ -41,7 +46,7 @@ export const getPadding = ({ width, height, ratio }, pathname) => {
   let paddingVertical = height / 10
   let paddingHorizontal = width / 15
 
-  if (!isLaptop({ ratio })) {
+  if (!isWide({ ratio })) {
     paddingVertical = height / 10
     paddingHorizontal = height / 10
   }
@@ -73,7 +78,9 @@ export const getConfig = (media, pathname) => {
   const { paddingVertical, paddingHorizontal } = getPadding(media, pathname)
   const footer = getFooter(media, paddingVertical)
 
-  const widthModifier = ratio / 2
+  const widthModifier = laptop
+    ? ratio / 1.6
+    : ratio / 2
 
   const paddingHorizontalMedium = paddingHorizontal * ((1 + (ratio - RATIO_SMALL) * 1.5) / 2)
 
@@ -91,7 +98,9 @@ export const getConfig = (media, pathname) => {
   const firstSliderHeight = height - paddingVertical
   const firstSliderWidth = Math.floor(firstSliderHeight * 0.8 * widthModifier)
 
-  const secondSliderHeight = height - paddingVertical * 3
+  const secondSliderHeight = laptop
+    ? height - paddingVertical * 4
+    : height - paddingVertical * 3
   const secondSliderWidth = Math.floor(secondSliderHeight * 0.8 * widthModifier)
 
   // TODO: Check if isHome: isHome ? height * 0.8 : 0
@@ -108,13 +117,12 @@ export const getConfig = (media, pathname) => {
   let sliderWidth
   let sliderHeight
 
-  if (mobile) {
-    sliderWidth = Math.floor(width - (paddingHorizontal * 2))
-    sliderHeight = Math.floor(height * 0.8)
-    // sliderHeight = Math.floor(sliderWidth * 1.25)
+  if (tablet) {
+    sliderWidth = Math.floor(width - paddingHorizontal)
+    sliderHeight = Math.floor(height * 0.9)
   }
 
-  if (!mobile) {
+  if (!tablet) {
     sliderWidth = Math.floor(width - (paddingHorizontal * 2))
     sliderHeight = Math.floor(sliderWidth * 1.25)
   }
@@ -154,60 +162,15 @@ export const getConfig = (media, pathname) => {
         }
       }
     },
-    // Moved to styled-components
-    //
-    // footer: {
-    //   wrapper: {
-    //     getPosition (menuOpen) {
-    //       if (mobile) {
-    //         return {
-    //           top: height - footer.height,
-    //           left: 0,
-    //           height: footer.height,
-    //           padding: `0 ${ paddingHorizontal }px`,
-    //         }
-    //       }
-    // 
-    //       if (tablet) {
-    //         return {
-    //           top: height - footer.height,
-    //           left: 0,
-    //           height: footer.height,
-    //           padding: `0 ${ paddingHorizontalMedium }px`,
-    //         }
-    //       }
-    // 
-    //       if (laptop) {
-    //         return {
-    //           top: height - paddingVertical,
-    //           left: paddingHorizontal,
-    //           height: paddingVertical,
-    //           width: pathname === '/' && !menuOpen
-    //             ? 165
-    //             : width - paddingHorizontal * 2
-    //         }
-    //       }
-    // 
-    //       return {
-    //         top: height - paddingVertical,
-    //         left: paddingHorizontal,
-    //         height: paddingVertical,
-    //         width: pathname === '/' && !menuOpen
-    //           ? firstSliderWidth
-    //           : width - paddingHorizontal * 2
-    //       }
-    //     }
-    //   },
-    // },
     index: {
       arrows: {
         getPosition () {
           if (laptop) {
             return {
-              width: paddingHorizontal * 1.5,
+              width: secondSliderWidth / 2,
               height: paddingVertical,
               bottom: 48,
-              left: width - (paddingHorizontal * 1.5) - paddingHorizontalMedium,
+              left: width - secondSliderWidth / 2,
               top: height - paddingVertical,
             }
           }
@@ -229,6 +192,15 @@ export const getConfig = (media, pathname) => {
               width: width,
               height: (paddingVertical * 2),
               left: 0,
+            }
+          }
+
+          if (laptop) {
+            return {
+              top: paddingVertical,
+              width: width - paddingHorizontal - firstSliderWidth - secondSliderWidth / 2,
+              height: height - paddingVertical * 2,
+              left: firstSliderWidth + paddingHorizontal,
             }
           }
 
@@ -287,8 +259,8 @@ export const getConfig = (media, pathname) => {
         primary () {
           if (mobile) {
             return {
-              top: height - sliderHeight - footer.height,
-              left: (paddingHorizontal / 2),
+              top: 0,
+              left: 0,
               width: sliderWidth,
               height: sliderHeight,
             }
@@ -296,19 +268,19 @@ export const getConfig = (media, pathname) => {
 
           if (tablet) {
             return {
-              top: paddingVertical * 1.5,
-              left: paddingHorizontalMedium,
-              width: sliderPrimaryWidth,
-              height: sliderPrimaryHeight,
+              top: 0,
+              left: 0,
+              width: sliderWidth,
+              height: sliderHeight,
             }
           }
 
           if (laptop) {
             return {
-              top: paddingVertical,
-              left: paddingHorizontalMedium,
-              width: sliderPrimaryWidth,
-              height: sliderPrimaryHeight,
+              top: 0,
+              left: paddingHorizontal,
+              width: firstSliderWidth,
+              height: firstSliderHeight,
             }
           }
 
@@ -322,8 +294,8 @@ export const getConfig = (media, pathname) => {
         secondary () {
           if (mobile) {
             return {
-              top: height - sliderHeight - footer.height,
-              left: sliderWidth + paddingHorizontal / 2,
+              top: 0,
+              left: sliderWidth,
               width: sliderWidth,
               height: sliderHeight,
             }
@@ -331,19 +303,19 @@ export const getConfig = (media, pathname) => {
 
           if (tablet) {
             return {
-              top: paddingVertical * 1.5,
-              left: sliderPrimaryWidth + paddingHorizontal * (1 + (ratio - RATIO_SMALL) * 3),
-              width: sliderPrimaryWidth,
-              height: sliderPrimaryHeight,
+              top: 0,
+              left: sliderWidth,
+              width: sliderWidth,
+              height: sliderHeight,
             }
           }
 
           if (laptop) {
             return {
-              top: height - paddingVertical - sliderSecondaryHeight,
-              left: width - sliderSecondaryWidth - paddingHorizontalMedium,
-              width: sliderSecondaryWidth,
-              height: sliderSecondaryHeight,
+              top: paddingVertical * 3,
+              left: width - secondSliderWidth / 2,
+              width: secondSliderWidth,
+              height: secondSliderHeight,
             }
           }
 
@@ -364,10 +336,19 @@ export const getConfig = (media, pathname) => {
         },
         mask: {
           getPosition () {
+            if (mobile) {
+              return {
+                top: 0,
+                left: sliderWidth,
+                width: paddingHorizontal / 2,
+                height: sliderHeight,
+              }
+            }
+
             return {
-              top: height - sliderHeight - footer.height,
-              left: sliderWidth + paddingHorizontal / 2,
-              width: paddingHorizontal / 2,
+              top: 0,
+              left: sliderWidth,
+              width: paddingHorizontal / 4,
               height: sliderHeight,
             }
           }
@@ -376,7 +357,16 @@ export const getConfig = (media, pathname) => {
     },
     layout: {
       text: {
-        getPosition () {
+        getPosition (isHome) {
+          if (laptop && isHome) {
+            return {
+              bottom: 0,
+              left: 0,
+              height: paddingHorizontal,
+              lineHeight: `${ paddingHorizontal }px`
+            }
+          }
+
           return {
             top: paddingVertical / 2,
             right: paddingHorizontal,
@@ -453,40 +443,6 @@ export const getConfig = (media, pathname) => {
       }
     },
     navbar: {
-      // Moved to styled-componets
-      // burger: {
-      //   getPosition () {
-      //     if (tablet) {
-      //       return {
-      //         top: paddingHorizontal / 2,
-      //         left: paddingHorizontal / 2,
-      //       }
-      //     }
-      //
-      //     return {
-      //       top: 0,
-      //       left: 0,
-      //       width: paddingHorizontal,
-      //       height: paddingVertical,
-      //     }
-      //   }
-      // },
-      // getPosition () {
-      //   if (tablet) {
-      //     return {
-      //       top: 0,
-      //       height: height - sliderHeight - footer.height,
-      //       left: 0,
-      //       maxHeight: height - sliderHeight - footer.height,
-      //     }
-      //   }
-      // 
-      //   return {
-      //     top: 0,
-      //     height: paddingVertical,
-      //     maxHeight: paddingVertical,
-      //   }
-      // },
       links: {
         getPosition (isHome) {
           if (mobile) {
@@ -530,7 +486,7 @@ export const getConfig = (media, pathname) => {
           if (tablet) {
             return {
               width: width - paddingHorizontal * 3,
-              maxWidth: paddingVertical * 4
+              maxWidth: '40%'
             }
           }
 
@@ -570,11 +526,11 @@ export const getConfig = (media, pathname) => {
 
             if (laptop && pathname === '/' && !menuOpen) {
               return {
-                left: contentMarginLeft,
-                width: sliderSecondaryWidth,
-                top: paddingVertical,
-                heigh: 'auto',
-                alignItems: 'flex-start'
+                left: paddingHorizontal * 1.5 + firstSliderWidth,
+                width: width - firstSliderWidth - secondSliderWidth / 2 - paddingHorizontal - paddingHorizontal * 2,
+                top: 0,
+                height: paddingVertical,
+                alignItems: 'center'
 
               }
             }
@@ -587,36 +543,6 @@ export const getConfig = (media, pathname) => {
           }
         }
       },
-      // Moved to styled-components
-      // navMenu: {
-      //   getPosition (isSession) {
-      //     if (mobile) {
-      //       return {
-      //         top: 0,
-      //         left: 0,
-      //         height,
-      //         width,
-      //       }
-      //     }
-      // 
-      //     if (tablet) {
-      //       return {
-      //         top: 0,
-      //         left: 0,
-      //         height,
-      //         width,
-      //         alignItems: 'center',
-      //       }
-      //     }
-      // 
-      //     return {
-      //       top: 0,
-      //       left: 0,
-      //       height,
-      //       width,
-      //     }
-      //   }
-      // }
     },
     sessions: {
       buttons: {

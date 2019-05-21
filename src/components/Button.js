@@ -12,9 +12,11 @@ const Button = styled.div`
   cursor: pointer;
   margin-top: 30px;
   transition: color 0.4s;
-  
-  &:hover {
-    color: ${ SECONDARY_COLOR };
+
+  @media (-moz-touch-enabled: 0), (pointer: fine) {
+    :hover {
+      color: ${ SECONDARY_COLOR };
+    }
   }
 `
 

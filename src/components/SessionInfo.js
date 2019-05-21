@@ -83,7 +83,7 @@ const StyledTransitionGroup = styled(TransitionGroup)`
   }
 `
 
-const StyledDescriptionTransitionGroup = styled(TransitionGroup)`
+export const StyledDescriptionTransitionGroup = styled(TransitionGroup)`
   .description-forward-enter {
     transition: all 400ms;
     transition-delay: 600ms;
@@ -152,9 +152,10 @@ const Text = styled.div`
 const Wrapper = styled.div`
   position: relative;
   height: 100%;
+  width: auto;
 `
 
-function createChildFactory (child, props) {
+export function createChildFactory (child, props) {
   return React.cloneElement(child, props)
 }
 
@@ -232,7 +233,7 @@ const SessionInfo = ({
           >
             <div>
               {currentPost.node.frontmatter.info.map(line => (
-                <p>{line}</p>
+                <p><strong>{line.role}: </strong>{line.name}</p>
               ))}
               <Button
                 onClick={() => onButtonClick(currentPost.node)}

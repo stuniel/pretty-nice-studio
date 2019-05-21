@@ -20,13 +20,15 @@ const Wrapper = styled.div`
     height: ${ props => props.isMobile ? '20px' : '24px' };
 
     & > svg {
-      fill: inherit;
+      fill: ${ props => props.iconsColor === 'light' ? '#fff' : 'inherit' };
       transition: fill 0.4s;
     }
 
-    &:hover {
-      & > svg {
-        fill: ${ SECONDARY_COLOR };
+    @media (-moz-touch-enabled: 0), (pointer: fine) {
+      &:hover {
+        & > svg {
+          fill: ${ SECONDARY_COLOR };
+        }
       }
     }
   }
@@ -38,8 +40,8 @@ const getIconStyle = isMobile => ({
   transform: 'scaleY(-1)',
 })
 
-const Icons = ({ isMobile, width }) => (
-  <Wrapper isMobile={isMobile} width={width}>
+const Icons = ({ iconsColor, isMobile, style, width }) => (
+  <Wrapper style={style} iconsColor={iconsColor} isMobile={isMobile} width={width}>
     <OutboundLink
       aria-label="Instagram"
       href="http://www.instagram.com/prettynicestudio"

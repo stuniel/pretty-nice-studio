@@ -37,9 +37,11 @@ const StyledLink = styled(Link)`
   cursor: pointer;
   color: inherit;
   transition: all 0.4s;
-  
-  &:hover {
-    color: ${ SECONDARY_COLOR };
+
+  @media (-moz-touch-enabled: 0), (pointer: fine) {
+    &:hover {
+      color: ${ SECONDARY_COLOR };
+    }
   }
 `
 

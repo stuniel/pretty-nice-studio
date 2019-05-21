@@ -5,12 +5,18 @@ session: Alessandra_Wysocka
 date: 2019-01-15T15:04:10.000Z
 position: 5
 info:
-  - 'Photographer: Mateusz Szcepaniak'
-  - 'Model: Zuzanna Matuszek'
-  - 'Agency: ClarisModelManagement'
-  - 'Make Up: Julita Nowak'
-  - 'Stylist: Aleksandra Wszola'
-  - 'Retouch: Pretty Nice Studio'
+  - role: 'Photographer'
+    name: 'Mateusz Szcepaniak'
+  - role: 'Model'
+    name: 'Zuzanna Matuszek'
+  - role: 'Agency'
+    name: 'ClarisModelManagement'
+  - role: 'Make Up'
+    name': Julita Nowak'
+  - role: 'Stylist'
+    name: 'Aleksandra Wszola'
+  - role: 'Retouch'
+    name: 'Pretty Nice Studio'
 cover: _MG_4841 v2
 views:
   - type: 3

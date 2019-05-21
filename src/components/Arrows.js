@@ -60,11 +60,14 @@ border-radius: 4px;
     z-index: -1;
   }
 }
-  &:hover {
+
+@media (-moz-touch-enabled: 0), (pointer: fine) {
+  :hover {
     .right-bar, .left-bar {
       background: ${ SECONDARY_COLOR };
     }
   }
+}
 `
 
 const ArrowLeft = styled(Arrow)`

@@ -5,12 +5,18 @@ session: Kaela_Speicher
 date: 2019-01-16T15:04:10.000Z
 position: 3
 info:
-  - 'Photographer: Kaela Speicher'
-  - 'Model: Ovo Drenth'
-  - 'Agency: MAJOR Models NYC'
-  - 'Makeup: Brazil Raine'
-  - 'Hair: Danielle Mock'
-  - 'Retouch: Pretty Nice Studio'
+  - role: 'Photographer'
+    name: 'Kaela Speicher'
+  - role: 'Model'
+    name: 'Ovo Drenth'
+  - role: 'Agency'
+    name: 'MAJOR Models NYC'
+  - role: 'Make Up'
+    name: 'Brazil Raine'
+  - role: 'Hair'
+    name: 'Danielle Mock'
+  - role: 'Retouch'
+    name: 'Pretty Nice Studio'
 cover: P73A8973
 views:
   - type: 13

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
-import { find } from 'lodash'
+import { find, throttle } from 'lodash'
 import Image from 'gatsby-image'
 import { Transition } from 'react-transition-group'
 
@@ -11,6 +11,7 @@ import {
   getConfig,
   getPadding,
   isScrollable,
+  isMobile,
   isTablet,
   RATIO_LARGE,
   RATIO_SCROLL
@@ -61,7 +62,7 @@ const Photo = styled.div`
 const PhotoSmall = styled.div`
   position: relative;
   width: 100%;
-  margin-bottom: 2em;
+  margin-bottom: ${ props => props.paddingHorizontal / 2 }px;
 `
 
 const Layout = styled.div`
@@ -76,13 +77,13 @@ const Layout = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   max-width: 100vw;
   padding: ${ props => props.isTablet
-    ? `${ props.paddingVertical * 2 }px ${ props.paddingHorizontal / 2 }px
+    ? `${ props.paddingVertical }px ${ props.paddingHorizontal / 2 }px
       0 ${ props.paddingHorizontal / 2 }px`
     : `${ props.paddingVertical }px 0 0 0`
 };
@@ -90,7 +91,6 @@ const Wrapper = styled.div`
   
   &:after {
     content: "";
-    ${'' /* display: block; */}
     position: absolute;
     height: ${ props => props.paddingVertical }px;
     width: 100%;
@@ -493,10 +493,10 @@ const ButtonsWrapperSmall = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   max-width: 100%;
   overflow: hidden;
   white-space: pre-line;
+  ${ props => props.isTablet && `margin: 0 ${ props.paddingHorizontal / 2 }px;` }
 `
 
 const ButtonWrapper = styled.div`
@@ -528,9 +528,11 @@ const StyledLink = styled(Link)`
   cursor: pointer;
   color: inherit;
   transition: all 0.4s;
-  
-  &:hover {
-    color: ${ SECONDARY_COLOR };
+
+  @media (-moz-touch-enabled: 0), (pointer: fine) {
+    &:hover {
+      color: ${ SECONDARY_COLOR };
+    }
   }
 `
 
@@ -577,8 +579,16 @@ function scrollToTop () {
 }
 
 class ScrollablePosts extends React.Component {
+  constructor() {
+    super()
+    
+    this.state = {
+      scrolled: false
+    }
+  }
   componentDidMount () {
     scrollToTop()
+    this.handleScroll()
   }
 
   prev = () => {
@@ -605,6 +615,21 @@ class ScrollablePosts extends React.Component {
       photo.relativePath.includes(photoName) // TODO: Fix this: str.split('\\').pop().split('/').pop();
     ).childImageSharp.fluid
   }
+
+  handleScroll = throttle(event => {
+    const { burgerColor, iconsColor, media, changeBurgerColor, changeIconsColor } = this.props
+
+    const { paddingVertical } = getPadding(media)
+    const { scrollHeight, scrollTop } = this.wrapper
+    const { height } = this.wrapper.getBoundingClientRect()
+
+    if (scrollTop > paddingVertical * (1 / 2) && burgerColor !== 'light') changeBurgerColor('light')
+    if (scrollTop < paddingVertical * (1 / 2) && burgerColor !== 'dark') changeBurgerColor('dark')
+
+    console.log({ height, scrollTop, paddingVertical });
+    if (scrollTop > scrollHeight - height - paddingVertical && iconsColor !== 'dark') changeIconsColor('dark')
+    if (scrollTop < scrollHeight - height - paddingVertical && iconsColor !== 'light') changeIconsColor('light')
+  }, 100)
 
   renderByType (type, first, second, index, length) {
     const { activeTransitions, media, session, timeout } = this.props
@@ -666,7 +691,8 @@ class ScrollablePosts extends React.Component {
   }
 
   renderVertical (first, second) {
-    const { activeTransitions, session, timeout } = this.props
+    const { activeTransitions, media, session, timeout } = this.props
+    const { paddingHorizontal } = getPadding(media)
 
     const alt = `pretty nice studio - ${ session } session photo`
 
@@ -681,7 +707,10 @@ class ScrollablePosts extends React.Component {
               const photoStyle = formatPhotoStyle(state, timeout, true)
 
               return (
-                <PhotoSmall style={photoStyle}>
+                <PhotoSmall
+                  style={photoStyle}
+                  paddingHorizontal={paddingHorizontal}
+                >
                   <Image
                     alt={alt}
                     fluid={this.getFluid(first)}
@@ -700,7 +729,10 @@ class ScrollablePosts extends React.Component {
               const photoStyle = formatPhotoStyle(state, timeout, true)
 
               return (
-                <PhotoSmall style={photoStyle}>
+                <PhotoSmall
+                  style={photoStyle}
+                  paddingHorizontal={paddingHorizontal}
+                >
                   <Image
                     alt={alt}
                     fluid={this.getFluid(second)}
@@ -735,6 +767,8 @@ class ScrollablePosts extends React.Component {
         paddingVertical={paddingVertical}
         paddingHorizontal={paddingHorizontal}
         isTablet={isTablet(media)}
+        onScroll={this.handleScroll}
+        ref={node => { this.wrapper = node }}
       >
         {isTablet(media)
           ? views.map(view => this.renderVertical(view.first, view.second))
@@ -742,7 +776,10 @@ class ScrollablePosts extends React.Component {
             this.renderByType(view.type, view.first, view.second, index, views.length))
         }
         {isTablet(media) ? (
-          <ButtonsWrapperSmall>
+          <ButtonsWrapperSmall
+            isTablet={isTablet(media)}
+            paddingHorizontal={paddingHorizontal}
+          >
             <ButtonWrapper
               style={{ marginRight: '3em' }}
             >
@@ -813,14 +850,20 @@ class ScrollablePosts extends React.Component {
 ScrollablePosts.propTypes = propTypes
 
 const mapStateToProps = ({
+  color: {
+    burger: burgerColor,
+    icons: iconsColor
+  },
   transitions: {
     activeTransitions,
     timeout
   }
-}) => ({ activeTransitions, timeout })
+}) => ({ activeTransitions, burgerColor, timeout })
 
 const mapDispatchToProps = dispatch => {
   return {
+    changeBurgerColor: color => dispatch({ type: 'CHANGE_BURGER_COLOR', color }),
+    changeIconsColor: color => dispatch({ type: 'CHANGE_ICONS_COLOR', color }),
     decrement: () => dispatch({ type: 'DECREMENT' }),
     increment: () => dispatch({ type: 'INCREMENT' }),
   }

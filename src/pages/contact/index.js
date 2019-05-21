@@ -36,7 +36,7 @@ const ImageCover = styled.div`
 const ContentWrapper = styled.div`
   position: absolute;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   padding: ${ props =>
     `${ props.paddingVertical }px ${ props.paddingHorizontal }px` };
   ${ props => props.isTablet && `padding-top: 0` };
@@ -73,8 +73,8 @@ const Content = styled.div`
     }
     
     h2 {
-      margin-bottom: 2em;
-      font-size: ${ props => props.isTablet ? 2 : 4 }em;
+      margin-bottom: ${ props => props.isTablet ? 1 : 2 }em;
+      font-size: ${ props => props.isTablet ? 3 : 5 }em;
     }
     
     a {
@@ -157,7 +157,8 @@ class Index extends Component {
   }
 
   render () {
-    const { activeTransitions, data, media, timeout, transitionMenu } = this.props
+    const { activeTransitions, data, media, menuOpen,
+      timeout, transitionMenu } = this.props
     const { photoVisible } = this.state
     const { height } = media
     const config = getConfig(media, '/contact')
@@ -169,7 +170,7 @@ class Index extends Component {
 
     return (
       <Section>
-        <Return media={media} />
+        {!menuOpen && <Return media={media} />}
         <ContentWrapper
           isTablet={isTablet(media)}
           paddingVertical={paddingVertical}
@@ -240,11 +241,12 @@ const mapStateToProps = ({
   media,
   transitions: {
     activeTransitions,
+    menuOpen,
     timeout,
     transitionMenu
   }
 }) => {
-  return { activeTransitions, media, timeout, transitionMenu }
+  return { activeTransitions, media, menuOpen, timeout, transitionMenu }
 }
 
 const mapDispatchToProps = () => {}

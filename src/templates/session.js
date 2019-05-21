@@ -110,7 +110,10 @@ export const pageQuery = graphql`
       html
       frontmatter {
         cover
-        info
+        info {
+          role
+          name
+        }
         session
         views {
           type

@@ -35,7 +35,7 @@ const Nav = styled.nav`
   max-height: 10vh
   
   ${ props => props.isTablet && `
-    height: calc(90vh - ${ sliderHeight(props.isMobile) });
+    height: 10vh;
     max-height: calc(90vh - ${ sliderHeight(props.isMobile) });
   ` }
 `
@@ -57,7 +57,12 @@ const BurgerWrapper = styled.div`
   ${ props => props.isTablet && `
     width: 10vw;
     top: 0;
-    left: 85vw;
+    left: 6.66vw;
+    width: auto;
+  ` }
+  
+  ${ props => props.isMobile && `
+    left: 6.66vw;
   ` }
 `
 
@@ -76,7 +81,10 @@ const Burger = styled.div`
     & > span {
       height: 2px;
       width: 100%;
-      background: #232323;
+      background: ${ props => props.isTablet && !props.menuOpen && props.isHome
+    ? '#fff'
+    : props.isTablet && props.isSessions && !props.menuOpen && props.burgerColor === 'light'
+      ? '#fff' : '#232323' };
       transition: all 0.4s;
       
       &:nth-child(2) {
@@ -103,28 +111,30 @@ const Burger = styled.div`
     }
   ` }
   
-  :hover {
-    & > div {
-      & > span {
-        background: ${ SECONDARY_COLOR };
-        
-        &:nth-child(2) {
-          width: 100%;
-        }
-      }
-    }
-    
-    ${ props => props.menuOpen && `
+  @media (-moz-touch-enabled: 0), (pointer: fine) {
+    :hover {
       & > div {
         & > span {
           background: ${ SECONDARY_COLOR };
           
           &:nth-child(2) {
-            width: 133%;
+            width: 100%;
           }
         }
       }
-    ` }
+      
+      ${ props => props.menuOpen && `
+        & > div {
+          & > span {
+            background: ${ SECONDARY_COLOR };
+            
+            &:nth-child(2) {
+              width: 133%;
+            }
+          }
+        }
+      ` }
+    }
   }
 `
 
@@ -132,7 +142,7 @@ const NavWrapper = styled.nav`
   position: fixed;
   top: 0;
   left: 0;
-  height: 120px;
+  height: 10vh;
 `
 
 const NavMenu = styled.nav`
@@ -156,12 +166,13 @@ const NavMenu = styled.nav`
 const LogoWrapper = styled.div`
   position: relative;
   display: flex;
-  opacity: ${ props => props.isLogoVisible ? 1 : 0 };
-  justify-content: ${ props => props.isTablet ? 'flex-start' : 'center' };
-  align-items: ${ props => props.isTablet ? 'flex-start' : 'center' };
-  ${ props => props.isTablet && `padding: ${ props.paddingHorizontal }px;` }
+  justify-content: center;
+  align-items: center;
+  ${ props => props.isTablet && `
+    padding: ${ props.paddingHorizontal }px;
+    transform: translateY(10vh);
+    ` }
   transition: opacity 0.6s, width 0.6s, left 0.6s, top 0.6s, height 0.6s;
-  ${ props => props.isTablet && 'background: #fff' };
 `
 
 const StyledLogoLink = styled(Link)`
@@ -170,7 +181,8 @@ const StyledLogoLink = styled(Link)`
   justify-content: center;
   align-items: center;
   height: auto;
-  transition: left 0.6s, top 0.6s, transform 0.6s;
+  transition: left 0.6s, top 0.6s, transform 0.6s, opacity 0.6s;
+  opacity: ${ props => props.isTablet && !props.menuOpen ? '0' : '1' };
 `
 
 const StyledLogo = styled(FullLogo)`
@@ -180,10 +192,11 @@ const StyledLogo = styled(FullLogo)`
     fill: inherit;
     transition: all 0.4s;
   }
-  
-  :hover {
-    & > g {
-      fill: ${ SECONDARY_COLOR };
+  @media (-moz-touch-enabled: 0), (pointer: fine) {
+    :hover {
+      & > g {
+        fill: ${ SECONDARY_COLOR };
+      }
     }
   }
 `
@@ -216,8 +229,10 @@ const Links = styled.div`
       margin: 0;
     }
 
-    &:hover {
-      color: ${ SECONDARY_COLOR };
+    @media (-moz-touch-enabled: 0), (pointer: fine) {
+      &:hover {
+        color: ${ SECONDARY_COLOR };
+      }
     }
   }
 `
@@ -256,6 +271,7 @@ const Navbar = class extends React.Component {
 
   render () {
     const {
+      burgerColor,
       closeMenu,
       transitions: {
         logoVisible,
@@ -269,6 +285,8 @@ const Navbar = class extends React.Component {
     const config = getConfig(media, pathname)
     const { paddingHorizontal } = getPadding(media)
     const isLogoVisible = !(isTablet(media) && (pathname === '/about' || pathname === '/contact'))
+    const isSessions = pathname.includes('sessions')
+
     const logoWrapper = {
       ...config.navbar.logo.wrapper.getPosition(menuOpen)
     }
@@ -337,6 +355,9 @@ const Navbar = class extends React.Component {
               style={logoStyle}
               title="Logo"
               onClick={closeMenu}
+              isMobile={isMobile(media)}
+              isTablet={isTablet(media)}
+              menuOpen={menuOpen}
             >
               <Transition
                 in={logoVisible}
@@ -360,12 +381,18 @@ const Navbar = class extends React.Component {
           </LogoWrapper>
           <div className="navbar-brand">
             <BurgerWrapper
+              isMobile={isMobile(media)}
               isTablet={isTablet(media)}
               isLaptop={isLaptop(media)}
             >
               <Burger
+                burgerColor={burgerColor}
                 media={media}
                 onClick={this.handleBurgerClick}
+                isHome={isHome}
+                isMobile={isMobile(media)}
+                isTablet={isTablet(media)}
+                isSessions={isSessions}
                 menuOpen={menuOpen}
                 size={isMobile(media) ? 15 : 20}
               >
@@ -382,8 +409,12 @@ const Navbar = class extends React.Component {
   }
 }
 
-const mapStateToProps = ({ transitions, media }) => {
-  return { transitions, media }
+const mapStateToProps = ({
+  color: { burger: burgerColor },
+  transitions,
+  media
+}) => {
+  return { burgerColor, transitions, media }
 }
 
 const mapDispatchToProps = dispatch => {

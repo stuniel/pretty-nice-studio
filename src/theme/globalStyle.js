@@ -47,6 +47,10 @@ body {
   background: red !important;
 }
 
+.cc-settings-btn {
+  visibility: hidden !important;
+}
+
 .description {
   position: relative;
 }

@@ -66,7 +66,8 @@ const FirstSlider = styled(Slider)`
 
 const SecondSlider = styled(Slider)`
   &:hover {
-    ${ props => !props.isTablet && 'transform: translateX(-30px)' };
+    ${ props => !props.isTablet &&
+      'transform: translateY(0) translateX(-30px);' }
   }
 `
 
@@ -82,9 +83,9 @@ const Content = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-end;
-  padding-bottom: ${ props => props.paddingHorizontal }px;
+  padding: ${ props => props.paddingHorizontal }px;
 `
 
 function getIndexInRange (index, length) {
@@ -143,6 +144,7 @@ class Sliders extends React.Component {
                 value={currentSlideIndex}
               >
                 {posts.map(({ node: post }, index) => {
+                  const isCurrentSlide = posts.length - 1 - index === currentSlideIndex
                   const { photo } = find(images.photos, image =>
                     image.photo.relativePath.includes(post.frontmatter.cover))
 
@@ -153,21 +155,34 @@ class Sliders extends React.Component {
                       onClick={onPrimarySliderClick}
                       role="link"
                     >
-                      <Transition in={show} key={slide} timeout={timeout}>
-                        {state => {
-                          const contentStyle =
-                            formatContentStyle(state, timeout, config, media)
+                      {isMobile(media) ? (
+                        <Transition
+                          in={isCurrentSlide}
+                          key={index}
+                          timeout={700}
+                        >
+                          {state => {
+                            const contentStyle =
+                              formatContentStyle(state, 700, config, media)
 
-                          return (
-                            <Content
-                              style={contentStyle}
-                              paddingHorizontal={paddingHorizontal}
-                            >
-                              {renderContent()}
-                            </Content>
-                          )
-                        }}
-                      </Transition>
+                            return (
+                              <Content
+                                style={contentStyle}
+                                paddingHorizontal={paddingHorizontal}
+                              >
+                                {renderContent()}
+                              </Content>
+                            )
+                          }}
+                        </Transition>
+                      ) : (
+                        <Content
+                          paddingHorizontal={paddingHorizontal}
+                        >
+                          {renderContent()}
+                        </Content>
+                      )
+                      }
                       <BackgroundImage
                         height="100%"
                         fluid={photo.childImageSharp.fluid}
@@ -212,7 +227,7 @@ class Sliders extends React.Component {
             </SecondSlider>
           )}
         </Transition>
-        {isMobile(media) && (
+        {isTablet(media) && (
           <SliderMask style={sliderMaskStyle} />
         )}
       </Swipeable>
