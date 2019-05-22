@@ -35,7 +35,7 @@ const StyledLink = styled(Link)`
   text-overflow: ellipsis;
   text-decoration: none;
   cursor: pointer;
-  color: inherit;
+  color: ${ props => props.theme === 'light' ? '#fff' : 'inherit' };
   transition: all 0.4s;
 
   @media (-moz-touch-enabled: 0), (pointer: fine) {
@@ -45,7 +45,7 @@ const StyledLink = styled(Link)`
   }
 `
 
-function Return ({ media }) {
+function Return ({ media, theme }) {
   const config = getConfig(media, '/sessions')
   const buttonsWrapperStyle = {
     ...config.sessions.buttons.wrapper.getPosition()
@@ -57,7 +57,7 @@ function Return ({ media }) {
     <ButtonsWrapper style={buttonsWrapperStyle}>
       <ButtonWrapper>
         <Button>
-          <StyledLink to='/'>
+          <StyledLink theme={theme} to='/'>
             return
           </StyledLink>
         </Button>

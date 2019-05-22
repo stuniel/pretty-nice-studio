@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { graphql } from 'gatsby'
 import { Transition } from 'react-transition-group'
 
-import { getConfig, getPadding, isTablet } from '../../config.js'
+import { getConfig, getPadding, isLaptop, isTablet } from '../../config.js'
 
 import BackgroundImage from '../../components/BackgroundImage'
 import Return from '../../components/Return'
@@ -74,7 +74,7 @@ const Content = styled.div`
     
     h2 {
       margin-bottom: ${ props => props.isTablet ? 1 : 2 }em;
-      font-size: ${ props => props.isTablet ? 3 : 5 }em;
+      font-size: ${ props => props.isLaptop ? 3 : 5 }em;
     }
     
     a {
@@ -188,6 +188,7 @@ class Index extends Component {
 
               return (
                 <Content
+                  isLaptop={isLaptop(media)}
                   isTablet={isTablet(media)}
                   paddingVertical={paddingVertical}
                   style={contentStyle}

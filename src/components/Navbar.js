@@ -81,7 +81,7 @@ const Burger = styled.div`
     & > span {
       height: 2px;
       width: 100%;
-      background: ${ props => props.isTablet && !props.menuOpen && props.isHome
+      background: ${ props => (props.isTablet && !props.menuOpen && props.isHome) || (props.laptop && props.isAbout)
     ? '#fff'
     : props.isTablet && props.isSessions && !props.menuOpen && props.burgerColor === 'light'
       ? '#fff' : '#232323' };
@@ -285,6 +285,7 @@ const Navbar = class extends React.Component {
     const config = getConfig(media, pathname)
     const { paddingHorizontal } = getPadding(media)
     const isLogoVisible = !(isTablet(media) && (pathname === '/about' || pathname === '/contact'))
+    const isAbout = pathname === '/about'
     const isSessions = pathname.includes('sessions')
 
     const logoWrapper = {
@@ -390,9 +391,11 @@ const Navbar = class extends React.Component {
                 media={media}
                 onClick={this.handleBurgerClick}
                 isHome={isHome}
+                isAbout={isAbout}
                 isMobile={isMobile(media)}
                 isTablet={isTablet(media)}
                 isSessions={isSessions}
+                laptop={isLaptop(media) && !isTablet(media)}
                 menuOpen={menuOpen}
                 size={isMobile(media) ? 15 : 20}
               >

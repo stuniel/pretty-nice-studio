@@ -9,7 +9,7 @@ import { HTMLContent } from '../components/Content'
 import Button from '../components/Button'
 import Return from '../components/Return'
 
-import { getConfig, getPadding, isTablet } from '../config.js'
+import { getConfig, getPadding, isLaptop, isTablet } from '../config.js'
 
 import BackgroundImage from '../components/BackgroundImage'
 
@@ -24,8 +24,16 @@ const Section = styled.section`
 
 const ImageWrapper = styled(BackgroundImage)`
   position: absolute;
-  left: ${ props => props.paddingHorizontal }px;
-  width: calc(50% - ${ props => props.paddingHorizontal }px);
+  ${ props => props.laptop
+    ? `
+    left: 0;
+    width: 50%;
+    `
+    : `
+    left: ${ props.paddingHorizontal }px;
+    width: calc(50% - ${ props.paddingHorizontal }px);
+    `
+}
   height: 100%;
 `
 
@@ -41,7 +49,7 @@ const ImageCover = styled.div`
 const ContentWrapper = styled.div`
   position: absolute;
   display: flex;
-  justify-content: center;
+  justify-content: ${ props => props.laptop ? 'flex-start' : 'center' };
   text-align: left;
   align-items: center;
   height: ${ props => props.isTablet
@@ -75,7 +83,7 @@ const StyledContent = styled.div`
   
   h2 {
     margin-bottom: ${ props => props.isTablet ? 1 : 2 }em;
-    font-size: ${ props => props.isTablet ? 3 : 5 }em;
+    font-size: ${ props => props.isLaptop ? 3 : 5 }em;
   }
   
   & > section {
@@ -164,16 +172,17 @@ class AboutPageTemplate extends Component {
 
     const config = getConfig(media, '/contact')
     const { paddingVertical, paddingHorizontal } = getPadding(media)
+    const laptop = isLaptop(media) && !isTablet(media)
 
     return (
       <Section>
-        {!menuOpen && <Return media={media} />}
         {!isTablet(media) && (
           <Fragment>
             <ImageWrapper
               fadeIn
               fluid={data.images.photos[0].photo.childImageSharp.fluid}
               paddingHorizontal={paddingHorizontal}
+              laptop={laptop}
             />
             <Transition
               in={activeTransitions['about']}
@@ -193,6 +202,7 @@ class AboutPageTemplate extends Component {
           </Fragment>
         )}
         <ContentWrapper
+          laptop={laptop}
           isTablet={isTablet(media)}
           paddingVertical={paddingVertical}
           paddingHorizontal={paddingHorizontal}
@@ -209,6 +219,7 @@ class AboutPageTemplate extends Component {
 
               return (
                 <StyledContent
+                  isLaptop={isLaptop(media)}
                   isTablet={isTablet(media)}
                   paddingVertical={paddingVertical}
                   style={contentStyle}
@@ -225,6 +236,7 @@ class AboutPageTemplate extends Component {
             }}
           </Transition>
         </ContentWrapper>
+        {!menuOpen && <Return media={media} theme={ laptop ? 'light' : 'dark' }/>}
       </Section>
     )
   }
