@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { StaticQuery, graphql } from 'gatsby'
 
+import Cookies, { getCookiesState } from '../components/Cookies'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import Media from '../components/Media'
@@ -72,7 +73,7 @@ const Text = styled.div`
 
 class TemplateWrapper extends React.PureComponent {
   renderContent = () => {
-    const { children, location, media } = this.props
+    const { cookies, children, location, media } = this.props
     const { pathname } = location
 
     const isHome = pathname === '/'
@@ -100,6 +101,9 @@ class TemplateWrapper extends React.PureComponent {
             </Text>
           )}
           <Footer pathname={location && location.pathname} />
+          { !(cookies || getCookiesState()) && (
+            <Cookies />
+          )}
         </LayoutWrapper>
         <Wrapper>
           <Transition location={location}>
@@ -204,8 +208,8 @@ class TemplateWrapper extends React.PureComponent {
   }
 }
 
-const mapStateToProps = ({ media }) => {
-  return { media }
+const mapStateToProps = ({ cookies, media }) => {
+  return { cookies, media }
 }
 
 const mapDispatchToProps = dispatch => {

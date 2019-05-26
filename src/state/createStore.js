@@ -7,6 +7,7 @@ import rootReducer from './index'
 const windowGlobal = typeof window !== 'undefined' && window
 
 const initialState = {
+  cookies: false,
   color: {
     burger: null,
     icons: null

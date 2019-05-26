@@ -10,7 +10,6 @@
     "classnames": "^2.2.6",
     "gatsby": "^2.7.1",
     "gatsby-image": "^2.1.1",
-    "gatsby-plugin-cookiehub": "^1.0.0",
     "gatsby-plugin-google-analytics": "^2.0.13",
     "gatsby-plugin-layout": "^1.0.11",
     "gatsby-plugin-netlify": "^2.0.6",
