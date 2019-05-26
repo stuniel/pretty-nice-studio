@@ -11,6 +11,10 @@ import Transition from '../components/Transition'
 
 import { getConfig, isLaptop, isTablet } from '../config.js'
 
+import 'typeface-amiko'
+import 'typeface-amiri'
+import 'typeface-scheherazade'
+
 import './all.sass'
 import { GlobalStyle } from '../theme/globalStyle'
 
