@@ -13,6 +13,7 @@ import {
   TransitionGroup,
   CSSTransition
 } from 'react-transition-group'
+import loadable from '@loadable/component'
 
 import { getConfig, isMobile, isTablet, isLaptop } from '../config.js'
 import {
@@ -27,7 +28,7 @@ import Numbers from '../components/Numbers'
 import SessionInfo, {
   createChildFactory
 } from '../components/SessionInfo'
-import Sliders from '../components/Sliders'
+const Sliders = loadable(() => import('../components/Sliders'))
 
 const DIRECTIONS = {
   forward: 'forward',
@@ -418,6 +419,7 @@ export const pageQuery = graphql`
         photo: node {
           childImageSharp {
             fluid(
+              maxWidth: 1728,
               quality: 100,
               traceSVG: {
                 color: "#f7f7f7"

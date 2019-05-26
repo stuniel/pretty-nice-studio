@@ -269,6 +269,7 @@ export const pageQuery = graphql`
         photo: node {
           childImageSharp {
             fluid(
+              maxWidth: 1728,
               quality: 100,
               traceSVG: {
                 color: "#f7f7f7"
