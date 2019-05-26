@@ -47,8 +47,10 @@ exports.createPages = ({ actions, graphql }) => {
       const session = edge.node.frontmatter.session
       const categoryRegex = `/${ session }/`
       const id = edge.node.id
-      const prev = sessions[getIndexInRange(sessionIndex - 1, sessions.length)].node.fields.slug
-      const next = sessions[getIndexInRange(sessionIndex + 1, sessions.length)].node.fields.slug
+      const prev = sessions[getIndexInRange(sessionIndex - 1, sessions.length)]
+        .node.fields.slug
+      const next = sessions[getIndexInRange(sessionIndex + 1, sessions.length)]
+        .node.fields.slug
 
       createPage({
         path: edge.node.fields.slug,
@@ -62,30 +64,6 @@ exports.createPages = ({ actions, graphql }) => {
           categoryRegex,
           prev,
           next,
-        },
-      })
-    })
-
-    // Tag pages:
-    let tags = []
-    // Iterate through each post, putting all found tags into `tags`
-    posts.forEach(edge => {
-      if (_.get(edge, `node.frontmatter.tags`)) {
-        tags = tags.concat(edge.node.frontmatter.tags)
-      }
-    })
-    // Eliminate duplicate tags
-    tags = _.uniq(tags)
-
-    // Make tag pages
-    tags.forEach(tag => {
-      const tagPath = `/tags/${ _.kebabCase(tag) }/`
-
-      createPage({
-        path: tagPath,
-        component: path.resolve(`src/templates/tags.js`),
-        context: {
-          tag,
         },
       })
     })

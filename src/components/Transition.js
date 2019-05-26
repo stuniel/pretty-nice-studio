@@ -195,13 +195,13 @@ class Transition extends React.PureComponent {
       }, transitionMenu)
     }
 
-    if (pathnameChangedFrom('/about', this.props, nextProps)) {
+    if (pathnameChangedFrom('about', this.props, nextProps, true)) {
       setTimeout(() => {
         toggleTransition('about')
       }, transitionMenu)
     }
 
-    if (pathnameChangedFrom('/contact', this.props, nextProps)) {
+    if (pathnameChangedFrom('contact', this.props, nextProps, true)) {
       setTimeout(() => {
         toggleTransition('contact')
       }, transitionMenu)
@@ -230,7 +230,7 @@ class Transition extends React.PureComponent {
       return
     }
 
-    if (pathnameChangedTo('/about', this.props, nextProps)) {
+    if (pathnameChangedTo('about', this.props, nextProps, true)) {
       const transitionStyle = 'normal'
       changeTimeout(500)
       setTimeout(() => {
@@ -240,7 +240,7 @@ class Transition extends React.PureComponent {
       return
     }
 
-    if (pathnameChangedTo('/contact', this.props, nextProps)) {
+    if (pathnameChangedTo('contact', this.props, nextProps, true)) {
       const transitionStyle = 'normal'
       changeTimeout(500)
       setTimeout(() => {
@@ -284,8 +284,8 @@ class Transition extends React.PureComponent {
     if (this.props.location.pathname === '/') return 'home'
     if (this.props.location.pathname.includes('sessions')) return 'sessions'
     if (
-      this.props.location.pathname === '/about' ||
-      this.props.location.pathname === '/contact'
+      this.props.location.pathname.includes('about') ||
+      this.props.location.pathname.includes('contact')
     ) return 'normal'
 
     return 'default'
@@ -302,11 +302,11 @@ class Transition extends React.PureComponent {
       toggleTransition('sessions')
       changeTimeout(1000)
     }
-    if (this.props.location.pathname === '/about') {
+    if (this.props.location.pathname.includes('about')) {
       toggleTransition('about')
       changeTimeout(500)
     }
-    if (this.props.location.pathname === '/contact') {
+    if (this.props.location.pathname.includes('contact')) {
       toggleTransition('contact')
       changeTimeout(500)
     }

@@ -44,7 +44,7 @@ const Icons = ({ iconsColor, isMobile, style, width }) => (
   <Wrapper style={style} iconsColor={iconsColor} isMobile={isMobile} width={width}>
     <OutboundLink
       aria-label="Instagram"
-      href="http://www.instagram.com/prettynicestudio"
+      href="https://www.instagram.com/prettynicestudio"
       rel="noopener"
       target="_blank"
     >
@@ -52,7 +52,7 @@ const Icons = ({ iconsColor, isMobile, style, width }) => (
     </OutboundLink>
     <OutboundLink
       aria-label="Facebook"
-      href="http://www.facebook.com/prettynicestudio"
+      href="https://www.facebook.com/prettynicestudio"
       rel="noopener"
       target="_blank"
     >
@@ -60,7 +60,7 @@ const Icons = ({ iconsColor, isMobile, style, width }) => (
     </OutboundLink>
     <OutboundLink
       aria-label="Behance"
-      href="http://www.behance.com/prettynicestudio"
+      href="https://www.behance.com/prettynicestudio"
       rel="noopener"
       target="_blank"
     >

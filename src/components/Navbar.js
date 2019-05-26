@@ -284,8 +284,8 @@ const Navbar = class extends React.Component {
     const isHome = pathname === '/'
     const config = getConfig(media, pathname)
     const { paddingHorizontal } = getPadding(media)
-    const isLogoVisible = !(isTablet(media) && (pathname === '/about' || pathname === '/contact'))
-    const isAbout = pathname === '/about'
+    const isLogoVisible = !(isTablet(media) && (pathname.includes('about') || pathname.includes('contact')))
+    const isAbout = pathname.includes('about')
     const isSessions = pathname.includes('sessions')
 
     const logoWrapper = {

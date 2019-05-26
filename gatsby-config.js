@@ -7,7 +7,7 @@ module.exports = {
     title: 'Pretty Nice Studio - fashion & beauty retouch',
     description:
       'We are retouching studio based in Poland, working worldwide. Specializing in high-end beauty and fashion retouch for photographers, creatives and fashion brands from all over the world.',
-    siteUrl: 'http://www.prettynicestudio.com'
+    siteUrl: 'https://www.prettynicestudio.com'
   },
   plugins: [
     'gatsby-plugin-react-helmet',
@@ -22,8 +22,8 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        host: 'http://www.prettynicestudio.com',
-        sitemap: 'http://www.prettynicestudio.com/sitemap.xml',
+        host: 'https://www.prettynicestudio.com',
+        sitemap: 'https://www.prettynicestudio.com/sitemap.xml',
         policy: [{ userAgent: '*', allow: '/' }]
       }
     },

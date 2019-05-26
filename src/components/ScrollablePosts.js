@@ -626,7 +626,6 @@ class ScrollablePosts extends React.Component {
     if (scrollTop > paddingVertical * (1 / 2) && burgerColor !== 'light') changeBurgerColor('light')
     if (scrollTop < paddingVertical * (1 / 2) && burgerColor !== 'dark') changeBurgerColor('dark')
 
-    console.log({ height, scrollTop, paddingVertical });
     if (scrollTop > scrollHeight - height - paddingVertical && iconsColor !== 'dark') changeIconsColor('dark')
     if (scrollTop < scrollHeight - height - paddingVertical && iconsColor !== 'light') changeIconsColor('light')
   }, 100)

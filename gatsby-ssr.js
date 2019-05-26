@@ -3,6 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
+import wrapWithProvider from './wrap-with-provider'
 import { createStore } from './src/state/createStore'
 
 const sheetByPathname = new Map()
@@ -35,3 +36,5 @@ export const onRenderBody = ({ setHeadComponents, pathname }) => {
     sheetByPathname.delete(pathname)
   }
 }
+
+export const wrapRootElement = wrapWithProvider

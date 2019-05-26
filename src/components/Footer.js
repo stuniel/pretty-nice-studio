@@ -59,7 +59,7 @@ const Footer = ({ iconsColor, media, pathname, transitions: { menuOpen, timeout 
   const { ratio, width } = media
   const { paddingVertical } = getPadding(media)
   const isSessions = pathname.includes('sessions')
-  const isAboutOrContact = pathname === '/about' || pathname === '/contact'
+  const isAboutOrContact = pathname.includes('about') || pathname.includes('contact')
   const isHome = pathname === '/'
   const isLeft = isTablet(media) && !menuOpen && isHome
   const iconsMargin = isTablet(media) ? '6.66vw' : 0

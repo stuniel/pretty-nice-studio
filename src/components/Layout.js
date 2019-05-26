@@ -2,16 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
-import csx from 'classnames'
 import { StaticQuery, graphql } from 'gatsby'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 import Footer from '../components/Footer'
-import Loader from '../components/Loader'
 import Navbar from '../components/Navbar'
 import Media from '../components/Media'
 import Transition from '../components/Transition'
-// import UnderConstruction from '../components/UnderConstruction'
 
 import { getConfig, isLaptop, isTablet } from '../config.js'
 
@@ -48,36 +44,6 @@ const ChildWrapper = styled.div`
   height: 100%;
 `
 
-const ContentTransitionGroup = styled(TransitionGroup)`
-  &.content-wrapper {
-    position: relative;
-    height: 100%;
-    width: 100%;
-
-    .content-enter {
-      opacity: 0;
-    }
-
-    .content-enter-active {
-      opacity: 1;
-      transition: all ${ props => props.exitTime }ms;
-      transition-delay: ${ props => props.enterTime }ms;
-    }
-
-    .content-exit {
-      transition: all ${ props => props.exitTime }ms;
-      position: absolute;
-      top: 0;
-      opacity: 1;
-    }
-
-    .content-exit-active {
-      transition-delay: ${ props => props.enterTime }ms;
-      opacity: 0;
-    }
-  }
-`
-
 const LayoutWrapper = styled.div`
   position: relative;
   height: 100%;
@@ -100,46 +66,48 @@ const Text = styled.div`
   white-space: nowrap;
 `
 
-class TemplateWrapper extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      mounted: false
-    }
-  }
-
-  componentDidMount () {
-    setTimeout(() => {
-      this.setState({ mounted: true })
-    }, 100)
-  }
-
-  componentWillUnmount () {
-    this.setState({ mounted: false })
-  }
-
-  render () {
+class TemplateWrapper extends React.PureComponent {
+  renderContent = () => {
     const { children, location, media } = this.props
-    const { mounted } = this.state
     const { pathname } = location
 
     const isHome = pathname === '/'
+    const isMediaReady = !!media.height && !!media.width && !!media.ratio
 
     const config = getConfig(media, pathname)
-
-    const containerClassName = csx({ 'preload': !mounted })
 
     const textStyle = {
       ...config.layout.text.getPosition(isHome)
     }
 
-    // if (process.env.SITE_STATUS !== 'ready') {
-    //   return (
-    //     <LayoutWrapper}>
-    //       <UnderConstruction />
-    //     </LayoutWrapper>
-    //   )
-    // }
+    if (!isMediaReady) return null
+
+    return (
+      <React.Fragment>
+        <LayoutWrapper>
+          <Navbar pathname={location && location.pathname} />
+          {!isTablet(media) && (
+            <Text
+              style={textStyle}
+              isLaptop={isLaptop(media)}
+              isHome={isHome}
+            >
+              Fashion & beauty retouch
+            </Text>
+          )}
+          <Footer pathname={location && location.pathname} />
+        </LayoutWrapper>
+        <Wrapper>
+          <Transition location={location}>
+            <ChildWrapper>{children}</ChildWrapper>
+          </Transition>
+        </Wrapper>
+      </React.Fragment>
+    )
+  }
+
+  render () {
+    const { location } = this.props
 
     return (
       <StaticQuery
@@ -162,7 +130,7 @@ class TemplateWrapper extends React.Component {
 
           return (
             <Media>
-              <Container className={containerClassName}>
+              <Container>
                 <GlobalStyle />
                 <Helmet>
                   <html lang="en" />
@@ -212,33 +180,17 @@ class TemplateWrapper extends React.Component {
                     />
                   )}
                   <meta property="og:image" content={seo.image} />
+                  <meta name="viewport" content="initial-scale=1" />
+                  <meta
+                    name="msvalidate.01"
+                    content="01B361A2AF25835C28320BF8F7714338"
+                  />
+                  <meta
+                    name="p:domain_verify"
+                    content="121103766a130ac87c9b08bff5f56608"
+                  />
                 </Helmet>
-                {mounted ? (
-                  <React.Fragment>
-                    <LayoutWrapper>
-                      <Navbar pathname={location && location.pathname} />
-                      {!isTablet(media) && (
-                        <Text
-                          style={textStyle}
-                          isLaptop={isLaptop(media)}
-                          isHome={isHome}
-                        >
-                          Fashion & beauty retouch
-                        </Text>
-                      )}
-                      <Footer pathname={location && location.pathname} />
-                    </LayoutWrapper>
-                    <Wrapper>
-                      <Transition location={location}>
-                        <ChildWrapper>{children}</ChildWrapper>
-                      </Transition>
-                    </Wrapper>
-                  </React.Fragment>
-                ) : (
-                  <LayoutWrapper>
-                    <Loader />
-                  </LayoutWrapper>
-                )}
+                {this.renderContent()}
               </Container>
             </Media>
           )

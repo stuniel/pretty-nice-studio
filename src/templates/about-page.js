@@ -192,7 +192,8 @@ class AboutPageTemplate extends Component {
               }}
             >
               {state => {
-                const imageCoverStyle = formatImageCoverStyle(state, timeout, transitionMenu, config)
+                const imageCoverStyle =
+                  formatImageCoverStyle(state, timeout, transitionMenu, config)
 
                 return (
                   <ImageCover style={imageCoverStyle} />
@@ -215,7 +216,8 @@ class AboutPageTemplate extends Component {
             }}
           >
             {state => {
-              const contentStyle = formatContentStyle(state, timeout, transitionMenu, config)
+              const contentStyle =
+                formatContentStyle(state, timeout, transitionMenu, config)
 
               return (
                 <StyledContent
@@ -236,7 +238,12 @@ class AboutPageTemplate extends Component {
             }}
           </Transition>
         </ContentWrapper>
-        {!menuOpen && <Return media={media} theme={ laptop ? 'light' : 'dark' }/>}
+        {!menuOpen && (
+          <Return
+            media={media}
+            theme={ laptop ? 'light' : 'dark' }
+          />
+        )}
       </Section>
     )
   }
@@ -284,7 +291,15 @@ AboutPageTemplate.propTypes = {
 
 export { AboutPageTemplate }
 
-const AboutPage = ({ activeTransitions, data, location, media, menuOpen, timeout, transitionMenu }) => {
+const AboutPage = ({
+  activeTransitions,
+  data,
+  location,
+  media,
+  menuOpen,
+  timeout,
+  transitionMenu
+}) => {
   const { markdownRemark: post } = data
 
   return (

@@ -104,7 +104,7 @@ export const getConfig = (media, pathname) => {
   const secondSliderWidth = Math.floor(secondSliderHeight * 0.8 * widthModifier)
 
   // TODO: Check if isHome: isHome ? height * 0.8 : 0
-  const contentMarginLeft = (pathname === '/' || pathname === '/contact' || pathname.includes('/sessions'))
+  const contentMarginLeft = (pathname === '/' || pathname.includes('contact') || pathname.includes('/sessions'))
     ? tablet
       ? sliderPrimaryWidth + paddingHorizontal * 2.25
       : laptop
