@@ -134,6 +134,7 @@ class TemplateWrapper extends React.PureComponent {
           const seo = {
             url: `${ data.site.siteMetadata.siteUrl }${ location.pathname || '/' }`,
             image: `${ data.site.siteMetadata.siteUrl }/img/og-image.jpg`,
+            imageDefault: `${ data.site.siteMetadata.siteUrl }/img/og-image-default.jpg`,
           }
 
           return (
@@ -185,8 +186,9 @@ class TemplateWrapper extends React.PureComponent {
                     content={seo.url}
                   />
                   <meta property="og:image" content={seo.image} />
-                  <meta property="og:image:width" content="1053" />
-                  <meta property="og:image:height" content="553" />
+                  {/* <meta property="og:image:width" content="1053" />
+                  <meta property="og:image:height" content="553" /> */}
+                  <meta property="og:image" content={seo.imageDefault} />
                   <meta name="viewport" content="initial-scale=1" />
                   <meta
                     name="msvalidate.01"
