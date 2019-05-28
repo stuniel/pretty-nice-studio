@@ -140,67 +140,13 @@ class TemplateWrapper extends React.PureComponent {
             <Media>
               <Container>
                 <GlobalStyle />
-                <Helmet
-                  htmlAttributes={{
-                    lang: 'en',
-                  }}
-                  title={data.site.siteMetadata.title}
-                  titleTemplate={`%s | ${ data.site.siteMetadata.title }`}
-                  meta={[
-                    {
-                      name: `description`,
-                      content: data.site.siteMetadata.description,
-                    },
-                    {
-                      property: `og:title`,
-                      content: data.site.siteMetadata.title,
-                    },
-                    {
-                      property: `og:description`,
-                      content: data.site.siteMetadata.description,
-                    },
-                    {
-                      property: `og:url`,
-                      content: seo.url,
-                    },
-                    {
-                      property: `og:image`,
-                      content: seo.image,
-                    },
-                    {
-                      property: `og:image:width`,
-                      content: '1053',
-                    },
-                    {
-                      property: `og:image:height`,
-                      content: '553',
-                    },
-                    {
-                      property: `og:site_name`,
-                      content: 'Pretty Nice Studio',
-                    },
-                    {
-                      property: `og:type`,
-                      content: `website`,
-                    },
-                    {
-                      name: `twitter:card`,
-                      content: `summary`,
-                    },
-                    {
-                      name: `twitter:creator`,
-                      content: 'Daniel Studziński',
-                    },
-                    {
-                      name: `twitter:title`,
-                      content: data.site.siteMetadata.title,
-                    },
-                    {
-                      name: `twitter:description`,
-                      content: data.site.siteMetadata.description,
-                    },
-                  ]}
-                >
+                <Helmet>
+                  <title>{data.site.siteMetadata.title}</title>
+                  <meta
+                    name="description"
+                    content={data.site.siteMetadata.description}
+                  />
+
                   <link
                     rel="apple-touch-icon"
                     sizes="180x180"
@@ -218,12 +164,30 @@ class TemplateWrapper extends React.PureComponent {
                     href="/img/favicon-16x16.png"
                     sizes="16x16"
                   />
+
                   <link
                     rel="mask-icon"
                     href="/img/safari-pinned-tab.svg"
                     color="#ff4400"
                   />
                   <meta name="theme-color" content="#fff" />
+                  <meta property="og:type" content="website" />
+                  <meta
+                    property="og:site_name"
+                    content="pretty nice studio"
+                  />
+                  <meta
+                    property="og:title"
+                    content={data.site.siteMetadata.title}
+                  />
+                  <meta
+                    property="og:url"
+                    content={seo.url}
+                  />
+                  <meta property="og:image" content={seo.image} />
+                  <meta property="og:image:width" content="1053" />
+                  <meta property="og:image:height" content="553" />
+                  <meta name="viewport" content="initial-scale=1" />
                   <meta
                     name="msvalidate.01"
                     content="01B361A2AF25835C28320BF8F7714338"
