@@ -155,6 +155,10 @@ const Wrapper = styled.div`
   width: auto;
 `
 
+const StyledButton = styled(Button)`
+  font-size: 14px;
+`
+
 export function createChildFactory (child, props) {
   return React.cloneElement(child, props)
 }
@@ -235,12 +239,12 @@ const SessionInfo = ({
               {currentPost.node.frontmatter.info.map(line => (
                 <p><strong>{line.role}: </strong>{line.name}</p>
               ))}
-              <Button
+              <StyledButton
                 onClick={() => onButtonClick(currentPost.node)}
                 role="link"
               >
                 see whole project
-              </Button>
+              </StyledButton>
             </div>
           </CSSTransition>
         </StyledDescriptionTransitionGroup>
