@@ -18,6 +18,8 @@ const Line = styled.div`
 `
 
 const NumberPrimary = styled.p`
+  font-family: Scheherazada;
+  letter-spacing: 0.18em;
   position: relative;
   font-size: 24px;
   line-height: 24px;
@@ -25,6 +27,8 @@ const NumberPrimary = styled.p`
 `
 
 const NumberSecondary = styled.li`
+  font-family: Scheherazada;
+  letter-spacing: 0.18em;
   position: relative;
   cursor: pointer;
   font-size: 12px;
