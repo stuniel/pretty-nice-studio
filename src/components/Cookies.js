@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { Link } from 'gatsby'
 import { connect } from 'react-redux'
 
+import { getPadding } from '../config.js'
+
 const SECONDARY_COLOR = '#bcbcbc'
 
 export const COOKIES_STORAGE_KEY = 'cookies_accepted'
@@ -17,6 +19,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   z-index: 10;
+  min-height: ${ props => props.paddingVertical }px;
   background-color: #eee;
   
   @media (max-width: 600px) {
@@ -66,6 +69,10 @@ const Button = styled.div`
       color: ${ SECONDARY_COLOR };
     }
   }
+
+  @media (max-width: 600px) {
+    margin-left: 0;
+  }
 `
 
 export function getCookiesState () {
@@ -95,14 +102,36 @@ export function setCookiesState (state) {
 }
 
 class Cookies extends React.Component {
-  render () {
+  componentDidMount () {
+    if (typeof window !== 'object') return
+
+    window.addEventListener('click', this.close)
+    window.addEventListener('wheel', this.close)
+  }
+
+  componentWillUnmount () {
+    if (typeof window !== 'object') return
+
+    window.removeEventListener('click', this.close)
+    window.removeEventListener('wheel', this.close)
+  }
+
+  close = () => {
     const { setCookies } = this.props
 
+    setCookiesState('allowed')
+    setCookies(true)
+  }
+
+  render () {
+    const { media } = this.props
+    const { paddingVertical } = getPadding(media)
+
     return (
-      <Wrapper>
+      <Wrapper paddingVertical={paddingVertical}>
         <Text>
           <p>
-            This website uses cookies to ensure you get the best experience on our website.
+            This website uses cookies to ensure you get the best experience on our website. By browsing this site you allow them to be used.
           </p>
           <Link to='/cookie_policy'>
             <strong>
@@ -110,10 +139,7 @@ class Cookies extends React.Component {
             </strong>
           </Link>
         </Text>
-        <Button onClick={() => {
-          setCookiesState('allowed')
-          setCookies(true)
-        }}>
+        <Button onClick={this.close}>
           Allow all cookies
         </Button>
       </Wrapper>

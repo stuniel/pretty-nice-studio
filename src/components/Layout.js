@@ -102,7 +102,7 @@ class TemplateWrapper extends React.PureComponent {
           )}
           <Footer pathname={location && location.pathname} />
           { !(cookies || getCookiesState()) && (
-            <Cookies />
+            <Cookies media={media} />
           )}
         </LayoutWrapper>
         <Wrapper>
