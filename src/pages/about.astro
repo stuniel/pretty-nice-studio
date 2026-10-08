@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro'
+import { getPage } from '../lib/content'
+import { photos } from '../lib/images'
+
+const { entry, html } = await getPage('about')
+
+const data = {
+  markdownRemark: { html, frontmatter: entry.data },
+  images: await photos(path => path === 'Megan_Davies/Phoeby-317.jpg'),
+}
+---
+<Base route="about" data={data} />

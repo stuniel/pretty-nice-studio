@@ -1,16 +1,16 @@
-# Project dependencies
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+# Dependencies
 node_modules
-.cache/
-# Build directory
-public/
-static/admin/*.bundle.*
+
+# Build output
+dist/
+.astro/
+.wrangler/
+
+# Local migration artifacts (baseline captures, spike)
+migration/
+
 .DS_Store
-yarn-error.log
 
-# S3 buckets
-# s3/
-
-# ENV
-.env.development
-.env.production
+# Env
+.env
+.env.*

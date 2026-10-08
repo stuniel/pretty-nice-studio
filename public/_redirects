@@ -1,0 +1,26 @@
+# Old URLs. Netlify matched URLs case-insensitively; Cloudflare does not.
+/sitemap.xml /sitemap-index.xml 301
+/admin/* / 301
+/sessions/Megan_Davies/ /sessions/megan_davies/ 301
+/sessions/Megan_Davies /sessions/megan_davies/ 301
+/sessions/Alessandra_Wysocka/ /sessions/alessandra_wysocka/ 301
+/sessions/Alessandra_Wysocka /sessions/alessandra_wysocka/ 301
+/sessions/Kaela_Speicher/ /sessions/kaela_speicher/ 301
+/sessions/Kaela_Speicher /sessions/kaela_speicher/ 301
+/sessions/Dominika_Pawlas/ /sessions/dominika_pawlas/ 301
+/sessions/Dominika_Pawlas /sessions/dominika_pawlas/ 301
+/sessions/Meaghan_Wozniak/ /sessions/meaghan_wozniak/ 301
+/sessions/Meaghan_Wozniak /sessions/meaghan_wozniak/ 301
+/sessions/Sumanta_Muth/ /sessions/sumanta_muth/ 301
+/sessions/Sumanta_Muth /sessions/sumanta_muth/ 301
+# Permanent trailing-slash redirects (Cloudflare's automatic ones are 307).
+/about /about/ 301
+/contact /contact/ 301
+/making_of /making_of/ 301
+/cookie_policy /cookie_policy/ 301
+/sessions/megan_davies /sessions/megan_davies/ 301
+/sessions/alessandra_wysocka /sessions/alessandra_wysocka/ 301
+/sessions/kaela_speicher /sessions/kaela_speicher/ 301
+/sessions/dominika_pawlas /sessions/dominika_pawlas/ 301
+/sessions/meaghan_wozniak /sessions/meaghan_wozniak/ 301
+/sessions/sumanta_muth /sessions/sumanta_muth/ 301

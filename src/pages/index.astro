@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro'
+import { getHomeEdges } from '../lib/content'
+import { photos } from '../lib/images'
+
+const data = {
+  allMarkdownRemark: { edges: await getHomeEdges() },
+  images: await photos(),
+}
+---
+<Base route="home" data={data} />

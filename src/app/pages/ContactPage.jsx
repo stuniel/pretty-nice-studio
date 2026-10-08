@@ -1,0 +1,258 @@
+import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { Transition } from 'react-transition-group'
+
+import { getConfig, getPadding, isLaptop, isTablet } from '../config.js'
+
+import BackgroundImage from '../components/BackgroundImage'
+import Return from '../components/Return'
+
+const SECONDARY_COLOR = '#bcbcbc'
+
+const Section = styled.section`
+  position: absolute;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+`
+
+const ImageWrapper = styled(BackgroundImage)`
+  position: absolute;
+  width: 50%;
+  left: 50%;
+`
+
+const ImageCover = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+`
+
+const ContentWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  padding: ${ props =>
+    `${ props.paddingVertical }px ${ props.paddingHorizontal }px` };
+  ${ props => props.isTablet && `padding-top: 0` };
+  text-align: left;
+  align-items: center;
+  height: ${ props => props.isTablet
+    ? `calc(100vh - ${ props.paddingVertical * 3 }px)` : '100%' };  top: ${ props => props.isTablet ? props.paddingVertical * 2 : 0 }px;
+  width: ${ props => props.isTablet ? '100%' : '50%' };
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { 
+    display: none;
+  }
+`
+
+const Content = styled.div`
+  position: relative;
+  max-width: 450px;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    height: ${ props => `${ props.paddingVertical }px` };
+    width: 100%;
+  }
+  
+  & > section {
+    margin-bottom: 60px;
+    
+    p {
+      margin-bottom: 30px;
+    }
+    
+    h2 {
+      margin-bottom: ${ props => props.isTablet ? 1 : 2 }em;
+      font-size: ${ props => props.isLaptop ? 3 : 5 }em;
+    }
+    
+    a {
+      display: block;
+      font-size: ${ props => props.isTablet ? 1 : 1.2 }em;
+      font-weight: 700;
+      cursor: pointer;
+      color: inherit;
+      text-decoration: none;
+      transition: all 0.4s;
+      
+      &:hover {
+        color: ${ SECONDARY_COLOR };
+      }
+    }
+  }
+  
+  & > section:last-child {
+    margin-bottom: 0;
+  }
+`
+const formatImageCoverStyle = (state, timeout, transitionMenu, config) => {
+  const transitionStyles = {
+    entered: {
+      transform: 'translateX(100%)',
+      transitionDelay: `${ timeout / 2 }ms`,
+    },
+    exited: {
+      transform: 'translateX(0)',
+    },
+  }
+
+  return {
+    transform: 'transitionX(100%)',
+    transition: `all ${ timeout * 0.75 }ms ease`,
+    ...(state === 'entering' && transitionStyles.entered),
+    ...(state === 'entered' && transitionStyles.entered),
+    ...(state === 'exited' && transitionStyles.exited),
+    ...(state === 'exiting' && transitionStyles.exited),
+  }
+}
+
+const formatContentStyle = (state, timeout, transitionMenu, config) => {
+  const transitionStyles = {
+    entered: {
+      opacity: 1,
+      transition: `all ${ timeout * 0.75 }ms ease-in`,
+      transitionDelay: `${ timeout / 2 }ms`,
+    },
+    exited: {
+      transition: `all ${ timeout / 2 }ms ease-out`,
+      opacity: 0
+    },
+  }
+
+  return {
+    opacity: 1,
+    ...config.contact.content.getPosition(),
+    ...(state === 'entering' && transitionStyles.entered),
+    ...(state === 'entered' && transitionStyles.entered),
+    ...(state === 'exited' && transitionStyles.exited),
+    ...(state === 'exiting' && transitionStyles.exited),
+  }
+}
+
+class Index extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      photoVisible: false
+    }
+  }
+
+  componentDidMount () {
+    setTimeout(() => this.setState({ photoVisible: true }), 500)
+  }
+
+  componentWillUnmount () {
+    this.setState({ photoVisible: false })
+  }
+
+  render () {
+    const { activeTransitions, data, media, menuOpen,
+      timeout, transitionMenu } = this.props
+    const { photoVisible } = this.state
+    const { height } = media
+    const config = getConfig(media, '/contact')
+    const { paddingVertical, paddingHorizontal } = getPadding(media)
+
+    const imageWrapperStyle = {
+      height,
+    }
+
+    return (
+      <Section>
+        {!menuOpen && <Return media={media} />}
+        <ContentWrapper
+          isTablet={isTablet(media)}
+          paddingVertical={paddingVertical}
+          paddingHorizontal={paddingHorizontal}
+        >
+          <Transition
+            in={activeTransitions['contact']}
+            timeout={{
+              enter: transitionMenu + timeout / 2,
+              exit: timeout
+            }}
+          >
+            {state => {
+              const contentStyle = formatContentStyle(state, timeout, transitionMenu, config)
+
+              return (
+                <Content
+                  isLaptop={isLaptop(media)}
+                  isTablet={isTablet(media)}
+                  paddingVertical={paddingVertical}
+                  style={contentStyle}
+                >
+                  <section>
+                    <h2>Get in touch</h2>
+                    <p>
+                      <a href="mailto:contact@prettynicestudio.com">
+                        contact@prettynicestudio.com
+                      </a>
+                    </p>
+                    <p>
+                      Let's create some pretty nice pictures! Contact us to discuss your project!
+                    </p>
+                  </section>
+                </Content>
+              )
+            }}
+          </Transition>
+        </ContentWrapper>
+        {!isTablet(media) && (
+          <Fragment>
+            <ImageWrapper
+              fadeIn
+              fluid={data.images.photos[0].photo.childImageSharp.fluid}
+              style={imageWrapperStyle}
+            />
+            <Transition
+              in={activeTransitions['contact']}
+              timeout={{
+                enter: transitionMenu + timeout / 2,
+                exit: timeout
+              }}
+            >
+              {state => {
+                const imageCoverStyle = formatImageCoverStyle(state, timeout, transitionMenu, config)
+
+                return (
+                  <ImageCover style={imageCoverStyle} />
+                )
+              }}
+            </Transition>
+          </Fragment>
+        )}
+      </Section>
+    )
+  }
+}
+
+const mapStateToProps = ({
+  media,
+  transitions: {
+    activeTransitions,
+    menuOpen,
+    timeout,
+    transitionMenu
+  }
+}) => {
+  return { activeTransitions, media, menuOpen, timeout, transitionMenu }
+}
+
+const mapDispatchToProps = () => {}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Index)
+

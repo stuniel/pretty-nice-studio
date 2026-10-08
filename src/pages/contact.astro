@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro'
+import { photos } from '../lib/images'
+
+const data = { images: await photos(path => path === 'Megan_Davies/Phoeby-193.jpg') }
+---
+<Base route="contact" data={data} />

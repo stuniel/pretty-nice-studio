@@ -1,0 +1,83 @@
+---
+import { ClientRouter } from 'astro:transitions'
+
+import App from '../app/App.jsx'
+
+interface Props {
+  route: string
+  data?: unknown
+  pageContext?: unknown
+}
+
+const { route, data, pageContext } = Astro.props
+
+const SITE_URL = 'https://www.prettynicestudio.com'
+const TITLE = 'Pretty Nice Studio - fashion & beauty retouch'
+const DESCRIPTION = 'We are retouching studio based in Poland, working worldwide. Specializing in high-end beauty and fashion retouch for photographers, creatives and fashion brands from all over the world.'
+
+const pathname = Astro.url.pathname
+const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN
+---
+<html lang="en" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1" />
+    <title>{TITLE}</title>
+    <meta name="description" content={DESCRIPTION} />
+    <link rel="canonical" href={new URL(pathname, SITE_URL)} />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#ff4400" />
+    <meta name="theme-color" content="#fff" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="pretty nice studio" />
+    <meta property="og:title" content={TITLE} />
+    <meta property="og:url" content={new URL(pathname, SITE_URL)} />
+    <meta property="og:image" content={`${ SITE_URL }/img/og-image.jpg`} />
+    <meta property="og:image" content={`${ SITE_URL }/img/og-image-default.jpg`} />
+
+    <meta name="msvalidate.01" content="01B361A2AF25835C28320BF8F7714338" />
+    <meta name="p:domain_verify" content="121103766a130ac87c9b08bff5f56608" />
+
+    <ClientRouter fallback="none" />
+
+    <style is:global>
+      astro-island { display: contents; }
+    </style>
+
+    <script>
+      // The client router replaces <head> on navigation; styled-components keeps its
+      // generated CSS there, so carry those tags over to the incoming document.
+      document.addEventListener('astro:before-swap', event => {
+        document.querySelectorAll('style[data-styled]').forEach(tag => event.newDocument.head.appendChild(tag))
+      })
+    </script>
+
+    {beaconToken && (
+      <script
+        is:inline
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: beaconToken, spa: true })}
+      />
+    )}
+  </head>
+  <body>
+    <!-- Wrapper ids are what the global styles in app/components/all.sass target. -->
+    <div id="___gatsby">
+      <div id="gatsby-focus-wrapper">
+        <App
+          client:only="react"
+          transition:persist="app"
+          route={route}
+          pathname={pathname}
+          data={data}
+          pageContext={pageContext}
+        />
+      </div>
+    </div>
+  </body>
+</html>

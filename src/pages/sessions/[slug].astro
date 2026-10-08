@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getSessions, slugOf } from '../../lib/content'
+import { photos } from '../../lib/images'
+
+export async function getStaticPaths () {
+  const sessions = await getSessions()
+
+  return sessions.map(({ data, prev, next }) => ({
+    params: { slug: slugOf(data.session) },
+    props: { session: data, prev, next },
+  }))
+}
+
+const { session, prev, next } = Astro.props
+
+const data = {
+  markdownRemark: { html: '', frontmatter: session },
+  images: await photos(path => path.startsWith(`${ session.session }/`)),
+}
+---
+<Base route="session" data={data} pageContext={{ prev, next }} />
